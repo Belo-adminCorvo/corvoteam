@@ -223,6 +223,16 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
+  position: relative;
+  z-index: 120;
+}
+
+#btn-login-toggle {
+  cursor: pointer;
+  position: relative;
+  z-index: 130;
+  pointer-events: auto !important;
+  touch-action: manipulation;
 }
 
 /* Hero Section */
@@ -675,8 +685,9 @@ a {
   padding: 20px;
 }
 
-.modal.show {
-  display: flex;
+.modal.show,
+.modal.active {
+  display: flex !important;
 }
 
 .modal-content {
