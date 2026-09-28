@@ -25,6 +25,13 @@
         </div>
       </div>
 
+      <!-- Quick Nav Links -->
+      <nav class="nav-links">
+        <a href="#formazione" class="nav-link">Rosa Titolare (5v5)</a>
+        <a href="#calendario" class="nav-link">Calendario</a>
+        <a href="#rosa" class="nav-link">La Rosa</a>
+      </nav>
+
       <div class="nav-actions">
         <span id="role-badge" class="badge badge-guest">👤 Visitatore (Sola Lettura)</span>
         <button id="btn-login-toggle" class="btn btn-yellow" onclick="toggleAdminLogin()">Accedi come Admin</button>
@@ -73,8 +80,9 @@
         </div>
 
         <div class="hero-buttons">
-          <a href="#calendario" class="btn btn-yellow">Consulta Calendario</a>
-          <a href="#rosa" class="btn btn-outline">La Rosa Ufficiale</a>
+          <a href="#formazione" class="btn btn-yellow">Rosa Titolare (5v5)</a>
+          <a href="#calendario" class="btn btn-outline">Consulta Calendario</a>
+          <a href="#rosa" class="btn btn-outline">La Rosa</a>
           <button id="btn-hero-admin-edit" class="btn btn-blue admin-only" style="display:none;" onclick="openEditNextMatch()">Modifica Orario Gara</button>
           <button id="btn-hero-admin-result" class="btn btn-yellow admin-only" style="display:none;" onclick="openResultModal(1)">Inserisci Risultato</button>
         </div>
@@ -100,9 +108,87 @@
   </section>
 
   <!-- =========================================================================
+       SEZIONE: ROSA TITOLARE & FORMAZIONE PARTITA (5v5)
+       ========================================================================= -->
+  <section id="formazione" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">FORMAZIONE UFFICIALE 5v5</span>
+          <h2 class="section-title">Rosa Titolare <span class="text-yellow">della Partita</span></h2>
+          <p class="section-sub">I 5 atleti che scendono in campo dal 1° minuto, la panchina e le convocazioni.</p>
+        </div>
+
+        <div class="admin-only" style="display:none;">
+          <button class="btn btn-sm btn-yellow" onclick="openEditLineupModal()">⚽ Modifica Rosa Titolare</button>
+        </div>
+      </div>
+
+      <!-- Info Gara e Ritrovo Banner -->
+      <div class="lineup-info-strip">
+        <div class="lineup-info-item">
+          <span class="text-muted text-xs">PARTITA CONVOCATA:</span>
+          <strong id="lineup-match-title" class="text-yellow">1ª Giornata vs Cortenova All Stars</strong>
+        </div>
+        <div class="lineup-info-item">
+          <span class="text-muted text-xs">RITROVO &amp; MAGLIE:</span>
+          <span id="lineup-ritrovo" class="text-white font-bold">Ore 20:30 agli spogliatoi (Maglia Gialla)</span>
+        </div>
+        <div class="lineup-info-item">
+          <span class="text-muted text-xs">CAPITANO DESIGNATO:</span>
+          <span id="lineup-capitano" class="text-yellow font-bold">Luca Belotti (#10)</span>
+        </div>
+      </div>
+
+      <!-- Griglia: Campo da Gioco + Sidebar Panchina -->
+      <div class="lineup-layout">
+        <!-- Campo da calcetto verde con i 5 titolari -->
+        <div class="pitch-container">
+          <div class="pitch-field">
+            <!-- Righe campo calcetto -->
+            <div class="pitch-line-center"></div>
+            <div class="pitch-circle-center"></div>
+            <div class="pitch-area-left"></div>
+            <div class="pitch-area-right"></div>
+            <div class="pitch-watermark">CORVO N29</div>
+
+            <!-- Giocatori in campo 1-2-1 -->
+            <!-- 1. Portiere (Sinistra) -->
+            <div class="pitch-slot slot-gk" id="slot-gk"></div>
+            <!-- 2. Difensore Ultimo (Centro-Difesa) -->
+            <div class="pitch-slot slot-def" id="slot-def"></div>
+            <!-- 3. Laterale Sinistro (Alto) -->
+            <div class="pitch-slot slot-lat1" id="slot-lat1"></div>
+            <!-- 4. Laterale Destro (Basso) -->
+            <div class="pitch-slot slot-lat2" id="slot-lat2"></div>
+            <!-- 5. Pivot / Punta (Destra) -->
+            <div class="pitch-slot slot-fwd" id="slot-fwd"></div>
+          </div>
+        </div>
+
+        <!-- Sidebar Panchina & Convocazione -->
+        <div class="lineup-sidebar">
+          <div style="background:#0a1128; border:1px solid rgba(250,204,21,0.25); border-radius:16px; padding:16px;">
+            <h4 class="text-yellow mb-2 font-bold text-xs uppercase">📋 Note Convocazione &amp; Avvisi</h4>
+            <p id="lineup-note" class="text-xs text-muted" style="background:#020617; padding:10px; border-radius:8px; border:1px solid #1e293b; font-style:italic;">
+              "Partita decisiva per la classifica. Massima puntualità per il riscaldamento!"
+            </p>
+            <span id="lineup-updated" class="text-muted mt-2" style="display:block; font-size:0.7rem;"></span>
+          </div>
+
+          <div style="background:#0a1128; border:1px solid #1e293b; border-radius:16px; padding:16px; margin-top:14px;">
+            <h4 class="text-xs font-bold uppercase mb-2">Panchina &amp; Riserve Disponibili</h4>
+            <div id="lineup-bench-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
        SEZIONE: CALENDARIO DELLE PARTITE
        ========================================================================= -->
-  <section id="calendario" class="section">
+  <section id="calendario" class="section section-dark">
     <div class="container">
       <div class="section-header">
         <div>
@@ -113,7 +199,6 @@
 
         <div class="admin-toolbar admin-only" style="display:none;">
           <button class="btn btn-sm btn-yellow" onclick="openAddMatchModal()">+ Nuova Partita</button>
-          <button class="btn btn-sm btn-outline-danger" onclick="resetDatabaseAction()">Azzera Database</button>
         </div>
       </div>
 
@@ -127,7 +212,7 @@
   <!-- =========================================================================
        SEZIONE: LA ROSA DEI GIOCATORI
        ========================================================================= -->
-  <section id="rosa" class="section section-dark">
+  <section id="rosa" class="section">
     <div class="container">
       <div class="section-header">
         <div>
@@ -158,7 +243,7 @@
   </section>
 
   <!-- =========================================================================
-       MODALE: LOGIN AMMINISTRATORE
+       MODALE: LOGIN AMMINISTRATORE (Zero suggerimenti o autofill)
        ========================================================================= -->
   <div id="modal-login" class="modal">
     <div class="modal-content modal-sm">
@@ -168,20 +253,87 @@
           <img src="corvo-team-logo.svg" alt="Corvo Team">
         </div>
         <h3>Login <span class="text-yellow">Amministratore</span></h3>
-        <p class="text-muted text-xs">Accedi per modificare orari, gare da definire e inserire risultati.</p>
+        <p class="text-muted text-xs">Inserisci le tue credenziali riservate per gestire il portale.</p>
       </div>
 
       <form id="form-login" onsubmit="handleLoginSubmit(event)">
         <div class="form-group">
           <label>Email o Nome Utente:</label>
-          <input type="text" id="login-user" value="lucabelotti771@gmail.com" required class="form-control">
+          <input type="text" id="login-user" placeholder="Inserisci la tua email" required class="form-control">
         </div>
         <div class="form-group">
           <label>Password:</label>
-          <input type="password" id="login-pass" placeholder="Inserisci corvo2026 o admin" required class="form-control">
+          <input type="password" id="login-pass" placeholder="••••••••" required class="form-control">
         </div>
-        <button type="submit" class="btn btn-yellow btn-block mt-3">Accedi come Admin</button>
-        <button type="button" class="btn btn-outline btn-block mt-2" onclick="quickLogin()">Accesso Rapido Luca Belotti</button>
+        <button type="submit" class="btn btn-yellow btn-block mt-3">Accedi</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALE: MODIFICA ROSA TITOLARE (ADMIN)
+       ========================================================================= -->
+  <div id="modal-lineup" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('modal-lineup')">&times;</button>
+      <div class="modal-header">
+        <h3>Modifica <span class="text-yellow">Rosa Titolare &amp; Convocati</span></h3>
+        <p class="text-muted text-xs">Seleziona i 5 giocatori che partono dal 1° minuto e le note di ritrovo.</p>
+      </div>
+
+      <form id="form-lineup" onsubmit="handleSaveLineup(event)">
+        <div class="form-group">
+          <label>Partita da Convocare:</label>
+          <select id="lineup-select-match" class="form-control" required></select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label class="text-yellow">🧤 Portiere (Titolare):</label>
+            <select id="lineup-select-gk" class="form-control" required></select>
+          </div>
+          <div class="form-group col-6">
+            <label class="text-yellow">🛡️ Difensore / Ultimo:</label>
+            <select id="lineup-select-def" class="form-control" required></select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label class="text-yellow">⚡ Laterale Sinistro:</label>
+            <select id="lineup-select-lat1" class="form-control" required></select>
+          </div>
+          <div class="form-group col-6">
+            <label class="text-yellow">⚡ Laterale Destro:</label>
+            <select id="lineup-select-lat2" class="form-control" required></select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label class="text-yellow">🎯 Pivot / Punta:</label>
+            <select id="lineup-select-fwd" class="form-control" required></select>
+          </div>
+          <div class="form-group col-6">
+            <label class="text-yellow">👑 Capitano:</label>
+            <select id="lineup-select-cap" class="form-control" required></select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Orario Ritrovo Spogliatoi e Maglia:</label>
+          <input type="text" id="lineup-input-ritrovo" class="form-control" placeholder="es. Ore 20:30 agli spogliatoi (Maglia Gialla)">
+        </div>
+
+        <div class="form-group">
+          <label>Note Tattiche e Avvisi per i Ragazzi:</label>
+          <textarea id="lineup-input-note" rows="2" class="form-control" placeholder="es. Massima puntualità per il riscaldamento pre-partita..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-lineup')">Annulla</button>
+          <button type="submit" class="btn btn-yellow">Salva Formazione Ufficiale</button>
+        </div>
       </form>
     </div>
   </div>
@@ -302,6 +454,9 @@
     </div>
   </footer>
 
+  <!-- Google Firebase Cloud SDK (CDN) per sincronizzazione globale real-time -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
