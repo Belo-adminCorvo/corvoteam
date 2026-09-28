@@ -1,1182 +1,836 @@
-/**
- * ==============================================================================
- * CORVO TEAM N29 - SCRIPT JAVASCRIPT FRONTEND (Locale per Visual Studio & GitHub)
- * File: app.js
- * ==============================================================================
- */
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#050814">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CORVO TEAM N29">
+  <title>CORVO TEAM N29 - Portale Ufficiale &amp; Calendario</title>
+  <link rel="icon" type="image/svg+xml" href="corvo-team-logo.svg">
+  <link rel="stylesheet" href="style.css">
 
-// DEFINIZIONE DEGLI SCHEMI TATTICI UFFICIALI DEL CALCIO A 5
-var SCHEMI_CALCETTO = window.SCHEMI_CALCETTO || {
-  '1-2-1': {
-    id: '1-2-1',
-    nome: '1-2-1 Rombo',
-    soprannome: 'Il Diamante',
-    descrizione: 'Lo schema classico del Futsal: perfetto equilibrio tra ultimo difensore, ampiezza dei laterali e scarico sul pivot.',
-    tag: 'BILANCIATO',
-    adattoA: 'Controllo gara, possesso palla e tagli in profondità del pivot.',
-    posizioni: {
-      gk: { left: '8%', top: '50%', label: 'POR' },
-      p1: { left: '26%', top: '50%', label: 'ULTIMO' },
-      p2: { left: '52%', top: '22%', label: 'LAT SX' },
-      p3: { left: '52%', top: '78%', label: 'LAT DX' },
-      p4: { left: '80%', top: '50%', label: 'PIVOT' },
-    }
-  },
-  '2-2': {
-    id: '2-2',
-    nome: '2-2 Quadrato',
-    soprannome: 'La Scatola (Box)',
-    descrizione: 'Due difensori bassi e due punte alte: genera pressing asfissiante a coppie e triangolazioni rapide sui binari.',
-    tag: 'PRESSING & POSSESSO',
-    adattoA: 'Bloccare avversari tecnici, pressing alto e raddoppi di marcatura.',
-    posizioni: {
-      gk: { left: '8%', top: '50%', label: 'POR' },
-      p1: { left: '30%', top: '28%', label: 'DIF SX' },
-      p2: { left: '30%', top: '72%', label: 'DIF DX' },
-      p3: { left: '74%', top: '28%', label: 'PUNTA SX' },
-      p4: { left: '74%', top: '72%', label: 'PUNTA DX' },
-    }
-  },
-  '1-1-2': {
-    id: '1-1-2',
-    nome: '1-1-2 La Y',
-    soprannome: 'Super Offensivo',
-    descrizione: 'Un solo difensore ultimo, un regista fulcro a centrocampo e due punte larghe pronte a tagliare in area.',
-    tag: 'TRAZIONE ANTERIORE',
-    adattoA: 'Recuperare partite in svantaggio, attaccare ad alto ritmo e assedio d\'area.',
-    posizioni: {
-      gk: { left: '8%', top: '50%', label: 'POR' },
-      p1: { left: '24%', top: '50%', label: 'ULTIMO' },
-      p2: { left: '48%', top: '50%', label: 'REGISTA' },
-      p3: { left: '76%', top: '24%', label: 'ALA SX' },
-      p4: { left: '76%', top: '76%', label: 'ALA DX' },
-    }
-  },
-  '3-1': {
-    id: '3-1',
-    nome: '3-1 Piramide',
-    soprannome: 'Muro Difensivo',
-    descrizione: 'Tre giocatori sulla linea arretrata a protezione della porta e un solo pivot boa isolato pronto a far salire la squadra.',
-    tag: 'DIFESA & RIPARTENZA',
-    adattoA: 'Difendere il vantaggio nei minuti finali o arginare avversari con attacco devastante.',
-    posizioni: {
-      gk: { left: '8%', top: '50%', label: 'POR' },
-      p1: { left: '30%', top: '22%', label: 'TERZ SX' },
-      p2: { left: '26%', top: '50%', label: 'CENTRALE' },
-      p3: { left: '30%', top: '78%', label: 'TERZ DX' },
-      p4: { left: '82%', top: '50%', label: 'BOA PIVOT' },
-    }
-  },
-  '1-3-0': {
-    id: '1-3-0',
-    nome: '1-3-0 Falso Nueve',
-    soprannome: 'Rotazione Totale',
-    descrizione: 'Nessun attaccante fisso. Tre centrocampisti universali mobili che scambiano posizione senza dare riferimenti.',
-    tag: 'ZERO RIFERIMENTI',
-    adattoA: 'Disorientare difensori fisici o quando mancano attaccanti di ruolo.',
-    posizioni: {
-      gk: { left: '8%', top: '50%', label: 'POR' },
-      p1: { left: '24%', top: '50%', label: 'ULTIMO' },
-      p2: { left: '56%', top: '22%', label: 'UNIV SX' },
-      p3: { left: '52%', top: '50%', label: 'UNIV CENT' },
-      p4: { left: '56%', top: '78%', label: 'UNIV DX' },
-    }
-  },
-  'power-play': {
-    id: 'power-play',
-    nome: 'Power Play 5v4',
-    soprannome: 'Portiere Volante',
-    descrizione: 'Il portiere avanza nella metà campo opposta creando costante superiorità numerica (5 contro 4).',
-    tag: 'ALL-IN FINALE',
-    adattoA: 'Ultimi 3 minuti per ribaltare o pareggiare la partita.',
-    posizioni: {
-      gk: { left: '36%', top: '50%', label: 'POR VOLANTE' },
-      p1: { left: '54%', top: '18%', label: 'LATO ALTO' },
-      p2: { left: '54%', top: '82%', label: 'LATO BASSO' },
-      p3: { left: '78%', top: '32%', label: 'PIVOT SX' },
-      p4: { left: '78%', top: '68%', label: 'PIVOT DX' },
-    }
-  }
-};
-
-// Stato dell'applicazione con i 9 atleti ufficiali e il calendario
-let state = {
-  isAdmin: localStorage.getItem('corvo_local_admin') === 'true',
-  activeModulo: '1-2-1',
-  giocatori: [
-    { id: 1, nome: 'Stefano', cognome: 'Parigi', ruolo: 'Portiere', numero_maglia: 1, piede_forte: 'Destro', caratteristiche: 'Reattivo tra i pali, riflessi fulminei nelle conclusioni ravvicinate e guida vocale costante della difesa durante i calci piazzati.' },
-    { id: 2, nome: 'Luca', cognome: 'Belotti', ruolo: 'Difensore', numero_maglia: 2, foto_url: 'belotti.jpg', piede_forte: 'Destro', caratteristiche: 'Capitano carismatico del Corvo Team N29. Roccioso nell\'uno contro uno, senso della posizione difensiva impeccabile e visione lucida nell\'impostazione dell\'azione da dietro.' },
-    { id: 3, nome: 'Alberto', cognome: 'Ranieri', ruolo: 'Difensore', numero_maglia: 3, piede_forte: 'Destro', caratteristiche: 'Tempismo perfetto nelle diagonali difensive, marcatura asfissiante sull\'avversario diretto e grande spirito di sacrificio.' },
-    { id: 4, nome: 'Nicolò', cognome: 'Rota', ruolo: 'Difensore', numero_maglia: 4, foto_url: 'rota nicolo.jpg', piede_forte: 'Destro', caratteristiche: 'Difensore energico e tenace, grandissima grinta sui contrasti, rapido nelle chiusure laterali e spinta costante lungo la corsia difensiva.' },
-    { id: 5, nome: 'Pietro', cognome: 'Barcella', ruolo: 'Difensore', numero_maglia: 5, piede_forte: 'Destro', caratteristiche: 'Fisicità imponente, anticipo secco sul pivot rivale e personalità nel guidare le uscite difensive.' },
-    { id: 6, nome: 'Alessandro', cognome: 'Rota', ruolo: 'Centrocampista', numero_maglia: 7, piede_forte: 'Destro', caratteristiche: 'Dinamismo instancabile lungo tutta la fascia, abile nel dribbling stretto e tempi perfetti di inserimento a rete.' },
-    { id: 7, nome: 'Andrea', cognome: 'Pasinetti', ruolo: 'Attaccante', numero_maglia: 8, piede_forte: 'Destro', caratteristiche: 'Senso del gol letale, fa salire la squadra proteggendo palla di spalle e calcia con potenza da ogni posizione.' },
-    { id: 8, nome: 'Raoul', cognome: 'Pasinetti', ruolo: 'Centrocampista', numero_maglia: 11, piede_forte: 'Sinistro', caratteristiche: 'Piede mancino vellutato, visione periferica e conclusioni a giro velenose dalla media distanza.' },
-    { id: 9, nome: 'Andrea', cognome: 'Dossena', ruolo: 'Centrocampista', numero_maglia: 10, piede_forte: 'Destro', caratteristiche: 'Classe e fantasia, abile a dettare i ritmi della manovra e a servire assist millimetrici per i compagni.' }
-  ],
-  partite: [
-    { id: 1, giornata: '1ª Giornata', data_ora: '2026-10-02 21:00:00', avversario: 'Cortenova All Stars', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Centro Sportivo San Rocco - Campo 1', note: 'Gara inaugurale del campionato.' },
-    { id: 2, giornata: '2ª Giornata', data_ora: '2026-10-09 20:30:00', avversario: 'Virtus Calcetto Bergamo', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'PalaCalcetto Comunale - Campo Coperto', note: 'Seconda giornata di campionato.' },
-    { id: 3, giornata: '3ª Giornata', data_ora: '2026-10-16 21:00:00', avversario: 'Real Madrink F.C.', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Centro Sportivo San Rocco', note: 'Data e orario in attesa di definizione con gli avversari.' },
-    { id: 4, giornata: '4ª Giornata', data_ora: '2026-10-23 21:00:00', avversario: 'Sporting San Pellegrino', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Centro Sportivo Val Brembana', note: 'Da concordare con la segreteria.' },
-    { id: 5, giornata: '5ª Giornata', data_ora: '2026-10-30 20:45:00', avversario: 'Atletico Brianteo', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Centro Sportivo San Rocco', note: 'In attesa di assegnazione campo.' },
-    { id: 6, giornata: '6ª Giornata', data_ora: '2026-11-06 21:00:00', avversario: 'Deportivo La Carogna', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'PalaSport Intercomunale', note: 'Orario serale provvisorio.' },
-    { id: 7, giornata: '7ª Giornata', data_ora: '2026-11-13 21:00:00', avversario: 'Futsal Brembana', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Da definire', note: 'Ultima gara del girone di andata.' }
-  ],
-  formazione: {
-    matchId: 1,
-    modulo: '1-2-1',
-    gkId: 1,
-    p1Id: 2,
-    p2Id: 6,
-    p3Id: 8,
-    p4Id: 7,
-    capitanoId: 2,
-    ritrovo: 'Ore 20:30 agli spogliatoi (Maglia Ufficiale Gialla)',
-    note: 'Partita inaugurale! Massima puntualità per il riscaldamento pre-partita.',
-    updatedAt: ''
-  },
-  selectedRoleFilter: 'Tutti',
-  currentScorers: []
-};
-
-// ==============================================================================
-// CONFIGURAZIONE FIREBASE CLOUD (Sincronizzazione Realtime su tutti i dispositivi)
-// ==============================================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyD8EWCSTHOXtSdZPJ_evFGTeHjKCeGtDw",
-  authDomain: "corvo-team.firebaseapp.com",
-  projectId: "corvo-team",
-  storageBucket: "corvo-team.firebasestorage.app",
-  messagingSenderId: "208405905224",
-  appId: "1:208405905224:web:7358f519686bc7a6b67d7d"
-};
-
-let db = null;
-try {
-  if (typeof firebase !== 'undefined') {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-    console.log('Firebase Cloud Connesso con successo!');
-  }
-} catch (e) {
-  console.warn('Inizializzazione Firebase in fallback:', e);
-}
-
-// Inizializzazione sicura all'avvio
-function initApp() {
-  console.log('Avvio CORVO TEAM N29...');
-  try {
-    const savedPartite = localStorage.getItem('corvo_local_matches');
-    if (savedPartite) {
-      const parsedMatches = JSON.parse(savedPartite);
-      if (Array.isArray(parsedMatches) && parsedMatches.length > 0) {
-        state.partite = parsedMatches;
-      }
-    }
-
-    const savedPlayers = localStorage.getItem('corvo_local_players');
-    if (savedPlayers) {
-      const parsedPlayers = JSON.parse(savedPlayers);
-      if (Array.isArray(parsedPlayers) && parsedPlayers.length > 0) {
-        // Preserva foto_url e caratteristiche ufficiali se la cache locale ne era priva
-        state.giocatori.forEach(baseG => {
-          const stored = parsedPlayers.find(p => p.id === baseG.id);
-          if (stored) {
-            if (!stored.foto_url && baseG.foto_url) stored.foto_url = baseG.foto_url;
-            if (!stored.caratteristiche && baseG.caratteristiche) stored.caratteristiche = baseG.caratteristiche;
-            if (!stored.piede_forte && baseG.piede_forte) stored.piede_forte = baseG.piede_forte;
-          }
-        });
-        state.giocatori = parsedPlayers;
-      }
-    }
-
-    const savedLineup = localStorage.getItem('corvo_local_lineup');
-    if (savedLineup) {
-      const parsedLineup = JSON.parse(savedLineup);
-      if (parsedLineup && parsedLineup.gkId) {
-        state.formazione = parsedLineup;
-        if (parsedLineup.modulo) {
-          state.activeModulo = parsedLineup.modulo;
+  <!-- Script Immediato Inline: Garantisce che Moduli, Scheda Giocatore e Login Amministratore funzionino SEMPRE al 100% -->
+  <script>
+    // SCHEMI TATTICI CALCIO A 5 UFFICIALI CON COORDINATE DI GIOCO
+    window.SCHEMI_CALCETTO = {
+      '1-2-1': {
+        id: '1-2-1',
+        nome: '1-2-1 Rombo',
+        soprannome: 'Il Diamante',
+        descrizione: 'Lo schema classico del Futsal: perfetto equilibrio tra ultimo difensore, ampiezza dei laterali e profondità del pivot.',
+        tag: 'BILANCIATO',
+        adattoA: 'Controllo gara, possesso palla e tagli in profondità del pivot.',
+        posizioni: {
+          gk: { left: '8%', top: '50%', label: 'POR' },
+          p1: { left: '26%', top: '50%', label: 'ULTIMO' },
+          p2: { left: '52%', top: '22%', label: 'LAT SX' },
+          p3: { left: '52%', top: '78%', label: 'LAT DX' },
+          p4: { left: '80%', top: '50%', label: 'PIVOT' }
+        }
+      },
+      '2-2': {
+        id: '2-2',
+        nome: '2-2 Quadrato',
+        soprannome: 'La Scatola (Box)',
+        descrizione: 'Due difensori bassi e due punte alte: genera pressing asfissiante a coppie e triangolazioni rapide sui binari.',
+        tag: 'PRESSING & POSSESSO',
+        adattoA: 'Bloccare avversari tecnici, pressing alto e raddoppi di marcatura.',
+        posizioni: {
+          gk: { left: '8%', top: '50%', label: 'POR' },
+          p1: { left: '30%', top: '28%', label: 'DIF SX' },
+          p2: { left: '30%', top: '72%', label: 'DIF DX' },
+          p3: { left: '74%', top: '28%', label: 'PUNTA SX' },
+          p4: { left: '74%', top: '72%', label: 'PUNTA DX' }
+        }
+      },
+      '1-1-2': {
+        id: '1-1-2',
+        nome: '1-1-2 La Y',
+        soprannome: 'Super Offensivo',
+        descrizione: 'Un solo difensore ultimo, un regista fulcro a centrocampo e due punte larghe pronte a tagliare in area.',
+        tag: 'TRAZIONE ANTERIORE',
+        adattoA: 'Recuperare partite in svantaggio, attaccare ad alto ritmo e assedio d\'area.',
+        posizioni: {
+          gk: { left: '8%', top: '50%', label: 'POR' },
+          p1: { left: '24%', top: '50%', label: 'ULTIMO' },
+          p2: { left: '48%', top: '50%', label: 'REGISTA' },
+          p3: { left: '76%', top: '24%', label: 'ALA SX' },
+          p4: { left: '76%', top: '76%', label: 'ALA DX' }
+        }
+      },
+      '3-1': {
+        id: '3-1',
+        nome: '3-1 Piramide',
+        soprannome: 'Muro Difensivo',
+        descrizione: 'Tre giocatori sulla linea arretrata a protezione della porta e un solo pivot boa isolato per il contropiede.',
+        tag: 'DIFESA & RIPARTENZA',
+        adattoA: 'Difendere il vantaggio nei minuti finali o arginare avversari con attacco devastante.',
+        posizioni: {
+          gk: { left: '8%', top: '50%', label: 'POR' },
+          p1: { left: '30%', top: '22%', label: 'TERZ SX' },
+          p2: { left: '26%', top: '50%', label: 'CENTRALE' },
+          p3: { left: '30%', top: '78%', label: 'TERZ DX' },
+          p4: { left: '82%', top: '50%', label: 'BOA PIVOT' }
+        }
+      },
+      '1-3-0': {
+        id: '1-3-0',
+        nome: '1-3-0 Falso Nueve',
+        soprannome: 'Rotazione Totale',
+        descrizione: 'Nessun attaccante fisso. Tre centrocampisti universali mobili che scambiano posizione senza dare riferimenti.',
+        tag: 'ZERO RIFERIMENTI',
+        adattoA: 'Disorientare difensori fisici o quando mancano attaccanti di ruolo.',
+        posizioni: {
+          gk: { left: '8%', top: '50%', label: 'POR' },
+          p1: { left: '24%', top: '50%', label: 'ULTIMO' },
+          p2: { left: '56%', top: '22%', label: 'UNIV SX' },
+          p3: { left: '52%', top: '50%', label: 'UNIV CENT' },
+          p4: { left: '56%', top: '78%', label: 'UNIV DX' }
+        }
+      },
+      'power-play': {
+        id: 'power-play',
+        nome: 'Power Play 5v4',
+        soprannome: 'Portiere Volante',
+        descrizione: 'Il portiere avanza nella metà campo opposta creando costante superiorità numerica (5 contro 4).',
+        tag: 'ALL-IN FINALE',
+        adattoA: 'Ultimi 3 minuti per ribaltare o pareggiare la partita.',
+        posizioni: {
+          gk: { left: '36%', top: '50%', label: 'POR VOLANTE' },
+          p1: { left: '54%', top: '18%', label: 'LATO ALTO' },
+          p2: { left: '54%', top: '82%', label: 'LATO BASSO' },
+          p3: { left: '78%', top: '32%', label: 'PIVOT SX' },
+          p4: { left: '78%', top: '68%', label: 'PIVOT DX' }
         }
       }
-    }
-  } catch (e) {
-    console.warn('Errore lettura cache locale:', e);
-  }
-
-  updateAdminUI();
-  renderHeroMatch();
-  renderMatches();
-  renderModulesBar();
-  renderLineup();
-  renderPlayers();
-  populateScorerSelect();
-
-  // Gestione attiva schede navigazione mobile
-  try {
-    const mobileTabs = document.querySelectorAll('.mobile-nav-tab');
-    mobileTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        mobileTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-      });
-    });
-  } catch (e) {}
-
-  // Sincronizzazione Realtime con Firebase Cloud
-  setupFirebaseSync();
-
-  // Prova a recuperare dal backend PHP se disponibile in locale (es. XAMPP)
-  fetchDataFromPhpBackend();
-}
-
-// Avvio istantaneo garantito sia con DOMContentLoaded sia a pagina già pronta
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
-} else {
-  initApp();
-}
-
-// Ascolto in tempo reale da Firebase Cloud
-function setupFirebaseSync() {
-  if (!db) return;
-
-  // 1. Dati Partite & Giocatori
-  try {
-    const docRef = db.collection('campionato').doc('corvoteam_data');
-    docRef.onSnapshot((doc) => {
-      if (doc.exists) {
-        const data = doc.data();
-        if (data && Array.isArray(data.partite) && data.partite.length > 0) {
-          state.partite = data.partite;
-          saveLocalMatchesOnly();
-          renderHeroMatch();
-          renderMatches();
-        }
-        if (data && Array.isArray(data.giocatori) && data.giocatori.length > 0) {
-          state.giocatori = data.giocatori;
-          renderPlayers();
-        }
-      }
-    }, (err) => {
-      console.warn('Avviso Firebase partite:', err.message);
-    });
-
-    // 2. Dati Rosa Titolare & Formazione
-    const lineupRef = db.collection('campionato').doc('formazione_data');
-    lineupRef.onSnapshot((doc) => {
-      if (doc.exists) {
-        const data = doc.data();
-        if (data && data.gkId) {
-          state.formazione = data;
-          if (data.modulo) state.activeModulo = data.modulo;
-          try {
-            localStorage.setItem('corvo_local_lineup', JSON.stringify(data));
-          } catch (e) {}
-          renderModulesBar();
-          renderLineup();
-        }
-      }
-    }, (err) => {
-      console.warn('Avviso Firebase lineup:', err.message);
-    });
-  } catch (err) {
-    console.warn('Errore setup Firebase:', err);
-  }
-}
-
-// Funzione di sincronizzazione con backend PHP locale se disponibile
-async function fetchDataFromPhpBackend() {
-  try {
-    const resP = await fetch('api/get_partite.php');
-    if (resP.ok) {
-      const dataP = await resP.json();
-      if (dataP.success && Array.isArray(dataP.data) && dataP.data.length > 0) {
-        state.partite = dataP.data;
-        renderHeroMatch();
-        renderMatches();
-      }
-    }
-    const resG = await fetch('api/get_giocatori.php');
-    if (resG.ok) {
-      const dataG = await resG.json();
-      if (dataG.success && Array.isArray(dataG.data) && dataG.data.length > 0) {
-        state.giocatori = dataG.data;
-        renderPlayers();
-      }
-    }
-  } catch (err) {}
-}
-
-// =============================================================================
-// GESTIONE RUOLI: ADMIN vs VISITATORE (Zero suggerimenti o autofill)
-// =============================================================================
-function updateAdminUI() {
-  const badge = document.getElementById('role-badge');
-  const btnLogin = document.getElementById('btn-login-toggle');
-  const adminElements = document.querySelectorAll('.admin-only');
-  const guestElements = document.querySelectorAll('.guest-only');
-
-  if (state.isAdmin) {
-    if (badge) {
-      badge.className = 'badge badge-admin';
-      badge.textContent = '👑 Admin: Luca Belotti';
-    }
-    if (btnLogin) {
-      btnLogin.textContent = 'Disconnetti';
-      btnLogin.className = 'btn btn-outline';
-    }
-    adminElements.forEach(el => el.style.display = 'inline-flex');
-    guestElements.forEach(el => el.style.display = 'none');
-  } else {
-    if (badge) {
-      badge.className = 'badge badge-guest';
-      badge.textContent = '👤 Visitatore (Sola Lettura)';
-    }
-    if (btnLogin) {
-      btnLogin.textContent = 'Accedi come Admin';
-      btnLogin.className = 'btn btn-yellow';
-    }
-    adminElements.forEach(el => el.style.display = 'none');
-    guestElements.forEach(el => el.style.display = 'inline-flex');
-  }
-}
-
-function openAdminLoginModal() {
-  const m = document.getElementById('modal-login');
-  if (m) {
-    m.style.setProperty('display', 'flex', 'important');
-    m.style.setProperty('z-index', '999999', 'important');
-    m.classList.add('show', 'active');
-    const userInp = document.getElementById('login-user');
-    if (userInp) userInp.focus();
-  } else {
-    const p = prompt('Accesso Amministratore CORVO TEAM:\nInserisci la password di Luca Belotti:');
-    if (p && p.trim() === 'corvo2026') {
-      localStorage.setItem('corvo_local_admin', 'true');
-      state.isAdmin = true;
-      updateAdminUI();
-      renderHeroMatch();
-      renderMatches();
-      renderLineup();
-      alert('Accesso Amministratore confermato! Benvenuto Luca.');
-    } else if (p) {
-      alert('Password non valida.');
-    }
-  }
-}
-
-function closeAdminLoginModal() {
-  const m = document.getElementById('modal-login');
-  if (m) {
-    m.style.setProperty('display', 'none', 'important');
-    m.classList.remove('show', 'active');
-  }
-}
-
-function toggleAdminLogin() {
-  if (state.isAdmin || localStorage.getItem('corvo_local_admin') === 'true') {
-    if (confirm('Sei attualmente connesso come Amministratore (Luca Belotti).\nVuoi disconnetterti per tornare alla sola visualizzazione?')) {
-      localStorage.removeItem('corvo_local_admin');
-      state.isAdmin = false;
-      updateAdminUI();
-      renderHeroMatch();
-      renderMatches();
-      renderLineup();
-    }
-  } else {
-    openAdminLoginModal();
-  }
-}
-
-function handleLoginSubmit(e) {
-  if (e && e.preventDefault) e.preventDefault();
-  const userEl = document.getElementById('login-user');
-  const passEl = document.getElementById('login-pass');
-  const user = userEl ? userEl.value.trim().toLowerCase() : '';
-  const pass = passEl ? passEl.value.trim() : '';
-  
-  if ((user === 'lucabelotti771@gmail.com' || user === 'luca belotti') && pass === 'corvo2026') {
-    state.isAdmin = true;
-    localStorage.setItem('corvo_local_admin', 'true');
-    closeAdminLoginModal();
-    updateAdminUI();
-    renderHeroMatch();
-    renderMatches();
-    renderLineup();
-    alert('Accesso Amministratore autorizzato! Benvenuto Luca Belotti.');
-  } else {
-    alert('Credenziali non valide. Accesso riservato esclusivamente all\'amministratore.');
-  }
-}
-
-// =============================================================================
-// RENDERING HERO & CALENDARIO
-// =============================================================================
-function renderHeroMatch() {
-  const next = state.partite.find(p => p.stato === 'programmata' || p.stato === 'da_definire') || state.partite[0];
-  if (!next) return;
-
-  const elGiornata = document.getElementById('hero-giornata');
-  if (elGiornata) elGiornata.textContent = `${next.giornata} • Campionato 2026/2027`;
-  
-  const elAwayName = document.getElementById('hero-away-name');
-  if (elAwayName) elAwayName.textContent = next.avversario;
-  
-  const elAwayAbbr = document.getElementById('hero-away-abbr');
-  if (elAwayAbbr) elAwayAbbr.textContent = next.avversario.substring(0, 2).toUpperCase();
-  
-  const elVenue = document.getElementById('hero-venue');
-  if (elVenue) elVenue.textContent = `📍 ${next.luogo || 'Centro Sportivo San Rocco'}`;
-
-  const isTbd = Boolean(next.da_definire);
-  const statusEl = document.getElementById('hero-status');
-  const elDate = document.getElementById('hero-date');
-  if (isTbd) {
-    if (elDate) elDate.textContent = '📅 Data in attesa di conferma';
-    if (statusEl) {
-      statusEl.className = 'status-tbd';
-      statusEl.textContent = '⏳ Da definire';
-    }
-  } else {
-    if (elDate) elDate.textContent = `📅 ${next.data_ora ? next.data_ora.substring(0, 16) : 'Ven 02 Ottobre 21:00'}`;
-    if (statusEl) {
-      statusEl.className = 'status-confirmed';
-      statusEl.textContent = 'Confermata';
-    }
-  }
-}
-
-function renderMatches() {
-  const grid = document.getElementById('matches-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-
-  state.partite.forEach(p => {
-    const isTbd = Boolean(p.da_definire);
-    const isPlayed = p.stato === 'giocata' && p.gol_fatti !== null;
-
-    const card = document.createElement('div');
-    card.className = `match-card ${isTbd ? 'is-tbd' : ''} ${isPlayed ? 'is-played' : ''}`;
-
-    let statusHtml = '';
-    if (isPlayed) {
-      statusHtml = '<span class="status-confirmed">Giocata</span>';
-    } else if (isTbd) {
-      statusHtml = '<span class="status-tbd">⏳ Da definire</span>';
-    } else {
-      statusHtml = '<span class="status-confirmed">Confermata</span>';
-    }
-
-    card.innerHTML = `
-      <div>
-        <div class="match-card-top">
-          <span class="match-giornata">${p.giornata}</span>
-          ${statusHtml}
-        </div>
-
-        <div class="match-teams">
-          <div class="team-line">
-            <span>CORVO TEAM</span>
-            <span class="score">${isPlayed ? p.gol_fatti : '-'}</span>
-          </div>
-          <div class="team-line">
-            <span>${p.avversario}</span>
-            <span class="score">${isPlayed ? p.gol_subiti : '-'}</span>
-          </div>
-        </div>
-
-        <div class="match-details">
-          <span>📅 ${isTbd ? 'Data da concordare' : (p.data_ora ? p.data_ora.substring(0, 16) : 'Orario da definire')}</span>
-          <span>📍 ${p.luogo || 'Centro Sportivo San Rocco'}</span>
-          ${p.note ? `<p class="text-xs text-muted" style="margin-top:4px;">“${p.note}”</p>` : ''}
-        </div>
-      </div>
-
-      <div class="match-actions">
-        ${state.isAdmin ? `
-          <button class="btn btn-sm btn-outline" onclick="openEditMatchModal(${p.id})">✏️ Modifica Orario</button>
-          <button class="btn btn-sm btn-yellow" onclick="openResultModal(${p.id})">🏆 Risultato</button>
-        ` : `
-          <span class="text-xs text-muted">Sola visualizzazione</span>
-        `}
-      </div>
-    `;
-
-    grid.appendChild(card);
-  });
-
-  const countEl = document.getElementById('stat-count-matches');
-  if (countEl) countEl.textContent = state.partite.length;
-}
-
-// =============================================================================
-// SCHEMI TATTICI CALCIO A 5 & RENDERING ROSA TITOLARE
-// =============================================================================
-function renderModulesBar() {
-  const bar = document.getElementById('modules-selector-bar');
-  if (!bar) return;
-  bar.innerHTML = '';
-
-  Object.values(SCHEMI_CALCETTO).forEach(mod => {
-    const isAct = state.activeModulo === mod.id;
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = `module-btn ${isAct ? 'active' : ''}`;
-    btn.onclick = () => selectModulo(mod.id);
-    btn.innerHTML = `
-      <span class="module-btn-title">${mod.nome}</span>
-      <span class="module-btn-sub">${mod.soprannome}</span>
-    `;
-    bar.appendChild(btn);
-  });
-
-  // Aggiorna box descrittivo
-  const curr = SCHEMI_CALCETTO[state.activeModulo] || SCHEMI_CALCETTO['1-2-1'];
-  const nameEl = document.getElementById('module-info-name');
-  const descEl = document.getElementById('module-info-desc');
-  const tagEl = document.getElementById('module-info-tag');
-  const waterEl = document.getElementById('pitch-watermark');
-
-  if (nameEl) nameEl.textContent = `${curr.nome} (${curr.soprannome}):`;
-  if (descEl) descEl.textContent = `${curr.descrizione} 💡 ${curr.adattoA}`;
-  if (tagEl) tagEl.textContent = curr.tag;
-  if (waterEl) waterEl.textContent = curr.id;
-}
-
-function selectModulo(modId) {
-  state.activeModulo = modId;
-  state.formazione.modulo = modId;
-  renderModulesBar();
-  renderLineup();
-}
-
-function renderLineup() {
-  const f = state.formazione;
-  const mod = SCHEMI_CALCETTO[state.activeModulo] || SCHEMI_CALCETTO['1-2-1'];
-  const match = state.partite.find(p => p.id === f.matchId) || state.partite[0];
-
-  // Info header
-  if (match) {
-    const mTitle = document.getElementById('lineup-match-title');
-    if (mTitle) mTitle.textContent = `${match.giornata}: CORVO TEAM vs ${match.avversario}`;
-  }
-  const rEl = document.getElementById('lineup-ritrovo');
-  if (rEl) rEl.textContent = f.ritrovo || 'Ore 20:30 agli spogliatoi (Maglia Gialla)';
-
-  const nEl = document.getElementById('lineup-note');
-  if (nEl) nEl.textContent = `"${f.note || 'Massima concentrazione per la partita!'}"`;
-
-  const cap = state.giocatori.find(g => g.id === f.capitanoId);
-  const capEl = document.getElementById('lineup-capitano');
-  if (capEl) capEl.textContent = cap ? `${cap.nome} ${cap.cognome} (#${cap.numero_maglia})` : 'Luca Belotti (#2)';
-
-  const uEl = document.getElementById('lineup-updated');
-  if (uEl && f.updatedAt) {
-    uEl.textContent = `Formazione aggiornata il ${f.updatedAt}`;
-  }
-
-  // Risoluzione dei 5 giocatori titolari
-  const gk = state.giocatori.find(g => g.id === f.gkId) || state.giocatori[0];
-  const p1 = state.giocatori.find(g => g.id === (f.p1Id || f.defId)) || state.giocatori[1];
-  const p2 = state.giocatori.find(g => g.id === (f.p2Id || f.lat1Id)) || state.giocatori[5];
-  const p3 = state.giocatori.find(g => g.id === (f.p3Id || f.lat2Id)) || state.giocatori[7];
-  const p4 = state.giocatori.find(g => g.id === (f.p4Id || f.fwdId)) || state.giocatori[6];
-
-  renderPlayerMarker('marker-gk', gk, mod.posizioni.gk, true, f.capitanoId);
-  renderPlayerMarker('marker-p1', p1, mod.posizioni.p1, false, f.capitanoId);
-  renderPlayerMarker('marker-p2', p2, mod.posizioni.p2, false, f.capitanoId);
-  renderPlayerMarker('marker-p3', p3, mod.posizioni.p3, false, f.capitanoId);
-  renderPlayerMarker('marker-p4', p4, mod.posizioni.p4, false, f.capitanoId);
-
-  // Panchina (i restanti 4 atleti)
-  const starters = new Set([gk?.id, p1?.id, p2?.id, p3?.id, p4?.id].filter(Boolean));
-  const bench = state.giocatori.filter(g => !starters.has(g.id));
-
-  const benchEl = document.getElementById('lineup-bench-list');
-  if (benchEl) {
-    benchEl.innerHTML = '';
-    bench.forEach(g => {
-      const item = document.createElement('div');
-      item.className = 'bench-item';
-      item.style.cursor = 'pointer';
-      item.title = `Clicca per aprire la scheda di ${g.nome} ${g.cognome}`;
-      item.onclick = () => openPlayerProfile(g.id);
-      item.innerHTML = `
-        <div class="bench-item-info">
-          <span class="bench-num">#${g.numero_maglia}</span>
-          <div>
-            <strong style="color:#fff;">${g.nome} ${g.cognome}</strong>
-            <div class="text-muted" style="font-size:0.7rem;">${g.ruolo}</div>
-          </div>
-        </div>
-        <span class="badge" style="background:#1e293b; color:#facc15; font-size:0.7rem;">Scheda ➔</span>
-      `;
-      benchEl.appendChild(item);
-    });
-  }
-}
-
-function renderPlayerMarker(elementId, player, coords, isGk, capId) {
-  const el = document.getElementById(elementId);
-  if (!el || !player) return;
-
-  // Coordinate dinamiche per far muovere il marcatore sul campo in base al modulo
-  el.style.left = coords.left;
-  el.style.top = coords.top;
-  el.style.cursor = 'pointer';
-  el.title = `Clicca per aprire la scheda di ${player.nome} ${player.cognome}`;
-  el.onclick = () => openPlayerProfile(player.id);
-
-  const isCap = player.id === capId;
-  el.innerHTML = `
-    <div class="player-marker-shirt ${isGk ? 'gk-shirt' : ''}" style="${player.foto_url ? `background-image:url('${player.foto_url}'); background-size:cover; background-position:center; border-color:var(--primary-yellow);` : ''}">
-      ${isCap ? '<span class="cap-badge">CAP</span>' : ''}
-      <span style="${player.foto_url ? 'background:rgba(2,6,23,0.85); padding:1px 4px; border-radius:6px; font-size:0.75rem;' : ''}">#${player.numero_maglia}</span>
-      <span class="player-marker-role" style="${player.foto_url ? 'background:rgba(2,6,23,0.85); padding:0px 3px; border-radius:4px;' : ''}">${coords.label}</span>
-    </div>
-    <div class="player-marker-name">${player.nome} ${player.cognome}</div>
-  `;
-}
-
-// Modale Modifica Formazione Titolare & Schema (Admin)
-function openEditLineupModal() {
-  const f = state.formazione;
-
-  // Match select
-  const matchSelect = document.getElementById('lineup-select-match');
-  if (matchSelect) {
-    matchSelect.innerHTML = '';
-    state.partite.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = `${p.giornata}: vs ${p.avversario} (${p.data_ora.split(' ')[0]})`;
-      if (p.id === f.matchId) opt.selected = true;
-      matchSelect.appendChild(opt);
-    });
-  }
-
-  // Modulo select
-  const modSelect = document.getElementById('lineup-select-modulo');
-  if (modSelect) {
-    modSelect.value = state.activeModulo || f.modulo || '1-2-1';
-    onModalModuloChange(modSelect.value);
-  }
-
-  // Player selects helper
-  const fillSelect = (selectId, selectedId) => {
-    const s = document.getElementById(selectId);
-    if (!s) return;
-    s.innerHTML = '';
-    state.giocatori.forEach(g => {
-      const opt = document.createElement('option');
-      opt.value = g.id;
-      opt.textContent = `#${g.numero_maglia} ${g.nome} ${g.cognome} (${g.ruolo})`;
-      if (g.id === selectedId) opt.selected = true;
-      s.appendChild(opt);
-    });
-  };
-
-  fillSelect('lineup-select-gk', f.gkId);
-  fillSelect('lineup-select-p1', f.p1Id || f.defId);
-  fillSelect('lineup-select-p2', f.p2Id || f.lat1Id);
-  fillSelect('lineup-select-p3', f.p3Id || f.lat2Id);
-  fillSelect('lineup-select-p4', f.p4Id || f.fwdId);
-  fillSelect('lineup-select-cap', f.capitanoId);
-
-  const ritr = document.getElementById('lineup-input-ritrovo');
-  if (ritr) ritr.value = f.ritrovo || '';
-  
-  const note = document.getElementById('lineup-input-note');
-  if (note) note.value = f.note || '';
-
-  openModal('modal-lineup');
-}
-
-function onModalModuloChange(modId) {
-  const schema = SCHEMI_CALCETTO[modId] || SCHEMI_CALCETTO['1-2-1'];
-  const lGk = document.getElementById('label-gk');
-  const lP1 = document.getElementById('label-p1');
-  const lP2 = document.getElementById('label-p2');
-  const lP3 = document.getElementById('label-p3');
-  const lP4 = document.getElementById('label-p4');
-
-  if (lGk) lGk.textContent = `🧤 ${schema.posizioni.gk.label} (Portiere):`;
-  if (lP1) lP1.textContent = `🛡️ ${schema.posizioni.p1.label}:`;
-  if (lP2) lP2.textContent = `⚡ ${schema.posizioni.p2.label}:`;
-  if (lP3) lP3.textContent = `⚡ ${schema.posizioni.p3.label}:`;
-  if (lP4) lP4.textContent = `🎯 ${schema.posizioni.p4.label}:`;
-}
-
-function handleSaveLineup(e) {
-  if (e && e.preventDefault) e.preventDefault();
-  const matchId = parseInt(document.getElementById('lineup-select-match').value, 10);
-  const modulo = document.getElementById('lineup-select-modulo').value;
-  const gkId = parseInt(document.getElementById('lineup-select-gk').value, 10);
-  const p1Id = parseInt(document.getElementById('lineup-select-p1').value, 10);
-  const p2Id = parseInt(document.getElementById('lineup-select-p2').value, 10);
-  const p3Id = parseInt(document.getElementById('lineup-select-p3').value, 10);
-  const p4Id = parseInt(document.getElementById('lineup-select-p4').value, 10);
-  const capitanoId = parseInt(document.getElementById('lineup-select-cap').value, 10);
-  const ritrovo = document.getElementById('lineup-input-ritrovo').value.trim();
-  const note = document.getElementById('lineup-input-note').value.trim();
-
-  const nowStr = new Date().toLocaleDateString('it-IT') + ' ore ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-
-  state.activeModulo = modulo;
-  state.formazione = {
-    matchId,
-    modulo,
-    gkId,
-    p1Id,
-    p2Id,
-    p3Id,
-    p4Id,
-    capitanoId,
-    ritrovo,
-    note,
-    updatedAt: nowStr
-  };
-
-  // Salva localmente
-  try {
-    localStorage.setItem('corvo_local_lineup', JSON.stringify(state.formazione));
-  } catch (err) {}
-
-  // Sincronizza su Firebase Firestore Cloud
-  if (db) {
-    try {
-      db.collection('campionato').doc('formazione_data').set({
-        ...state.formazione,
-        updatedAtLocal: nowStr
-      }, { merge: true }).then(() => {
-        console.log('Formazione sincronizzata con successo su Google Firebase Cloud!');
-      }).catch(err => {
-        console.warn('Avviso sincronizzazione cloud:', err.message);
-      });
-    } catch (e) {}
-  }
-
-  closeModal('modal-lineup');
-  renderModulesBar();
-  renderLineup();
-  alert('Formazione Ufficiale e schema ' + modulo + ' salvati con successo per tutta la squadra!');
-}
-
-// =============================================================================
-// RENDERING ROSA GIOCATORI & SCHEDA PROFILO DEDICATA
-// =============================================================================
-// Gestione fallback robusto foto giocatori (supporta spazi, formati e percorsi)
-function handlePlayerPhotoError(img, url) {
-  if (!img) return;
-  const tried = parseInt(img.dataset.tried || '0', 10);
-  img.dataset.tried = String(tried + 1);
-
-  if (tried === 0) {
-    if (url && url.includes(' ')) {
-      img.src = encodeURI(url);
-      return;
-    }
-    if (url && url.toLowerCase().includes('belotti')) {
-      img.src = 'belotti.jpg';
-      return;
-    }
-    if (url && url.toLowerCase().includes('rota')) {
-      img.src = 'rota_nicolo.jpg';
-      return;
-    }
-  } else if (tried === 1) {
-    if (url && url.toLowerCase().includes('belotti')) {
-      img.src = 'belotti.jpeg';
-      return;
-    }
-    if (url && url.toLowerCase().includes('rota')) {
-      img.src = 'rota nicolo.jpg';
-      return;
-    }
-  }
-
-  // Se l'immagine non è presente nel filesystem o fallisce, mostra il numero di maglia elegante
-  img.style.display = 'none';
-  if (img.parentElement) {
-    const fb = img.parentElement.querySelector('.photo-fallback');
-    if (fb) fb.style.display = 'flex';
-  }
-}
-window.handlePlayerPhotoError = handlePlayerPhotoError;
-
-let currentInspectedPlayerId = 1;
-
-function renderPlayers() {
-  const grid = document.getElementById('players-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-
-  const filtered = state.selectedRoleFilter === 'Tutti'
-    ? state.giocatori
-    : state.giocatori.filter(g => g.ruolo === state.selectedRoleFilter);
-
-  filtered.forEach(g => {
-    const roleCls = `role-${g.ruolo.toLowerCase()}`;
-    const card = document.createElement('div');
-    card.className = 'player-card';
-    card.style.cursor = 'pointer';
-    card.title = `Clicca per aprire la scheda personale di ${g.nome} ${g.cognome}`;
-    card.onclick = () => openPlayerProfile(g.id);
-
-    const isCap = g.id === (state.formazione.capitanoId || 2);
-
-    card.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <div style="display:flex; align-items:center; gap:10px;">
-          ${g.foto_url ? `
-            <div style="width:48px; height:48px; border-radius:14px; overflow:hidden; border:2px solid var(--primary-yellow); background:#020617; flex-shrink:0; box-shadow:0 4px 10px rgba(0,0,0,0.5); position:relative; display:flex; align-items:center; justify-content:center;">
-              <img src="${g.foto_url}" alt="${g.nome}" style="width:100%; height:100%; object-fit:cover;" onerror="handlePlayerPhotoError(this, '${g.foto_url}')">
-              <span class="photo-fallback" style="display:none; font-size:1.1rem; font-weight:900; color:var(--primary-yellow); font-family:monospace;">#${g.numero_maglia}</span>
-            </div>
-          ` : `
-            <span class="player-number">#${g.numero_maglia}</span>
-          `}
-          <div>
-            ${g.foto_url ? `<span class="player-number" style="font-size:1.1rem; line-height:1; display:block;">#${g.numero_maglia}</span>` : ''}
-            <span class="player-role-badge ${roleCls}" style="${g.foto_url ? 'margin-top:2px; display:inline-block;' : ''}">${g.ruolo}</span>
-          </div>
-        </div>
-        ${isCap ? '<span class="badge" style="background:#facc15; color:#020617; font-weight:900; font-size:0.65rem;">👑 CAP</span>' : ''}
-      </div>
-      <h4 class="player-name" style="margin-top:8px;">${g.nome} ${g.cognome}</h4>
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px; font-size:0.75rem; border-top:1px solid #1e293b; padding-top:8px;">
-        <span class="text-muted" style="font-size:0.7rem;">${g.foto_url ? '📷 Foto Ufficiale' : '📸 In attesa foto'}</span>
-        <span class="text-yellow" style="font-weight:bold; font-size:0.75rem;">Apri Scheda ➔</span>
-      </div>
-    `;
-
-    grid.appendChild(card);
-  });
-
-  const pCount = document.getElementById('stat-count-players');
-  if (pCount) pCount.textContent = state.giocatori.length;
-}
-
-// Apertura Scheda Profilo Giocatore
-function openPlayerProfile(id) {
-  const p = state.giocatori.find(g => g.id === id);
-  if (!p) return;
-
-  currentInspectedPlayerId = p.id;
-
-  // Nome e Cognome
-  const nameEl = document.getElementById('profile-player-name');
-  if (nameEl) nameEl.innerHTML = `${p.nome} <span class="text-yellow">${p.cognome}</span>`;
-
-  // Statistiche
-  const roleStat = document.getElementById('profile-stat-role');
-  if (roleStat) roleStat.textContent = p.ruolo;
-
-  const numStat = document.getElementById('profile-stat-num');
-  if (numStat) numStat.textContent = '#' + p.numero_maglia;
-
-  const footStat = document.getElementById('profile-stat-foot');
-  if (footStat) footStat.textContent = p.piede_forte || 'Destro';
-
-  const roleBadge = document.getElementById('profile-badge-role');
-  if (roleBadge) roleBadge.textContent = p.ruolo.toUpperCase();
-
-  const isCap = p.id === (state.formazione.capitanoId || 2);
-  const capBadge = document.getElementById('profile-badge-cap');
-  if (capBadge) capBadge.style.display = isCap ? 'inline-block' : 'none';
-
-  // Descrizione Tecnica
-  const descEl = document.getElementById('profile-player-desc');
-  if (descEl) {
-    let desc = p.caratteristiche;
-    if (!desc) {
-      if (p.ruolo === 'Portiere') desc = 'Reattivo tra i pali, riflessi fulminei nelle conclusioni ravvicinate e guida vocale costante della difesa durante i piazzati.';
-      else if (p.ruolo === 'Difensore') desc = 'Senso della posizione impeccabile, roccioso nell\'uno contro uno, contrasti puliti e ottima visione per impostare l\'azione dal basso.';
-      else if (p.ruolo === 'Centrocampista') desc = 'Dinamismo instancabile lungo tutta la fascia, abile nel dribbling stretto e tempi perfetti di inserimento a rete.';
-      else desc = 'Senso del gol letale, fa salire la squadra proteggendo palla di spalle e calcia con potenza da ogni posizione.';
-    }
-    descEl.textContent = desc;
-  }
-
-  // Foto o avatar numerato
-  const photoBox = document.getElementById('profile-avatar-box');
-  if (photoBox) {
-    if (p.foto_url) {
-      photoBox.innerHTML = `
-        <img src="${p.foto_url}" alt="${p.nome} ${p.cognome}" class="profile-avatar-img" onerror="handlePlayerPhotoError(this, '${p.foto_url}')">
-        <div class="photo-fallback" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%;">
-          <span style="font-size:2.2rem; font-weight:900; color:var(--primary-yellow); font-family:monospace; line-height:1;">#${p.numero_maglia}</span>
-          <span style="font-size:0.55rem; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-top:4px;">Foto in arrivo</span>
-        </div>
-      `;
-    } else {
-      photoBox.innerHTML = `
-        <span style="font-size:2.2rem; font-weight:900; color:var(--primary-yellow); font-family:monospace; line-height:1;">#${p.numero_maglia}</span>
-        <span style="font-size:0.55rem; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-top:4px;">Foto in arrivo</span>
-      `;
-    }
-  }
-
-  const photoInput = document.getElementById('profile-input-photo-url');
-  if (photoInput) photoInput.value = p.foto_url || '';
-
-  openModal('modal-player-profile');
-}
-
-// Salvataggio Foto Giocatore (Admin o quando Luca le carica)
-function savePlayerPhotoUrl() {
-  if (!currentInspectedPlayerId) return;
-  const input = document.getElementById('profile-input-photo-url');
-  const url = input ? input.value.trim() : '';
-
-  const idx = state.giocatori.findIndex(g => g.id === currentInspectedPlayerId);
-  if (idx !== -1) {
-    state.giocatori[idx].foto_url = url;
-    try {
-      localStorage.setItem('corvo_local_players', JSON.stringify(state.giocatori));
-    } catch (e) {}
-
-    // Sincronizza su Firebase Cloud se connesso
-    if (db) {
-      try {
-        db.collection('campionato').doc('corvoteam_data').set({
-          giocatori: state.giocatori
-        }, { merge: true });
-      } catch (e) {}
-    }
-
-    openPlayerProfile(currentInspectedPlayerId);
-    renderPlayers();
-    alert('Foto profilo aggiornata con successo!');
-  }
-}
-
-function filterSquad(role) {
-  state.selectedRoleFilter = role;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent.includes(role));
-  });
-  renderPlayers();
-}
-
-// =============================================================================
-// MODIFICA GARA E ORARIO (ADMIN)
-// =============================================================================
-function openEditNextMatch() {
-  const next = state.partite.find(p => p.stato === 'programmata' || p.stato === 'da_definire') || state.partite[0];
-  if (next) openEditMatchModal(next.id);
-}
-
-function openEditMatchModal(id) {
-  const p = state.partite.find(x => x.id === id);
-  if (!p) return;
-
-  document.getElementById('edit-match-id').value = p.id;
-  document.getElementById('edit-match-giornata').value = p.giornata || '';
-  document.getElementById('edit-match-avversario').value = p.avversario || '';
-  document.getElementById('edit-match-luogo').value = p.luogo || 'Centro Sportivo San Rocco';
-  document.getElementById('edit-match-da-definire').checked = Boolean(p.da_definire);
-  document.getElementById('edit-match-note').value = p.note || '';
-
-  const dateParts = (p.data_ora || '2026-10-02 21:00:00').split(' ');
-  document.getElementById('edit-match-data').value = dateParts[0] || '2026-10-02';
-  document.getElementById('edit-match-ora').value = (dateParts[1] || '21:00').substring(0, 5);
-
-  openModal('modal-edit-match');
-}
-
-function handleSaveMatchEdit(e) {
-  if (e && e.preventDefault) e.preventDefault();
-  const id = parseInt(document.getElementById('edit-match-id').value, 10);
-  const data = document.getElementById('edit-match-data').value;
-  const ora = document.getElementById('edit-match-ora').value;
-  const avversario = document.getElementById('edit-match-avversario').value.trim();
-  const giornata = document.getElementById('edit-match-giornata').value.trim();
-  const luogo = document.getElementById('edit-match-luogo').value.trim();
-  const daDefinire = document.getElementById('edit-match-da-definire').checked;
-  const note = document.getElementById('edit-match-note').value.trim();
-
-  const idx = state.partite.findIndex(p => p.id === id);
-  if (idx !== -1) {
-    state.partite[idx] = {
-      ...state.partite[idx],
-      giornata,
-      avversario,
-      data_ora: `${data} ${ora}:00`,
-      luogo,
-      da_definire: daDefinire,
-      note
     };
 
-    saveLocalMatches();
-    closeModal('modal-edit-match');
-    renderHeroMatch();
-    renderMatches();
-    renderLineup();
-    alert(`Partita vs ${avversario} aggiornata con successo!`);
-  }
-}
+    // Cambio Modulo immediato e fluido
+    function selectModulo(modId) {
+      var mod = SCHEMI_CALCETTO[modId];
+      if (!mod) return;
 
-// =============================================================================
-// INSERIMENTO RISULTATO (ADMIN)
-// =============================================================================
-function openResultModal(id) {
-  const p = state.partite.find(x => x.id === id);
-  if (!p) return;
-
-  document.getElementById('result-match-id').value = p.id;
-  document.getElementById('result-match-title').textContent = `CORVO TEAM vs ${p.avversario} (${p.giornata})`;
-  document.getElementById('result-gol-fatti').value = p.gol_fatti !== null ? p.gol_fatti : 5;
-  document.getElementById('result-gol-subiti').value = p.gol_subiti !== null ? p.gol_subiti : 2;
-  state.currentScorers = [];
-  renderScorersList();
-
-  openModal('modal-result');
-}
-
-function populateScorerSelect() {
-  const select = document.getElementById('result-marcatore-select');
-  if (!select) return;
-  select.innerHTML = '';
-  state.giocatori.forEach(g => {
-    const opt = document.createElement('option');
-    opt.value = g.id;
-    opt.textContent = `#${g.numero_maglia} ${g.nome} ${g.cognome} (${g.ruolo})`;
-    select.appendChild(opt);
-  });
-}
-
-function addScorerRow() {
-  const select = document.getElementById('result-marcatore-select');
-  const idG = parseInt(select.value, 10);
-  const atleta = state.giocatori.find(g => g.id === idG);
-  if (!atleta) return;
-
-  const existing = state.currentScorers.find(s => s.id === idG);
-  if (existing) {
-    existing.gol += 1;
-  } else {
-    state.currentScorers.push({ id: idG, nome: `${atleta.nome} ${atleta.cognome}`, gol: 1 });
-  }
-
-  renderScorersList();
-}
-
-function renderScorersList() {
-  const wrap = document.getElementById('scorers-list');
-  if (!wrap) return;
-  wrap.innerHTML = '';
-
-  state.currentScorers.forEach((s, idx) => {
-    const row = document.createElement('div');
-    row.style = 'display:flex; justify-content:space-between; align-items:center; background:#020617; padding:6px 12px; border-radius:8px; margin-top:6px; font-size:0.8rem;';
-    row.innerHTML = `
-      <span>⚽ ${s.nome}</span>
-      <div>
-        <strong style="color:var(--primary-yellow);">${s.gol} gol</strong>
-        <button type="button" onclick="removeScorer(${idx})" style="margin-left:8px; background:none; border:none; color:#ef4444; cursor:pointer;">✕</button>
-      </div>
-    `;
-    wrap.appendChild(row);
-  });
-}
-
-function removeScorer(idx) {
-  state.currentScorers.splice(idx, 1);
-  renderScorersList();
-}
-
-function handleSaveResult(e) {
-  if (e && e.preventDefault) e.preventDefault();
-  const id = parseInt(document.getElementById('result-match-id').value, 10);
-  const gf = parseInt(document.getElementById('result-gol-fatti').value, 10);
-  const gs = parseInt(document.getElementById('result-gol-subiti').value, 10);
-
-  const idx = state.partite.findIndex(p => p.id === id);
-  if (idx !== -1) {
-    state.partite[idx].gol_fatti = gf;
-    state.partite[idx].gol_subiti = gs;
-    state.partite[idx].stato = 'giocata';
-
-    saveLocalMatches();
-    closeModal('modal-result');
-    renderHeroMatch();
-    renderMatches();
-    alert(`Risultato registrato: CORVO TEAM ${gf} - ${gs} ${state.partite[idx].avversario}!`);
-  }
-}
-
-// Utility Salvataggio Partite
-function saveLocalMatchesOnly() {
-  try {
-    localStorage.setItem('corvo_local_matches', JSON.stringify(state.partite));
-  } catch (e) {}
-}
-
-function saveLocalMatches() {
-  saveLocalMatchesOnly();
-
-  // Sincronizza su Firebase Firestore Cloud
-  if (db) {
-    try {
-      db.collection('campionato').doc('corvoteam_data').set({
-        partite: state.partite,
-        giocatori: state.giocatori,
-        updatedAtLocal: new Date().toISOString()
-      }, { merge: true }).then(() => {
-        console.log('Salvataggio su Google Firebase Cloud completato!');
-      }).catch(err => {
-        console.warn('Avviso Firebase save:', err.message);
+      // Aggiorna bottoni attivi
+      var btns = document.querySelectorAll('.module-btn');
+      btns.forEach(function(b) {
+        if (b.getAttribute('data-mod') === modId) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
       });
-    } catch (e) {}
-  }
-}
 
-// Gestione Modali
-function openModal(id) {
-  const m = document.getElementById(id);
-  if (m) {
-    m.classList.add('show', 'active');
-    m.style.setProperty('display', 'flex', 'important');
-    m.style.setProperty('z-index', '999999', 'important');
-  }
-}
+      // Aggiorna testi modulo
+      var nameEl = document.getElementById('module-info-name');
+      var descEl = document.getElementById('module-info-desc');
+      var tagEl = document.getElementById('module-info-tag');
+      var waterEl = document.getElementById('pitch-watermark');
+      if (nameEl) nameEl.textContent = mod.nome + ' (' + mod.soprannome + '):';
+      if (descEl) descEl.textContent = mod.descrizione + ' 💡 ' + mod.adattoA;
+      if (tagEl) tagEl.textContent = mod.tag;
+      if (waterEl) waterEl.textContent = mod.id;
 
-function closeModal(id) {
-  const m = document.getElementById(id);
-  if (m) {
-    m.classList.remove('show', 'active');
-    m.style.setProperty('display', 'none', 'important');
-  }
-}
+      // Sposta i 5 marcatori con transizione fluida
+      var mgk = document.getElementById('marker-gk');
+      var mp1 = document.getElementById('marker-p1');
+      var mp2 = document.getElementById('marker-p2');
+      var mp3 = document.getElementById('marker-p3');
+      var mp4 = document.getElementById('marker-p4');
 
-// Esporta tutte le funzioni globali su window per garantire massima affidabilità
-window.toggleAdminLogin = toggleAdminLogin;
-window.openAdminLoginModal = openAdminLoginModal;
-window.closeAdminLoginModal = closeAdminLoginModal;
-window.openModal = openModal;
-window.closeModal = closeModal;
-window.openEditNextMatch = openEditNextMatch;
-window.openEditMatchModal = openEditMatchModal;
-window.openResultModal = openResultModal;
-window.openEditLineupModal = openEditLineupModal;
-window.onModalModuloChange = onModalModuloChange;
-window.handleLoginSubmit = handleLoginSubmit;
-window.handleSaveLineup = handleSaveLineup;
-window.handleSaveMatchEdit = handleSaveMatchEdit;
-window.handleSaveResult = handleSaveResult;
-window.filterSquad = filterSquad;
-window.selectModulo = selectModulo;
-window.openPlayerProfile = openPlayerProfile;
-window.savePlayerPhotoUrl = savePlayerPhotoUrl;
+      if (mgk) { mgk.style.left = mod.posizioni.gk.left; mgk.style.top = mod.posizioni.gk.top; updateRoleLabel(mgk, mod.posizioni.gk.label); }
+      if (mp1) { mp1.style.left = mod.posizioni.p1.left; mp1.style.top = mod.posizioni.p1.top; updateRoleLabel(mp1, mod.posizioni.p1.label); }
+      if (mp2) { mp2.style.left = mod.posizioni.p2.left; mp2.style.top = mod.posizioni.p2.top; updateRoleLabel(mp2, mod.posizioni.p2.label); }
+      if (mp3) { mp3.style.left = mod.posizioni.p3.left; mp3.style.top = mod.posizioni.p3.top; updateRoleLabel(mp3, mod.posizioni.p3.label); }
+      if (mp4) { mp4.style.left = mod.posizioni.p4.left; mp4.style.top = mod.posizioni.p4.top; updateRoleLabel(mp4, mod.posizioni.p4.label); }
 
-// Chiudi cliccando fuori dal contenuto
-window.addEventListener('click', (e) => {
-  if (e.target && e.target.classList && e.target.classList.contains('modal')) {
-    e.target.classList.remove('show', 'active');
-    e.target.style.setProperty('display', 'none', 'important');
-  }
-});
+      if (window.state) {
+        window.state.activeModulo = modId;
+        window.state.formazione.modulo = modId;
+      }
+    }
+
+    function updateRoleLabel(markerEl, label) {
+      var rEl = markerEl.querySelector('.player-marker-role');
+      if (rEl) rEl.textContent = label;
+    }
+
+    // Gestione Login Amministratore
+    function openAdminLoginModal() {
+      var m = document.getElementById('modal-login');
+      if (m) {
+        m.style.setProperty('display', 'flex', 'important');
+        m.style.setProperty('z-index', '999999', 'important');
+        m.classList.add('show', 'active');
+        var userInp = document.getElementById('login-user');
+        if (userInp) userInp.focus();
+      } else {
+        var p = prompt('Accesso Amministratore CORVO TEAM:\nInserisci la password di Luca Belotti:');
+        if (p && p.trim() === 'corvo2026') {
+          localStorage.setItem('corvo_local_admin', 'true');
+          alert('Accesso Amministratore confermato! Benvenuto Luca.');
+          location.reload();
+        } else if (p) {
+          alert('Password non valida.');
+        }
+      }
+    }
+
+    function toggleAdminLogin() {
+      if (localStorage.getItem('corvo_local_admin') === 'true') {
+        if (confirm('Sei attualmente connesso come Amministratore (Luca Belotti).\nVuoi disconnetterti per tornare alla sola visualizzazione?')) {
+          localStorage.removeItem('corvo_local_admin');
+          location.reload();
+        }
+      } else {
+        openAdminLoginModal();
+      }
+    }
+
+    function closeAdminLoginModal() {
+      var m = document.getElementById('modal-login');
+      if (m) {
+        m.style.setProperty('display', 'none', 'important');
+        m.classList.remove('show', 'active');
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- =========================================================================
+       HEADER & TOP NAVBAR
+       ========================================================================= -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <!-- Stemma Ufficiale con Sfondo Bianco -->
+        <div class="logo-box">
+          <img src="corvo-team-logo.svg" alt="CORVO TEAM N29" class="brand-logo">
+        </div>
+        <div class="brand-text">
+          <h1>CORVO <span class="text-yellow">TEAM N29</span></h1>
+          <p class="subtitle">Portale Ufficiale Calcetto 5v5 • Giallo &amp; Blu</p>
+        </div>
+      </div>
+
+      <!-- Quick Nav Links Desktop & Tablet -->
+      <nav class="nav-links">
+        <a href="#formazione" class="nav-link">Rosa Titolare &amp; Moduli</a>
+        <a href="#calendario" class="nav-link">Calendario</a>
+        <a href="#rosa" class="nav-link">La Rosa</a>
+      </nav>
+
+      <div class="nav-actions">
+        <span id="role-badge" class="badge badge-guest">👤 Visitatore</span>
+        <button id="btn-login-toggle" type="button" class="btn btn-yellow" onclick="toggleAdminLogin()">Accedi come Admin</button>
+      </div>
+    </div>
+
+    <!-- Mobile Secondary Tab Bar per Smartphone & Tablet -->
+    <div class="mobile-nav-bar">
+      <div class="container mobile-nav-container">
+        <a href="#formazione" class="mobile-nav-tab active">
+          <span>⚽</span>
+          <span>Titolari &amp; Moduli</span>
+        </a>
+        <a href="#calendario" class="mobile-nav-tab">
+          <span>📅</span>
+          <span>Calendario</span>
+        </a>
+        <a href="#rosa" class="mobile-nav-tab">
+          <span>👥</span>
+          <span>La Rosa (9)</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       HERO: TABELLONE PROSSIMO MATCH & STEMMA
+       ========================================================================= -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="pill-match">
+          <span class="pulse-dot"></span>
+          <span id="hero-giornata">1ª Giornata • Campionato 2026/2027</span>
+        </div>
+
+        <h2 class="hero-title">PROSSIMA <span class="text-yellow">PARTITA</span></h2>
+        
+        <!-- Tabellone Digitale -->
+        <div class="scoreboard-box">
+          <div class="teams-matchup">
+            <div class="team-col team-home">
+              <div class="logo-box-sm">
+                <img src="corvo-team-logo.svg" alt="Corvo Team">
+              </div>
+              <span class="team-name">CORVO TEAM</span>
+              <span class="team-tag">CASA</span>
+            </div>
+
+            <div class="vs-col">VS</div>
+
+            <div class="team-col team-away">
+              <div class="away-badge" id="hero-away-abbr">CA</div>
+              <span class="team-name" id="hero-away-name">Cortenova All Stars</span>
+              <span class="team-tag">OSPITE</span>
+            </div>
+          </div>
+
+          <div class="match-info-strip">
+            <span id="hero-date">📅 Ven 02 Ottobre 2026 • 21:00</span>
+            <span id="hero-venue">📍 Centro Sportivo San Rocco</span>
+            <span id="hero-status" class="status-confirmed">Confermata</span>
+          </div>
+        </div>
+
+        <div class="hero-buttons">
+          <a href="#formazione" class="btn btn-yellow">Rosa Titolare &amp; Schemi (5v5)</a>
+          <a href="#calendario" class="btn btn-outline">Consulta Calendario</a>
+          <a href="#rosa" class="btn btn-outline">La Rosa Ufficiale</a>
+          <button type="button" class="btn btn-outline guest-only" onclick="toggleAdminLogin()">👑 Accedi come Admin</button>
+          <button id="btn-hero-admin-edit" class="btn btn-blue admin-only" style="display:none;" onclick="openEditNextMatch()">Modifica Orario Gara</button>
+          <button id="btn-hero-admin-result" class="btn btn-yellow admin-only" style="display:none;" onclick="openResultModal(1)">Inserisci Risultato</button>
+        </div>
+      </div>
+
+      <!-- Card Stemma Ufficiale -->
+      <div class="hero-badge-card">
+        <div class="badge-card-inner">
+          <span class="card-tag">STEMMA UFFICIALE N29</span>
+          <div class="stemma-wrap">
+            <img src="corvo-team-logo.svg" alt="Stemma Corvo Team N29" class="large-crest">
+          </div>
+          <h3>CORVO TEAM <span class="text-yellow">N29</span></h3>
+          <p class="colors-desc">COLORI SOCIALI: BLU &amp; GIALLO</p>
+          <div class="badge-stats-row">
+            <span>Atleti: <strong id="stat-count-players">9</strong></span>
+            <span>•</span>
+            <span>Partite da giocare: <strong id="stat-count-matches">7</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SEZIONE: ROSA TITOLARE & SCHEMI TATTICI CALCIO A 5 (5v5)
+       ========================================================================= -->
+  <section id="formazione" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">LAVAGNA TATTICA UFFICIALE</span>
+          <h2 class="section-title">Rosa Titolare &amp; <span class="text-yellow">Schemi Calcio a 5</span></h2>
+          <p class="section-sub">Clicca su qualsiasi giocatore per aprire la sua <strong>scheda personale dedicata</strong> con foto e statistiche.</p>
+        </div>
+
+        <div class="lineup-actions">
+          <button class="btn btn-sm btn-yellow admin-only" style="display:none;" onclick="openEditLineupModal()">⚽ Modifica Formazione &amp; Schema</button>
+          <button type="button" class="btn btn-sm btn-outline guest-only" onclick="toggleAdminLogin()">🔒 Accedi per Schierare i 5 Titolari</button>
+        </div>
+      </div>
+
+      <!-- Barra Selettore Moduli Calcio a 5 (Subito disponibile in HTML) -->
+      <div class="modules-bar" id="modules-selector-bar">
+        <button type="button" class="module-btn active" data-mod="1-2-1" onclick="selectModulo('1-2-1')">
+          <span class="module-btn-title">1-2-1 Rombo</span>
+          <span class="module-btn-sub">Il Diamante</span>
+        </button>
+        <button type="button" class="module-btn" data-mod="2-2" onclick="selectModulo('2-2')">
+          <span class="module-btn-title">2-2 Quadrato</span>
+          <span class="module-btn-sub">La Scatola</span>
+        </button>
+        <button type="button" class="module-btn" data-mod="1-1-2" onclick="selectModulo('1-1-2')">
+          <span class="module-btn-title">1-1-2 La Y</span>
+          <span class="module-btn-sub">Offensivo</span>
+        </button>
+        <button type="button" class="module-btn" data-mod="3-1" onclick="selectModulo('3-1')">
+          <span class="module-btn-title">3-1 Piramide</span>
+          <span class="module-btn-sub">Muro Difensivo</span>
+        </button>
+        <button type="button" class="module-btn" data-mod="1-3-0" onclick="selectModulo('1-3-0')">
+          <span class="module-btn-title">1-3-0 Falso 9</span>
+          <span class="module-btn-sub">Rotazione</span>
+        </button>
+        <button type="button" class="module-btn" data-mod="power-play" onclick="selectModulo('power-play')">
+          <span class="module-btn-title">Power Play</span>
+          <span class="module-btn-sub">Portiere Volante</span>
+        </button>
+      </div>
+
+      <!-- Dettaglio Tattico del Modulo Selezionato -->
+      <div class="module-info-box" id="module-info-box">
+        <div>
+          <strong class="text-yellow" id="module-info-name">1-2-1 Rombo (Il Diamante):</strong>
+          <span id="module-info-desc" class="text-muted">Lo schema classico del Futsal: perfetto equilibrio tra ultimo difensore, ampiezza dei laterali e profondità del pivot. 💡 Controllo gara, possesso palla e tagli in profondità del pivot.</span>
+        </div>
+        <span class="badge" id="module-info-tag" style="background:#1e3a8a; color:#facc15; font-size:0.7rem;">BILANCIATO</span>
+      </div>
+
+      <!-- Info Gara e Ritrovo Banner -->
+      <div class="lineup-info-strip">
+        <div class="lineup-info-item">
+          <span class="text-muted text-xs">PARTITA CONVOCATA:</span>
+          <strong id="lineup-match-title" class="text-yellow">1ª Giornata vs Cortenova All Stars</strong>
+        </div>
+        <div class="lineup-info-item">
+          <span class="text-muted text-xs">RITROVO &amp; MAGLIE:</span>
+          <span id="lineup-ritrovo" class="text-white font-bold">Ore 20:30 agli spogliatoi (Maglia Gialla)</span>
+        </div>
+        <div class="lineup-info-item">
+          <span class="text-muted text-xs">CAPITANO DESIGNATO:</span>
+          <span id="lineup-capitano" class="text-yellow font-bold">Luca Belotti (#2)</span>
+        </div>
+      </div>
+
+      <!-- Griglia: Campo da Gioco + Sidebar Panchina -->
+      <div class="lineup-layout">
+        <!-- Campo da calcetto verde con i 5 titolari posizionati dinamicamente -->
+        <div class="pitch-container">
+          <div class="pitch-field" id="pitch-field">
+            <!-- Righe campo calcetto -->
+            <div class="pitch-line-center"></div>
+            <div class="pitch-circle-center"></div>
+            <div class="pitch-area-left"></div>
+            <div class="pitch-area-right"></div>
+            <div class="pitch-watermark" id="pitch-watermark">1-2-1</div>
+
+            <!-- I 5 Giocatori Titolari (Cliccabili per aprire il profilo personale) -->
+            <div class="player-marker" id="marker-gk" style="left:8%; top:50%;" onclick="openPlayerProfile(1)" title="Clicca per aprire la scheda personale">
+              <div class="player-marker-shirt gk-shirt">
+                <span>#1</span>
+                <span class="player-marker-role">POR</span>
+              </div>
+              <div class="player-marker-name">Stefano Parigi</div>
+            </div>
+
+            <div class="player-marker" id="marker-p1" style="left:26%; top:50%;" onclick="openPlayerProfile(2)" title="Clicca per aprire la scheda personale">
+              <div class="player-marker-shirt">
+                <span class="cap-badge">CAP</span>
+                <span>#2</span>
+                <span class="player-marker-role">ULTIMO</span>
+              </div>
+              <div class="player-marker-name">Luca Belotti</div>
+            </div>
+
+            <div class="player-marker" id="marker-p2" style="left:52%; top:22%;" onclick="openPlayerProfile(6)" title="Clicca per aprire la scheda personale">
+              <div class="player-marker-shirt">
+                <span>#7</span>
+                <span class="player-marker-role">LAT SX</span>
+              </div>
+              <div class="player-marker-name">Alessandro Rota</div>
+            </div>
+
+            <div class="player-marker" id="marker-p3" style="left:52%; top:78%;" onclick="openPlayerProfile(8)" title="Clicca per aprire la scheda personale">
+              <div class="player-marker-shirt">
+                <span>#11</span>
+                <span class="player-marker-role">LAT DX</span>
+              </div>
+              <div class="player-marker-name">Raoul Pasinetti</div>
+            </div>
+
+            <div class="player-marker" id="marker-p4" style="left:80%; top:50%;" onclick="openPlayerProfile(7)" title="Clicca per aprire la scheda personale">
+              <div class="player-marker-shirt">
+                <span>#8</span>
+                <span class="player-marker-role">PIVOT</span>
+              </div>
+              <div class="player-marker-name">Andrea Pasinetti</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Panchina & Convocazione -->
+        <div class="lineup-sidebar">
+          <div style="background:#0a1128; border:1px solid rgba(250,204,21,0.25); border-radius:16px; padding:16px;">
+            <h4 class="text-yellow mb-2 font-bold text-xs uppercase">📋 Note Tecniche Convocazione</h4>
+            <p id="lineup-note" class="text-xs text-muted" style="background:#020617; padding:10px; border-radius:8px; border:1px solid #1e293b; font-style:italic;">
+              "Partita inaugurale! Massima puntualità per il riscaldamento pre-partita."
+            </p>
+            <span id="lineup-updated" class="text-muted mt-2" style="display:block; font-size:0.7rem;"></span>
+          </div>
+
+          <div style="background:#0a1128; border:1px solid #1e293b; border-radius:16px; padding:16px; margin-top:14px;">
+            <h4 class="text-xs font-bold uppercase mb-2">Panchina &amp; Riserve (Clicca per la scheda)</h4>
+            <div id="lineup-bench-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SEZIONE: CALENDARIO DELLE PARTITE
+       ========================================================================= -->
+  <section id="calendario" class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">CALENDARIO UFFICIALE</span>
+          <h2 class="section-title">Partite in <span class="text-yellow">Programma</span></h2>
+          <p class="section-sub">Tutte le gare del girone d'andata: date, orari, campi e gare da definire.</p>
+        </div>
+
+        <div class="admin-toolbar admin-only" style="display:none;">
+          <button class="btn btn-sm btn-yellow" onclick="openAddMatchModal()">+ Nuova Partita</button>
+        </div>
+      </div>
+
+      <!-- Griglia Partite -->
+      <div id="matches-grid" class="matches-grid">
+        <!-- Caricato dinamicamente da app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SEZIONE: LA ROSA DEI GIOCATORI
+       ========================================================================= -->
+  <section id="rosa" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">I PROTAGONISTI</span>
+          <h2 class="section-title">La Rosa <span class="text-yellow">Ufficiale</span></h2>
+          <p class="section-sub">Clicca su qualsiasi atleta per aprire la sua <strong>scheda profilo dedicata</strong> con foto e caratteristiche.</p>
+        </div>
+
+        <div class="admin-only" style="display:none;">
+          <button class="btn btn-sm btn-yellow" onclick="openAddPlayerModal()">+ Tessera Atleta</button>
+        </div>
+      </div>
+
+      <!-- Filtri Ruolo -->
+      <div class="role-filters" id="role-filter-bar">
+        <button class="filter-btn active" onclick="filterSquad('Tutti')">Tutti (9)</button>
+        <button class="filter-btn" onclick="filterSquad('Portiere')">Portieri</button>
+        <button class="filter-btn" onclick="filterSquad('Difensore')">Difesa</button>
+        <button class="filter-btn" onclick="filterSquad('Centrocampista')">Centrocampo</button>
+        <button class="filter-btn" onclick="filterSquad('Attaccante')">Attacco</button>
+      </div>
+
+      <!-- Griglia Giocatori -->
+      <div id="players-grid" class="players-grid">
+        <!-- Caricato dinamicamente da app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       MODALE: SCHEDA PROFILO DEDICATA DEL GIOCATORE (Con Foto e Statistiche)
+       ========================================================================= -->
+  <div id="modal-player-profile" class="modal">
+    <div class="modal-content profile-modal-content">
+      <!-- Banner Superiore -->
+      <div class="profile-header-banner">
+        <span class="badge" style="background:rgba(250,204,21,0.2); color:#facc15; border:1px solid #facc15;">
+          CORVO TEAM N29 • SCHEDA ATLETA
+        </span>
+        <button type="button" class="close-btn" style="position:relative; top:0; right:0;" onclick="closeModal('modal-player-profile')">&times;</button>
+      </div>
+
+      <!-- Avatar Foto Profilo + Badge Ruolo -->
+      <div class="profile-avatar-row">
+        <div class="profile-avatar-box" id="profile-avatar-box">
+          <div id="profile-photo-container">
+            <span id="profile-shirt-num" style="font-size:2rem; font-weight:900; color:var(--primary-yellow); font-family:monospace; line-height:1;">#10</span>
+            <span style="font-size:0.55rem; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-top:4px;">Foto in arrivo</span>
+          </div>
+        </div>
+
+        <div style="text-align:right;">
+          <span id="profile-badge-cap" class="badge" style="display:none; background:#facc15; color:#020617; font-weight:900; margin-bottom:4px;">👑 CAPITANO</span>
+          <span id="profile-badge-role" class="badge" style="background:#1e3a8a; color:#facc15; font-size:0.75rem;">ATTACCANTE</span>
+        </div>
+      </div>
+
+      <!-- Dati Anagrafici e Tecnici -->
+      <div class="profile-body">
+        <h3 id="profile-player-name" style="font-size:1.4rem; font-weight:900; text-transform:uppercase; color:#fff; margin-bottom:2px;">
+          Luca <span class="text-yellow">Belotti</span>
+        </h3>
+        <p class="text-muted text-xs">Atleta Ufficiale del Corvo Team • Campionato Calcetto 2026/2027</p>
+
+        <!-- Statistiche Rapide -->
+        <div class="profile-stats-grid">
+          <div class="profile-stat-box">
+            <span class="profile-stat-lbl">Ruolo</span>
+            <span class="profile-stat-val" id="profile-stat-role">Difensore</span>
+          </div>
+          <div class="profile-stat-box">
+            <span class="profile-stat-lbl">Maglia</span>
+            <span class="profile-stat-val" id="profile-stat-num">#2</span>
+          </div>
+          <div class="profile-stat-box">
+            <span class="profile-stat-lbl">Piede</span>
+            <span class="profile-stat-val" id="profile-stat-foot">Destro</span>
+          </div>
+          <div class="profile-stat-box">
+            <span class="profile-stat-lbl">Stato</span>
+            <span class="profile-stat-val" style="color:#10b981;">Disponibile</span>
+          </div>
+        </div>
+
+        <!-- Descrizione Tecnica -->
+        <div class="profile-card-desc">
+          <strong class="text-yellow" style="display:block; margin-bottom:4px; text-transform:uppercase; font-size:0.75rem;">
+            🔥 Profilo Tecnico &amp; Caratteristiche:
+          </strong>
+          <span id="profile-player-desc">
+            Senso della posizione impeccabile, forte nell'1 contro 1 e precisione nell'impostazione dal basso.
+          </span>
+        </div>
+
+        <!-- Area Foto Profilo (Modifica Admin o inserimento URL foto) -->
+        <div class="admin-only" style="display:none; background:#020617; border:1px solid #1e293b; border-radius:12px; padding:10px; margin-bottom:12px;">
+          <label class="text-xs text-yellow" style="font-weight:bold; display:block; margin-bottom:4px;">
+            📸 Aggiorna Foto Profilo Giocatore (Admin):
+          </label>
+          <div style="display:flex; gap:6px;">
+            <input type="text" id="profile-input-photo-url" placeholder="Incolla URL o nome file foto (es. foto.jpg)" class="form-control" style="font-size:0.75rem;">
+            <button type="button" class="btn btn-sm btn-yellow" onclick="savePlayerPhotoUrl()">Salva Foto</button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+          <span class="text-muted text-xs">📸 Pronto per ricevere le foto stasera!</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="closeModal('modal-player-profile')">Chiudi Scheda</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALE: LOGIN AMMINISTRATORE (Zero suggerimenti o autofill)
+       ========================================================================= -->
+  <div id="modal-login" class="modal">
+    <div class="modal-content modal-sm">
+      <button type="button" class="close-btn" onclick="closeAdminLoginModal()">&times;</button>
+      <div class="modal-header text-center">
+        <div class="logo-box-sm mx-auto mb-2">
+          <img src="corvo-team-logo.svg" alt="Corvo Team">
+        </div>
+        <h3>Login <span class="text-yellow">Amministratore</span></h3>
+        <p class="text-muted text-xs">Inserisci le tue credenziali per gestire calendario e formazione.</p>
+      </div>
+
+      <form id="form-login" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label>Email o Nome Utente:</label>
+          <input type="text" id="login-user" placeholder="Inserisci la tua email" required class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Password:</label>
+          <input type="password" id="login-pass" placeholder="••••••••" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-yellow btn-block mt-3">Accedi come Amministratore</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALE: MODIFICA ROSA TITOLARE & SCHEMA TATTICO (ADMIN)
+       ========================================================================= -->
+  <div id="modal-lineup" class="modal">
+    <div class="modal-content">
+      <button type="button" class="close-btn" onclick="closeModal('modal-lineup')">&times;</button>
+      <div class="modal-header">
+        <h3>Modifica <span class="text-yellow">Rosa Titolare &amp; Schema Tattico</span></h3>
+        <p class="text-muted text-xs">Seleziona lo schema di gioco a 5, i 5 atleti titolari e le indicazioni di ritrovo.</p>
+      </div>
+
+      <form id="form-lineup" onsubmit="handleSaveLineup(event)">
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label>Partita da Convocare:</label>
+            <select id="lineup-select-match" class="form-control" required></select>
+          </div>
+          <div class="form-group col-6">
+            <label class="text-yellow">Schema Tattico Calcio a 5:</label>
+            <select id="lineup-select-modulo" class="form-control" onchange="onModalModuloChange(this.value)" required>
+              <option value="1-2-1">1-2-1 Rombo (Diamante classico)</option>
+              <option value="2-2">2-2 Quadrato (La Scatola)</option>
+              <option value="1-1-2">1-1-2 La Y (Super offensivo)</option>
+              <option value="3-1">3-1 Piramide (Muro difensivo)</option>
+              <option value="1-3-0">1-3-0 Falso Nueve (Rotazione continua)</option>
+              <option value="power-play">Power Play (Portiere di movimento 5v4)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label class="text-yellow" id="label-gk">🧤 Portiere (Titolare):</label>
+            <select id="lineup-select-gk" class="form-control" required></select>
+          </div>
+          <div class="form-group col-6">
+            <label class="text-yellow" id="label-p1">🛡️ Posizione 1:</label>
+            <select id="lineup-select-p1" class="form-control" required></select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label class="text-yellow" id="label-p2">⚡ Posizione 2:</label>
+            <select id="lineup-select-p2" class="form-control" required></select>
+          </div>
+          <div class="form-group col-6">
+            <label class="text-yellow" id="label-p3">⚡ Posizione 3:</label>
+            <select id="lineup-select-p3" class="form-control" required></select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label class="text-yellow" id="label-p4">🎯 Posizione 4:</label>
+            <select id="lineup-select-p4" class="form-control" required></select>
+          </div>
+          <div class="form-group col-6">
+            <label class="text-yellow">👑 Capitano:</label>
+            <select id="lineup-select-cap" class="form-control" required></select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Orario Ritrovo Spogliatoi e Maglia:</label>
+          <input type="text" id="lineup-input-ritrovo" class="form-control" placeholder="es. Ore 20:30 agli spogliatoi (Maglia Gialla)">
+        </div>
+
+        <div class="form-group">
+          <label>Note Tattiche e Avvisi per i Ragazzi:</label>
+          <textarea id="lineup-input-note" rows="2" class="form-control" placeholder="es. Massima puntualità per il riscaldamento pre-partita..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-lineup')">Annulla</button>
+          <button type="submit" class="btn btn-yellow">Salva Formazione &amp; Schema Ufficiale</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALE: MODIFICA PARTITA (ORARIO, DATA, CAMPO, DA DEFINIRE)
+       ========================================================================= -->
+  <div id="modal-edit-match" class="modal">
+    <div class="modal-content">
+      <button type="button" class="close-btn" onclick="closeModal('modal-edit-match')">&times;</button>
+      <div class="modal-header">
+        <h3>Modifica <span class="text-yellow">Partita &amp; Orario</span></h3>
+        <p class="text-muted text-xs">Modifica data, orario, avversario o contrassegna come "Da definire".</p>
+      </div>
+
+      <form id="form-edit-match" onsubmit="handleSaveMatchEdit(event)">
+        <input type="hidden" id="edit-match-id">
+
+        <div class="form-row">
+          <div class="form-group col-4">
+            <label>Giornata:</label>
+            <input type="text" id="edit-match-giornata" class="form-control" required>
+          </div>
+          <div class="form-group col-8">
+            <label>Squadra Avversaria:</label>
+            <input type="text" id="edit-match-avversario" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label>Data:</label>
+            <input type="date" id="edit-match-data" class="form-control" required>
+          </div>
+          <div class="form-group col-6">
+            <label>Orario (es. 21:00):</label>
+            <input type="time" id="edit-match-ora" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Campo di Gioco / Impianto:</label>
+          <input type="text" id="edit-match-luogo" class="form-control" required>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="edit-match-da-definire">
+            <span>⚠️ Data o orario ancora <strong>DA DEFINIRE</strong></span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Note Tattiche o Organizzative:</label>
+          <textarea id="edit-match-note" rows="2" class="form-control"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-edit-match')">Annulla</button>
+          <button type="submit" class="btn btn-yellow">Salva Modifiche</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALE: INSERISCI RISULTATO
+       ========================================================================= -->
+  <div id="modal-result" class="modal">
+    <div class="modal-content">
+      <button type="button" class="close-btn" onclick="closeModal('modal-result')">&times;</button>
+      <div class="modal-header">
+        <h3>Inserisci <span class="text-yellow">Risultato Partita</span></h3>
+        <p class="text-muted text-xs">Registra il punteggio finale e i marcatori della squadra.</p>
+      </div>
+
+      <form id="form-result" onsubmit="handleSaveResult(event)">
+        <input type="hidden" id="result-match-id">
+
+        <div class="match-banner-result" id="result-match-title">
+          CORVO TEAM vs Avversario
+        </div>
+
+        <div class="form-row text-center mt-3">
+          <div class="form-group col-6">
+            <label class="text-yellow font-bold">Gol CORVO TEAM:</label>
+            <input type="number" id="result-gol-fatti" min="0" value="5" class="form-control form-control-lg text-center" required>
+          </div>
+          <div class="form-group col-6">
+            <label class="font-bold">Gol Avversari:</label>
+            <input type="number" id="result-gol-subiti" min="0" value="2" class="form-control form-control-lg text-center" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Marcatori CORVO TEAM (seleziona chi ha segnato):</label>
+          <select id="result-marcatore-select" class="form-control mb-2">
+            <!-- Popolato con i giocatori -->
+          </select>
+          <button type="button" class="btn btn-sm btn-outline" onclick="addScorerRow()">+ Aggiungi Marcatore</button>
+        </div>
+
+        <div id="scorers-list" class="scorers-list"></div>
+
+        <div class="modal-actions mt-3">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-result')">Annulla</button>
+          <button type="submit" class="btn btn-yellow">Conferma Risultato</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p>&copy; 2026 CORVO TEAM N29 • Colori sociali: Blu &amp; Giallo • Calcetto 5v5</p>
+      <p class="text-muted">Pronto all'uso in locale in Visual Studio Code (Live Server o PHP PDO MySQL)</p>
+    </div>
+  </footer>
+
+  <!-- Google Firebase Cloud SDK (CDN) per sincronizzazione globale real-time -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
