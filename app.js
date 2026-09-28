@@ -6,7 +6,7 @@
  */
 
 // DEFINIZIONE DEGLI SCHEMI TATTICI UFFICIALI DEL CALCIO A 5
-const SCHEMI_CALCETTO = {
+var SCHEMI_CALCETTO = window.SCHEMI_CALCETTO || {
   '1-2-1': {
     id: '1-2-1',
     nome: '1-2-1 Rombo',
@@ -163,24 +163,48 @@ try {
   console.warn('Inizializzazione Firebase in fallback:', e);
 }
 
-// Inizializzazione all'avvio del DOM
-document.addEventListener('DOMContentLoaded', () => {
-  // Carica da localStorage come cache iniziale istantanea
+// Inizializzazione sicura all'avvio
+function initApp() {
+  console.log('Avvio CORVO TEAM N29...');
   try {
     const savedPartite = localStorage.getItem('corvo_local_matches');
-    if (savedPartite) state.partite = JSON.parse(savedPartite);
+    if (savedPartite) {
+      const parsedMatches = JSON.parse(savedPartite);
+      if (Array.isArray(parsedMatches) && parsedMatches.length > 0) {
+        state.partite = parsedMatches;
+      }
+    }
 
     const savedPlayers = localStorage.getItem('corvo_local_players');
-    if (savedPlayers) state.giocatori = JSON.parse(savedPlayers);
+    if (savedPlayers) {
+      const parsedPlayers = JSON.parse(savedPlayers);
+      if (Array.isArray(parsedPlayers) && parsedPlayers.length > 0) {
+        // Preserva foto_url e caratteristiche ufficiali se la cache locale ne era priva
+        state.giocatori.forEach(baseG => {
+          const stored = parsedPlayers.find(p => p.id === baseG.id);
+          if (stored) {
+            if (!stored.foto_url && baseG.foto_url) stored.foto_url = baseG.foto_url;
+            if (!stored.caratteristiche && baseG.caratteristiche) stored.caratteristiche = baseG.caratteristiche;
+            if (!stored.piede_forte && baseG.piede_forte) stored.piede_forte = baseG.piede_forte;
+          }
+        });
+        state.giocatori = parsedPlayers;
+      }
+    }
 
     const savedLineup = localStorage.getItem('corvo_local_lineup');
     if (savedLineup) {
-      state.formazione = JSON.parse(savedLineup);
-      if (state.formazione.modulo) {
-        state.activeModulo = state.formazione.modulo;
+      const parsedLineup = JSON.parse(savedLineup);
+      if (parsedLineup && parsedLineup.gkId) {
+        state.formazione = parsedLineup;
+        if (parsedLineup.modulo) {
+          state.activeModulo = parsedLineup.modulo;
+        }
       }
     }
-  } catch (e) {}
+  } catch (e) {
+    console.warn('Errore lettura cache locale:', e);
+  }
 
   updateAdminUI();
   renderHeroMatch();
@@ -195,7 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Prova a recuperare dal backend PHP se disponibile in locale (es. XAMPP)
   fetchDataFromPhpBackend();
-});
+}
+
+// Avvio istantaneo garantito sia con DOMContentLoaded sia a pagina già pronta
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // Ascolto in tempo reale da Firebase Cloud
 function setupFirebaseSync() {
@@ -299,6 +330,53 @@ function updateAdminUI() {
     }
     adminElements.forEach(el => el.style.display = 'none');
     guestElements.forEach(el => el.style.display = 'inline-flex');
+  }
+}
+
+function openAdminLoginModal() {
+  const m = document.getElementById('modal-login');
+  if (m) {
+    m.style.setProperty('display', 'flex', 'important');
+    m.style.setProperty('z-index', '999999', 'important');
+    m.classList.add('show', 'active');
+    const userInp = document.getElementById('login-user');
+    if (userInp) userInp.focus();
+  } else {
+    const p = prompt('Accesso Amministratore CORVO TEAM:\nInserisci la password di Luca Belotti:');
+    if (p && p.trim() === 'corvo2026') {
+      localStorage.setItem('corvo_local_admin', 'true');
+      state.isAdmin = true;
+      updateAdminUI();
+      renderHeroMatch();
+      renderMatches();
+      renderLineup();
+      alert('Accesso Amministratore confermato! Benvenuto Luca.');
+    } else if (p) {
+      alert('Password non valida.');
+    }
+  }
+}
+
+function closeAdminLoginModal() {
+  const m = document.getElementById('modal-login');
+  if (m) {
+    m.style.setProperty('display', 'none', 'important');
+    m.classList.remove('show', 'active');
+  }
+}
+
+function toggleAdminLogin() {
+  if (state.isAdmin || localStorage.getItem('corvo_local_admin') === 'true') {
+    if (confirm('Sei attualmente connesso come Amministratore (Luca Belotti).\nVuoi disconnetterti per tornare alla sola visualizzazione?')) {
+      localStorage.removeItem('corvo_local_admin');
+      state.isAdmin = false;
+      updateAdminUI();
+      renderHeroMatch();
+      renderMatches();
+      renderLineup();
+    }
+  } else {
+    openAdminLoginModal();
   }
 }
 
@@ -679,6 +757,45 @@ function handleSaveLineup(e) {
 // =============================================================================
 // RENDERING ROSA GIOCATORI & SCHEDA PROFILO DEDICATA
 // =============================================================================
+// Gestione fallback robusto foto giocatori (supporta spazi, formati e percorsi)
+function handlePlayerPhotoError(img, url) {
+  if (!img) return;
+  const tried = parseInt(img.dataset.tried || '0', 10);
+  img.dataset.tried = String(tried + 1);
+
+  if (tried === 0) {
+    if (url && url.includes(' ')) {
+      img.src = encodeURI(url);
+      return;
+    }
+    if (url && url.toLowerCase().includes('belotti')) {
+      img.src = 'belotti.jpg';
+      return;
+    }
+    if (url && url.toLowerCase().includes('rota')) {
+      img.src = 'rota_nicolo.jpg';
+      return;
+    }
+  } else if (tried === 1) {
+    if (url && url.toLowerCase().includes('belotti')) {
+      img.src = 'belotti.jpeg';
+      return;
+    }
+    if (url && url.toLowerCase().includes('rota')) {
+      img.src = 'rota nicolo.jpg';
+      return;
+    }
+  }
+
+  // Se l'immagine non è presente nel filesystem o fallisce, mostra il numero di maglia elegante
+  img.style.display = 'none';
+  if (img.parentElement) {
+    const fb = img.parentElement.querySelector('.photo-fallback');
+    if (fb) fb.style.display = 'flex';
+  }
+}
+window.handlePlayerPhotoError = handlePlayerPhotoError;
+
 let currentInspectedPlayerId = 1;
 
 function renderPlayers() {
@@ -704,8 +821,9 @@ function renderPlayers() {
       <div style="display:flex; justify-content:space-between; align-items:flex-start;">
         <div style="display:flex; align-items:center; gap:10px;">
           ${g.foto_url ? `
-            <div style="width:48px; height:48px; border-radius:14px; overflow:hidden; border:2px solid var(--primary-yellow); background:#020617; flex-shrink:0; box-shadow:0 4px 10px rgba(0,0,0,0.5);">
-              <img src="${g.foto_url}" alt="${g.nome}" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null; this.src='rota_nicolo.jpg';">
+            <div style="width:48px; height:48px; border-radius:14px; overflow:hidden; border:2px solid var(--primary-yellow); background:#020617; flex-shrink:0; box-shadow:0 4px 10px rgba(0,0,0,0.5); position:relative; display:flex; align-items:center; justify-content:center;">
+              <img src="${g.foto_url}" alt="${g.nome}" style="width:100%; height:100%; object-fit:cover;" onerror="handlePlayerPhotoError(this, '${g.foto_url}')">
+              <span class="photo-fallback" style="display:none; font-size:1.1rem; font-weight:900; color:var(--primary-yellow); font-family:monospace;">#${g.numero_maglia}</span>
             </div>
           ` : `
             <span class="player-number">#${g.numero_maglia}</span>
@@ -776,7 +894,13 @@ function openPlayerProfile(id) {
   const photoBox = document.getElementById('profile-avatar-box');
   if (photoBox) {
     if (p.foto_url) {
-      photoBox.innerHTML = `<img src="${p.foto_url}" alt="${p.nome} ${p.cognome}" class="profile-avatar-img">`;
+      photoBox.innerHTML = `
+        <img src="${p.foto_url}" alt="${p.nome} ${p.cognome}" class="profile-avatar-img" onerror="handlePlayerPhotoError(this, '${p.foto_url}')">
+        <div class="photo-fallback" style="display:none; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%;">
+          <span style="font-size:2.2rem; font-weight:900; color:var(--primary-yellow); font-family:monospace; line-height:1;">#${p.numero_maglia}</span>
+          <span style="font-size:0.55rem; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-top:4px;">Foto in arrivo</span>
+        </div>
+      `;
     } else {
       photoBox.innerHTML = `
         <span style="font-size:2.2rem; font-weight:900; color:var(--primary-yellow); font-family:monospace; line-height:1;">#${p.numero_maglia}</span>
