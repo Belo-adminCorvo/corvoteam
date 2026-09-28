@@ -214,6 +214,17 @@ function initApp() {
   renderPlayers();
   populateScorerSelect();
 
+  // Gestione attiva schede navigazione mobile
+  try {
+    const mobileTabs = document.querySelectorAll('.mobile-nav-tab');
+    mobileTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        mobileTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+  } catch (e) {}
+
   // Sincronizzazione Realtime con Firebase Cloud
   setupFirebaseSync();
 
@@ -367,13 +378,18 @@ function closeAdminLoginModal() {
 
 function toggleAdminLogin() {
   if (state.isAdmin || localStorage.getItem('corvo_local_admin') === 'true') {
-    if (confirm('Sei attualmente connesso come Amministratore (Luca Belotti).\nVuoi disconnetterti per tornare alla sola visualizzazione?')) {
-      localStorage.removeItem('corvo_local_admin');
-      state.isAdmin = false;
-      updateAdminUI();
-      renderHeroMatch();
-      renderMatches();
-      renderLineup();
+    if (confirm('Vuoi disconnetterti per tornare alla sola visualizzazione?')) {
+      // Comunica a Firebase di chiudere la sessione protetta
+      firebase.auth().signOut().then(() => {
+        localStorage.removeItem('corvo_local_admin');
+        state.isAdmin = false;
+        updateAdminUI();
+        renderHeroMatch();
+        renderMatches();
+        renderLineup();
+      }).catch((err) => {
+        console.warn("Errore durante il logout:", err);
+      });
     }
   } else {
     openAdminLoginModal();
@@ -384,21 +400,25 @@ function handleLoginSubmit(e) {
   if (e && e.preventDefault) e.preventDefault();
   const userEl = document.getElementById('login-user');
   const passEl = document.getElementById('login-pass');
-  const user = userEl ? userEl.value.trim().toLowerCase() : '';
+  const user = userEl ? userEl.value.trim() : '';
   const pass = passEl ? passEl.value.trim() : '';
   
-  if ((user === 'lucabelotti771@gmail.com' || user === 'luca belotti') && pass === 'corvo2026') {
-    state.isAdmin = true;
-    localStorage.setItem('corvo_local_admin', 'true');
-    closeAdminLoginModal();
-    updateAdminUI();
-    renderHeroMatch();
-    renderMatches();
-    renderLineup();
-    alert('Accesso Amministratore autorizzato! Benvenuto Luca Belotti.');
-  } else {
-    alert('Credenziali non valide. Accesso riservato esclusivamente all\'amministratore.');
-  }
+  // Contatta i server di Google in modo criptato e sicuro
+  firebase.auth().signInWithEmailAndPassword(user, pass)
+    .then((userCredential) => {
+      state.isAdmin = true;
+      localStorage.setItem('corvo_local_admin', 'true');
+      closeAdminLoginModal();
+      updateAdminUI();
+      renderHeroMatch();
+      renderMatches();
+      renderLineup();
+      alert('Accesso Amministratore autorizzato con Firebase! Benvenuto Luca.');
+    })
+    .catch((error) => {
+      console.error("Errore login:", error.message);
+      alert('Credenziali non valide o non autorizzate.');
+    });
 }
 
 // =============================================================================
