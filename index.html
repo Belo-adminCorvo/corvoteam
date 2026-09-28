@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORVO TEAM N29 - Portale Ufficiale &amp; Calendario</title>
+  <link rel="icon" type="image/svg+xml" href="corvo-team-logo.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- =========================================================================
+       HEADER & TOP NAVBAR
+       ========================================================================= -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <div class="brand">
+        <!-- Stemma Ufficiale con Sfondo Bianco -->
+        <div class="logo-box">
+          <img src="corvo-team-logo.svg" alt="CORVO TEAM N29" class="brand-logo">
+        </div>
+        <div class="brand-text">
+          <h1>CORVO <span class="text-yellow">TEAM N29</span></h1>
+          <p class="subtitle">Portale Ufficiale Calcetto 5v5 • Giallo &amp; Blu</p>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <span id="role-badge" class="badge badge-guest">👤 Visitatore (Sola Lettura)</span>
+        <button id="btn-login-toggle" class="btn btn-yellow" onclick="toggleAdminLogin()">Accedi come Admin</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       HERO: TABELLONE PROSSIMO MATCH & STEMMA
+       ========================================================================= -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="pill-match">
+          <span class="pulse-dot"></span>
+          <span id="hero-giornata">1ª Giornata • Campionato 2026/2027</span>
+        </div>
+
+        <h2 class="hero-title">PROSSIMA <span class="text-yellow">PARTITA</span></h2>
+        
+        <!-- Tabellone Digitale -->
+        <div class="scoreboard-box">
+          <div class="teams-matchup">
+            <div class="team-col team-home">
+              <div class="logo-box-sm">
+                <img src="corvo-team-logo.svg" alt="Corvo Team">
+              </div>
+              <span class="team-name">CORVO TEAM</span>
+              <span class="team-tag">CASA</span>
+            </div>
+
+            <div class="vs-col">VS</div>
+
+            <div class="team-col team-away">
+              <div class="away-badge" id="hero-away-abbr">CA</div>
+              <span class="team-name" id="hero-away-name">Cortenova All Stars</span>
+              <span class="team-tag">OSPITE</span>
+            </div>
+          </div>
+
+          <div class="match-info-strip">
+            <span id="hero-date">📅 Ven 02 Ottobre 2026 • 21:00</span>
+            <span id="hero-venue">📍 Centro Sportivo San Rocco</span>
+            <span id="hero-status" class="status-confirmed">Confermata</span>
+          </div>
+        </div>
+
+        <div class="hero-buttons">
+          <a href="#calendario" class="btn btn-yellow">Consulta Calendario</a>
+          <a href="#rosa" class="btn btn-outline">La Rosa Ufficiale</a>
+          <button id="btn-hero-admin-edit" class="btn btn-blue admin-only" style="display:none;" onclick="openEditNextMatch()">Modifica Orario Gara</button>
+          <button id="btn-hero-admin-result" class="btn btn-yellow admin-only" style="display:none;" onclick="openResultModal(1)">Inserisci Risultato</button>
+        </div>
+      </div>
+
+      <!-- Card Stemma Ufficiale -->
+      <div class="hero-badge-card">
+        <div class="badge-card-inner">
+          <span class="card-tag">STEMMA UFFICIALE N29</span>
+          <div class="stemma-wrap">
+            <img src="corvo-team-logo.svg" alt="Stemma Corvo Team N29" class="large-crest">
+          </div>
+          <h3>CORVO TEAM <span class="text-yellow">N29</span></h3>
+          <p class="colors-desc">COLORI SOCIALI: BLU &amp; GIALLO</p>
+          <div class="badge-stats-row">
+            <span>Atleti: <strong id="stat-count-players">9</strong></span>
+            <span>•</span>
+            <span>Partite da giocare: <strong id="stat-count-matches">7</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SEZIONE: CALENDARIO DELLE PARTITE
+       ========================================================================= -->
+  <section id="calendario" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">CALENDARIO UFFICIALE</span>
+          <h2 class="section-title">Partite in <span class="text-yellow">Programma</span></h2>
+          <p class="section-sub">Tutte le gare del girone d'andata: date, orari, campi e gare da definire.</p>
+        </div>
+
+        <div class="admin-toolbar admin-only" style="display:none;">
+          <button class="btn btn-sm btn-yellow" onclick="openAddMatchModal()">+ Nuova Partita</button>
+          <button class="btn btn-sm btn-outline-danger" onclick="resetDatabaseAction()">Azzera Database</button>
+        </div>
+      </div>
+
+      <!-- Griglia Partite -->
+      <div id="matches-grid" class="matches-grid">
+        <!-- Caricato dinamicamente da app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       SEZIONE: LA ROSA DEI GIOCATORI
+       ========================================================================= -->
+  <section id="rosa" class="section section-dark">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">I PROTAGONISTI</span>
+          <h2 class="section-title">La Rosa <span class="text-yellow">Ufficiale</span></h2>
+          <p class="section-sub">Ruoli aggiornati, numeri di maglia e statistiche atleti.</p>
+        </div>
+
+        <div class="admin-only" style="display:none;">
+          <button class="btn btn-sm btn-yellow" onclick="openAddPlayerModal()">+ Tessera Atleta</button>
+        </div>
+      </div>
+
+      <!-- Filtri Ruolo -->
+      <div class="role-filters" id="role-filter-bar">
+        <button class="filter-btn active" onclick="filterSquad('Tutti')">Tutti (9)</button>
+        <button class="filter-btn" onclick="filterSquad('Portiere')">Portieri</button>
+        <button class="filter-btn" onclick="filterSquad('Difensore')">Difesa</button>
+        <button class="filter-btn" onclick="filterSquad('Centrocampista')">Centrocampo</button>
+        <button class="filter-btn" onclick="filterSquad('Attaccante')">Attacco</button>
+      </div>
+
+      <!-- Griglia Giocatori -->
+      <div id="players-grid" class="players-grid">
+        <!-- Caricato dinamicamente da app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       MODALE: LOGIN AMMINISTRATORE
+       ========================================================================= -->
+  <div id="modal-login" class="modal">
+    <div class="modal-content modal-sm">
+      <button class="close-btn" onclick="closeModal('modal-login')">&times;</button>
+      <div class="modal-header text-center">
+        <div class="logo-box-sm mx-auto mb-2">
+          <img src="corvo-team-logo.svg" alt="Corvo Team">
+        </div>
+        <h3>Login <span class="text-yellow">Amministratore</span></h3>
+        <p class="text-muted text-xs">Accedi per modificare orari, gare da definire e inserire risultati.</p>
+      </div>
+
+      <form id="form-login" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label>Email o Nome Utente:</label>
+          <input type="text" id="login-user" value="lucabelotti771@gmail.com" required class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Password:</label>
+          <input type="password" id="login-pass" placeholder="Inserisci corvo2026 o admin" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-yellow btn-block mt-3">Accedi come Admin</button>
+        <button type="button" class="btn btn-outline btn-block mt-2" onclick="quickLogin()">Accesso Rapido Luca Belotti</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALE: MODIFICA PARTITA (ORARIO, DATA, CAMPO, DA DEFINIRE)
+       ========================================================================= -->
+  <div id="modal-edit-match" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('modal-edit-match')">&times;</button>
+      <div class="modal-header">
+        <h3>Modifica <span class="text-yellow">Partita &amp; Orario</span></h3>
+        <p class="text-muted text-xs">Modifica data, orario, avversario o contrassegna come "Da definire".</p>
+      </div>
+
+      <form id="form-edit-match" onsubmit="handleSaveMatchEdit(event)">
+        <input type="hidden" id="edit-match-id">
+
+        <div class="form-row">
+          <div class="form-group col-4">
+            <label>Giornata:</label>
+            <input type="text" id="edit-match-giornata" class="form-control" required>
+          </div>
+          <div class="form-group col-8">
+            <label>Squadra Avversaria:</label>
+            <input type="text" id="edit-match-avversario" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label>Data:</label>
+            <input type="date" id="edit-match-data" class="form-control" required>
+          </div>
+          <div class="form-group col-6">
+            <label>Orario (es. 21:00):</label>
+            <input type="time" id="edit-match-ora" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Campo di Gioco / Impianto:</label>
+          <input type="text" id="edit-match-luogo" class="form-control" required>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="edit-match-da-definire">
+            <span>⚠️ Data o orario ancora <strong>DA DEFINIRE</strong></span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Note Tattiche o Organizzative:</label>
+          <textarea id="edit-match-note" rows="2" class="form-control"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-edit-match')">Annulla</button>
+          <button type="submit" class="btn btn-yellow">Salva Modifiche</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALE: INSERISCI RISULTATO
+       ========================================================================= -->
+  <div id="modal-result" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal('modal-result')">&times;</button>
+      <div class="modal-header">
+        <h3>Inserisci <span class="text-yellow">Risultato Partita</span></h3>
+        <p class="text-muted text-xs">Registra il punteggio finale e i marcatori della squadra.</p>
+      </div>
+
+      <form id="form-result" onsubmit="handleSaveResult(event)">
+        <input type="hidden" id="result-match-id">
+
+        <div class="match-banner-result" id="result-match-title">
+          CORVO TEAM vs Avversario
+        </div>
+
+        <div class="form-row text-center mt-3">
+          <div class="form-group col-6">
+            <label class="text-yellow font-bold">Gol CORVO TEAM:</label>
+            <input type="number" id="result-gol-fatti" min="0" value="5" class="form-control form-control-lg text-center" required>
+          </div>
+          <div class="form-group col-6">
+            <label class="font-bold">Gol Avversari:</label>
+            <input type="number" id="result-gol-subiti" min="0" value="2" class="form-control form-control-lg text-center" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Marcatori CORVO TEAM (seleziona chi ha segnato):</label>
+          <select id="result-marcatore-select" class="form-control mb-2">
+            <!-- Popolato con i giocatori -->
+          </select>
+          <button type="button" class="btn btn-sm btn-outline" onclick="addScorerRow()">+ Aggiungi Marcatore</button>
+        </div>
+
+        <div id="scorers-list" class="scorers-list"></div>
+
+        <div class="modal-actions mt-3">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-result')">Annulla</button>
+          <button type="submit" class="btn btn-yellow">Conferma Risultato</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p>&copy; 2026 CORVO TEAM N29 • Colori sociali: Blu &amp; Giallo • Calcetto 5v5</p>
+      <p class="text-muted">Pronto all'uso in locale in Visual Studio Code (Live Server o PHP PDO MySQL)</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
