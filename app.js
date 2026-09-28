@@ -1,11 +1,11 @@
 /**
  * ==============================================================================
- * CORVO TEAM N29 - SCRIPT JAVASCRIPT FRONTEND (Locale per Visual Studio)
+ * CORVO TEAM N29 - SCRIPT JAVASCRIPT FRONTEND (Locale per Visual Studio & GitHub)
  * File: app.js
  * ==============================================================================
  */
 
-// Stato predefinito azzerato con la rosa aggiornata richiesta
+// Stato dell'applicazione con i 9 atleti ufficiali e il calendario
 let state = {
   isAdmin: localStorage.getItem('corvo_local_admin') === 'true',
   giocatori: [
@@ -28,35 +28,130 @@ let state = {
     { id: 6, giornata: '6ª Giornata', data_ora: '2026-11-06 21:00:00', avversario: 'Deportivo La Carogna', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'PalaSport Intercomunale', note: 'Orario serale provvisorio.' },
     { id: 7, giornata: '7ª Giornata', data_ora: '2026-11-13 21:00:00', avversario: 'Futsal Brembana', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Da definire', note: 'Ultima gara del girone di andata.' }
   ],
+  formazione: {
+    matchId: 1,
+    gkId: 1,
+    defId: 2,
+    lat1Id: 6,
+    lat2Id: 8,
+    fwdId: 7,
+    capitanoId: 2,
+    ritrovo: 'Ore 20:30 agli spogliatoi (Maglia Ufficiale Gialla)',
+    note: 'Partita inaugurale! Massima puntualità per il riscaldamento pre-partita.',
+    updatedAt: ''
+  },
   selectedRoleFilter: 'Tutti',
   currentScorers: []
 };
 
-// Inizializzazione all'avvio
+// ==============================================================================
+// CONFIGURAZIONE FIREBASE CLOUD (Sincronizzazione Realtime su tutti i dispositivi)
+// ==============================================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyD8EWCSTHOXtSdZPJ_evFGTeHjKCeGtDw",
+  authDomain: "corvo-team.firebaseapp.com",
+  projectId: "corvo-team",
+  storageBucket: "corvo-team.firebasestorage.app",
+  messagingSenderId: "208405905224",
+  appId: "1:208405905224:web:7358f519686bc7a6b67d7d"
+};
+
+let db = null;
+try {
+  if (typeof firebase !== 'undefined') {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    console.log('Firebase Cloud Connesso con successo!');
+  }
+} catch (e) {
+  console.warn('Inizializzazione Firebase in fallback:', e);
+}
+
+// Inizializzazione all'avvio del DOM
 document.addEventListener('DOMContentLoaded', () => {
-  // Carica da localStorage se presente
+  // Carica da localStorage come cache iniziale istantanea
   try {
     const savedPartite = localStorage.getItem('corvo_local_matches');
     if (savedPartite) state.partite = JSON.parse(savedPartite);
 
     const savedPlayers = localStorage.getItem('corvo_local_players');
     if (savedPlayers) state.giocatori = JSON.parse(savedPlayers);
+
+    const savedLineup = localStorage.getItem('corvo_local_lineup');
+    if (savedLineup) state.formazione = JSON.parse(savedLineup);
   } catch (e) {}
 
   updateAdminUI();
   renderHeroMatch();
   renderMatches();
+  renderLineup();
   renderPlayers();
   populateScorerSelect();
+
+  // Sincronizzazione Realtime con Firebase Cloud
+  setupFirebaseSync();
 
   // Prova a recuperare dal backend PHP se disponibile in locale (es. XAMPP)
   fetchDataFromPhpBackend();
 });
 
-// Funzione di sincronizzazione con backend PHP locale
+// Ascolto in tempo reale da Firebase Cloud
+function setupFirebaseSync() {
+  if (!db) return;
+
+  // 1. Dati Partite & Giocatori
+  const docRef = db.collection('campionato').doc('corvoteam_data');
+  docRef.onSnapshot((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      if (data && Array.isArray(data.partite) && data.partite.length > 0) {
+        state.partite = data.partite;
+        saveLocalMatchesOnly();
+        renderHeroMatch();
+        renderMatches();
+      }
+      if (data && Array.isArray(data.giocatori) && data.giocatori.length > 0) {
+        state.giocatori = data.giocatori;
+        renderPlayers();
+      }
+    } else {
+      docRef.set({
+        partite: state.partite,
+        giocatori: state.giocatori,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(err => console.log('Init doc err:', err));
+    }
+  }, (err) => {
+    console.warn('Avviso Firebase partite:', err.message);
+  });
+
+  // 2. Dati Rosa Titolare & Formazione
+  const lineupRef = db.collection('campionato').doc('formazione_data');
+  lineupRef.onSnapshot((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      if (data && data.gkId) {
+        state.formazione = data;
+        try {
+          localStorage.setItem('corvo_local_lineup', JSON.stringify(data));
+        } catch (e) {}
+        renderLineup();
+      }
+    } else {
+      lineupRef.set({
+        ...state.formazione,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(err => console.log('Init lineup err:', err));
+    }
+  }, (err) => {
+    console.warn('Avviso Firebase lineup:', err.message);
+  });
+}
+
+// Funzione di sincronizzazione con backend PHP locale se disponibile
 async function fetchDataFromPhpBackend() {
   try {
-    const resP = await fetch('api_partite.php?action=calendario');
+    const resP = await fetch('api/get_partite.php');
     if (resP.ok) {
       const dataP = await resP.json();
       if (dataP.success && Array.isArray(dataP.data) && dataP.data.length > 0) {
@@ -65,7 +160,7 @@ async function fetchDataFromPhpBackend() {
         renderMatches();
       }
     }
-    const resG = await fetch('api_giocatori.php');
+    const resG = await fetch('api/get_giocatori.php');
     if (resG.ok) {
       const dataG = await resG.json();
       if (dataG.success && Array.isArray(dataG.data) && dataG.data.length > 0) {
@@ -73,14 +168,11 @@ async function fetchDataFromPhpBackend() {
         renderPlayers();
       }
     }
-  } catch (err) {
-    // Modalità standalone (Live Server)
-    console.log('Esecuzione in modalità frontend standalone (senza PHP attivo).');
-  }
+  } catch (err) {}
 }
 
 // =============================================================================
-// GESTIONE RUOLI: ADMIN vs VISITATORE
+// GESTIONE RUOLI: ADMIN vs VISITATORE (Zero suggerimenti o autofill)
 // =============================================================================
 function updateAdminUI() {
   const badge = document.getElementById('role-badge');
@@ -90,7 +182,7 @@ function updateAdminUI() {
   if (state.isAdmin) {
     badge.className = 'badge badge-admin';
     badge.textContent = '👑 Admin: Luca Belotti';
-    btnLogin.textContent = 'Logout';
+    btnLogin.textContent = 'Disconnetti';
     btnLogin.className = 'btn btn-outline';
     adminElements.forEach(el => el.style.display = 'inline-flex');
   } else {
@@ -109,37 +201,32 @@ function toggleAdminLogin() {
     updateAdminUI();
     renderHeroMatch();
     renderMatches();
+    renderLineup();
     alert('Disconnesso: modalità sola consultazione attiva.');
   } else {
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
     openModal('modal-login');
   }
 }
 
 function handleLoginSubmit(e) {
   e.preventDefault();
+  const user = document.getElementById('login-user').value.trim().toLowerCase();
   const pass = document.getElementById('login-pass').value.trim();
-  if (pass === 'corvo2026' || pass === 'admin') {
+  
+  if ((user === 'lucabelotti771@gmail.com' || user === 'luca belotti') && pass === 'corvo2026') {
     state.isAdmin = true;
     localStorage.setItem('corvo_local_admin', 'true');
     closeModal('modal-login');
     updateAdminUI();
     renderHeroMatch();
     renderMatches();
-    alert('Accesso Amministratore autorizzato! Ora puoi modificare orari e risultati.');
+    renderLineup();
+    alert('Accesso Amministratore autorizzato! Benvenuto Luca Belotti.');
   } else {
-    alert('Password errata. Usa: corvo2026 o admin');
+    alert('Accesso negato. Credenziali riservate non valide.');
   }
-}
-
-function quickLogin() {
-  document.getElementById('login-pass').value = 'corvo2026';
-  state.isAdmin = true;
-  localStorage.setItem('corvo_local_admin', 'true');
-  closeModal('modal-login');
-  updateAdminUI();
-  renderHeroMatch();
-  renderMatches();
-  alert('Accesso Rapido Amministratore effettuato!');
 }
 
 // =============================================================================
@@ -161,7 +248,6 @@ function renderHeroMatch() {
     statusEl.className = 'status-tbd';
     statusEl.textContent = '⏳ Da definire';
   } else {
-    const d = new Date(next.data_ora);
     document.getElementById('hero-date').textContent = `📅 ${next.data_ora ? next.data_ora.substring(0, 16) : 'Ven 02 Ottobre 21:00'}`;
     statusEl.className = 'status-confirmed';
     statusEl.textContent = 'Confermata';
@@ -227,6 +313,171 @@ function renderMatches() {
   });
 
   document.getElementById('stat-count-matches').textContent = state.partite.length;
+}
+
+// =============================================================================
+// RENDERING ROSA TITOLARE & FORMAZIONE (5v5)
+// =============================================================================
+function renderLineup() {
+  const f = state.formazione;
+  const match = state.partite.find(p => p.id === f.matchId) || state.partite[0];
+
+  // Info header
+  if (match) {
+    document.getElementById('lineup-match-title').textContent = `${match.giornata}: CORVO TEAM vs ${match.avversario}`;
+  }
+  document.getElementById('lineup-ritrovo').textContent = f.ritrovo || 'Ore 20:30 agli spogliatoi (Maglia Gialla)';
+  document.getElementById('lineup-note').textContent = `"${f.note || 'Massima concentrazione per la partita!'}"`;
+
+  const cap = state.giocatori.find(g => g.id === f.capitanoId);
+  document.getElementById('lineup-capitano').textContent = cap ? `${cap.nome} ${cap.cognome} (#${cap.numero_maglia})` : 'Luca Belotti (#2)';
+
+  if (f.updatedAt) {
+    document.getElementById('lineup-updated').textContent = `Formazione aggiornata il ${f.updatedAt}`;
+  }
+
+  // Risoluzione dei 5 giocatori titolari
+  const gk = state.giocatori.find(g => g.id === f.gkId) || state.giocatori[0];
+  const def = state.giocatori.find(g => g.id === f.defId) || state.giocatori[1];
+  const lat1 = state.giocatori.find(g => g.id === f.lat1Id) || state.giocatori[5];
+  const lat2 = state.giocatori.find(g => g.id === f.lat2Id) || state.giocatori[7];
+  const fwd = state.giocatori.find(g => g.id === f.fwdId) || state.giocatori[6];
+
+  renderPitchSlot('slot-gk', gk, 'POR', true, f.capitanoId);
+  renderPitchSlot('slot-def', def, 'DIF', false, f.capitanoId);
+  renderPitchSlot('slot-lat1', lat1, 'LAT SX', false, f.capitanoId);
+  renderPitchSlot('slot-lat2', lat2, 'LAT DX', false, f.capitanoId);
+  renderPitchSlot('slot-fwd', fwd, 'PIVOT', false, f.capitanoId);
+
+  // Panchina (i restanti 4 atleti)
+  const starters = new Set([gk?.id, def?.id, lat1?.id, lat2?.id, fwd?.id].filter(Boolean));
+  const bench = state.giocatori.filter(g => !starters.has(g.id));
+
+  const benchEl = document.getElementById('lineup-bench-list');
+  benchEl.innerHTML = '';
+
+  bench.forEach(g => {
+    const item = document.createElement('div');
+    item.className = 'bench-item';
+    item.innerHTML = `
+      <div class="bench-item-info">
+        <span class="bench-num">#${g.numero_maglia}</span>
+        <div>
+          <strong style="color:#fff;">${g.nome} ${g.cognome}</strong>
+          <div class="text-muted" style="font-size:0.7rem;">${g.ruolo}</div>
+        </div>
+      </div>
+      <span class="badge" style="background:#1e293b; color:#94a3b8; font-size:0.7rem;">Panchina</span>
+    `;
+    benchEl.appendChild(item);
+  });
+}
+
+function renderPitchSlot(elementId, player, roleLabel, isGk, capId) {
+  const el = document.getElementById(elementId);
+  if (!el || !player) return;
+
+  const isCap = player.id === capId;
+  el.innerHTML = `
+    <div class="player-marker">
+      <div class="player-marker-shirt ${isGk ? 'gk-shirt' : ''}">
+        ${isCap ? '<span class="cap-badge">CAP</span>' : ''}
+        <span>#${player.numero_maglia}</span>
+        <span class="player-marker-role">${roleLabel}</span>
+      </div>
+      <div class="player-marker-name">${player.nome} ${player.cognome}</div>
+    </div>
+  `;
+}
+
+// Modale Modifica Formazione Titolare (Admin)
+function openEditLineupModal() {
+  const f = state.formazione;
+
+  // Match select
+  const matchSelect = document.getElementById('lineup-select-match');
+  matchSelect.innerHTML = '';
+  state.partite.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = `${p.giornata}: vs ${p.avversario} (${p.data_ora.split(' ')[0]})`;
+    if (p.id === f.matchId) opt.selected = true;
+    matchSelect.appendChild(opt);
+  });
+
+  // Player selects helper
+  const fillSelect = (selectId, selectedId) => {
+    const s = document.getElementById(selectId);
+    s.innerHTML = '';
+    state.giocatori.forEach(g => {
+      const opt = document.createElement('option');
+      opt.value = g.id;
+      opt.textContent = `#${g.numero_maglia} ${g.nome} ${g.cognome} (${g.ruolo})`;
+      if (g.id === selectedId) opt.selected = true;
+      s.appendChild(opt);
+    });
+  };
+
+  fillSelect('lineup-select-gk', f.gkId);
+  fillSelect('lineup-select-def', f.defId);
+  fillSelect('lineup-select-lat1', f.lat1Id);
+  fillSelect('lineup-select-lat2', f.lat2Id);
+  fillSelect('lineup-select-fwd', f.fwdId);
+  fillSelect('lineup-select-cap', f.capitanoId);
+
+  document.getElementById('lineup-input-ritrovo').value = f.ritrovo || '';
+  document.getElementById('lineup-input-note').value = f.note || '';
+
+  openModal('modal-lineup');
+}
+
+function handleSaveLineup(e) {
+  e.preventDefault();
+  const matchId = parseInt(document.getElementById('lineup-select-match').value, 10);
+  const gkId = parseInt(document.getElementById('lineup-select-gk').value, 10);
+  const defId = parseInt(document.getElementById('lineup-select-def').value, 10);
+  const lat1Id = parseInt(document.getElementById('lineup-select-lat1').value, 10);
+  const lat2Id = parseInt(document.getElementById('lineup-select-lat2').value, 10);
+  const fwdId = parseInt(document.getElementById('lineup-select-fwd').value, 10);
+  const capitanoId = parseInt(document.getElementById('lineup-select-cap').value, 10);
+  const ritrovo = document.getElementById('lineup-input-ritrovo').value.trim();
+  const note = document.getElementById('lineup-input-note').value.trim();
+
+  const nowStr = new Date().toLocaleDateString('it-IT') + ' ore ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+
+  state.formazione = {
+    matchId,
+    gkId,
+    defId,
+    lat1Id,
+    lat2Id,
+    fwdId,
+    capitanoId,
+    ritrovo,
+    note,
+    updatedAt: nowStr
+  };
+
+  // Salva localmente
+  try {
+    localStorage.setItem('corvo_local_lineup', JSON.stringify(state.formazione));
+  } catch (err) {}
+
+  // Sincronizza su Firebase Firestore Cloud
+  if (db) {
+    db.collection('campionato').doc('formazione_data').set({
+      ...state.formazione,
+      updatedAtServer: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).then(() => {
+      console.log('Formazione sincronizzata con successo su Google Firebase Cloud!');
+    }).catch(err => {
+      console.error('Errore sincronizzazione formazione:', err);
+    });
+  }
+
+  closeModal('modal-lineup');
+  renderLineup();
+  alert('Formazione Ufficiale salvata e visibile a tutti i compagni!');
 }
 
 // =============================================================================
@@ -319,6 +570,7 @@ function handleSaveMatchEdit(e) {
     closeModal('modal-edit-match');
     renderHeroMatch();
     renderMatches();
+    renderLineup();
     alert(`Partita vs ${avversario} aggiornata con successo!`);
   }
 }
@@ -342,6 +594,7 @@ function openResultModal(id) {
 
 function populateScorerSelect() {
   const select = document.getElementById('result-marcatore-select');
+  if (!select) return;
   select.innerHTML = '';
   state.giocatori.forEach(g => {
     const opt = document.createElement('option');
@@ -410,26 +663,44 @@ function handleSaveResult(e) {
   }
 }
 
-// Reset Database
-function resetDatabaseAction() {
-  if (confirm('Confermi di voler azzerare il database e ricaricare il calendario ufficiale pulito?')) {
-    localStorage.removeItem('corvo_local_matches');
-    location.reload();
-  }
-}
-
-// Utility Salva
-function saveLocalMatches() {
+// Utility Salvataggio Partite
+function saveLocalMatchesOnly() {
   try {
     localStorage.setItem('corvo_local_matches', JSON.stringify(state.partite));
   } catch (e) {}
 }
 
-// Modali
+function saveLocalMatches() {
+  saveLocalMatchesOnly();
+
+  // Sincronizza su Firebase Firestore Cloud
+  if (db) {
+    db.collection('campionato').doc('corvoteam_data').set({
+      partite: state.partite,
+      giocatori: state.giocatori,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).then(() => {
+      console.log('Salvataggio su Google Firebase Cloud completato!');
+    }).catch(err => {
+      console.error('Errore durante salvataggio su Firebase Cloud:', err);
+    });
+  }
+}
+
+// Gestione Modali
 function openModal(id) {
-  document.getElementById(id).classList.add('show');
+  const m = document.getElementById(id);
+  if (m) m.classList.add('active');
 }
 
 function closeModal(id) {
-  document.getElementById(id).classList.remove('show');
+  const m = document.getElementById(id);
+  if (m) m.classList.remove('active');
 }
+
+// Chiudi cliccando fuori
+window.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal')) {
+    e.target.classList.remove('active');
+  }
+});
