@@ -88,6 +88,15 @@ document.addEventListener('DOMContentLoaded', () => {
   renderPlayers();
   populateScorerSelect();
 
+  // Listener esplicito per assicurare il click ovunque (desktop & mobile touch)
+  const btnToggle = document.getElementById('btn-login-toggle');
+  if (btnToggle) {
+    btnToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleAdminLogin();
+    });
+  }
+
   // Sincronizzazione Realtime con Firebase Cloud
   setupFirebaseSync();
 
@@ -178,19 +187,30 @@ function updateAdminUI() {
   const badge = document.getElementById('role-badge');
   const btnLogin = document.getElementById('btn-login-toggle');
   const adminElements = document.querySelectorAll('.admin-only');
+  const guestElements = document.querySelectorAll('.guest-only');
 
   if (state.isAdmin) {
-    badge.className = 'badge badge-admin';
-    badge.textContent = '👑 Admin: Luca Belotti';
-    btnLogin.textContent = 'Disconnetti';
-    btnLogin.className = 'btn btn-outline';
+    if (badge) {
+      badge.className = 'badge badge-admin';
+      badge.textContent = '👑 Admin: Luca Belotti';
+    }
+    if (btnLogin) {
+      btnLogin.textContent = 'Disconnetti';
+      btnLogin.className = 'btn btn-outline';
+    }
     adminElements.forEach(el => el.style.display = 'inline-flex');
+    guestElements.forEach(el => el.style.display = 'none');
   } else {
-    badge.className = 'badge badge-guest';
-    badge.textContent = '👤 Visitatore (Sola Lettura)';
-    btnLogin.textContent = 'Accedi come Admin';
-    btnLogin.className = 'btn btn-yellow';
+    if (badge) {
+      badge.className = 'badge badge-guest';
+      badge.textContent = '👤 Visitatore (Sola Lettura)';
+    }
+    if (btnLogin) {
+      btnLogin.textContent = 'Accedi come Admin';
+      btnLogin.className = 'btn btn-yellow';
+    }
     adminElements.forEach(el => el.style.display = 'none');
+    guestElements.forEach(el => el.style.display = 'inline-flex');
   }
 }
 
@@ -690,17 +710,41 @@ function saveLocalMatches() {
 // Gestione Modali
 function openModal(id) {
   const m = document.getElementById(id);
-  if (m) m.classList.add('active');
+  if (m) {
+    m.classList.add('show');
+    m.classList.add('active');
+    m.style.display = 'flex';
+  }
 }
 
 function closeModal(id) {
   const m = document.getElementById(id);
-  if (m) m.classList.remove('active');
+  if (m) {
+    m.classList.remove('show');
+    m.classList.remove('active');
+    m.style.display = 'none';
+  }
 }
 
-// Chiudi cliccando fuori
+// Esporta tutte le funzioni globali su window per garantire massima compatibilità ovunque
+window.toggleAdminLogin = toggleAdminLogin;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.openEditNextMatch = openEditNextMatch;
+window.openEditMatchModal = openEditMatchModal;
+window.openResultModal = openResultModal;
+window.openEditLineupModal = openEditLineupModal;
+window.handleLoginSubmit = handleLoginSubmit;
+window.handleSaveLineup = handleSaveLineup;
+window.handleSaveMatchEdit = handleSaveMatchEdit;
+window.handleSaveResult = handleSaveResult;
+window.filterSquad = filterSquad;
+
+// Chiudi cliccando fuori dal contenuto
 window.addEventListener('click', (e) => {
-  if (e.target.classList.contains('modal')) {
+  if (e.target && e.target.classList && e.target.classList.contains('modal')) {
+    e.target.classList.remove('show');
     e.target.classList.remove('active');
+    e.target.style.display = 'none';
   }
 });
