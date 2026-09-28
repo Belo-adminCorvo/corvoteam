@@ -104,15 +104,15 @@ let state = {
   isAdmin: localStorage.getItem('corvo_local_admin') === 'true',
   activeModulo: '1-2-1',
   giocatori: [
-    { id: 1, nome: 'Stefano', cognome: 'Parigi', ruolo: 'Portiere', numero_maglia: 1 },
-    { id: 2, nome: 'Luca', cognome: 'Belotti', ruolo: 'Difensore', numero_maglia: 2 },
-    { id: 3, nome: 'Alberto', cognome: 'Ranieri', ruolo: 'Difensore', numero_maglia: 3 },
-    { id: 4, nome: 'Nicolò', cognome: 'Rota', ruolo: 'Difensore', numero_maglia: 4 },
-    { id: 5, nome: 'Pietro', cognome: 'Barcella', ruolo: 'Difensore', numero_maglia: 5 },
-    { id: 6, nome: 'Alessandro', cognome: 'Rota', ruolo: 'Centrocampista', numero_maglia: 7 },
-    { id: 7, nome: 'Andrea', cognome: 'Pasinetti', ruolo: 'Attaccante', numero_maglia: 8 },
-    { id: 8, nome: 'Raoul', cognome: 'Pasinetti', ruolo: 'Centrocampista', numero_maglia: 11 },
-    { id: 9, nome: 'Andrea', cognome: 'Dossena', ruolo: 'Centrocampista', numero_maglia: 10 }
+    { id: 1, nome: 'Stefano', cognome: 'Parigi', ruolo: 'Portiere', numero_maglia: 1, piede_forte: 'Destro', caratteristiche: 'Reattivo tra i pali, riflessi fulminei nelle conclusioni ravvicinate e guida vocale costante della difesa durante i calci piazzati.' },
+    { id: 2, nome: 'Luca', cognome: 'Belotti', ruolo: 'Difensore', numero_maglia: 2, foto_url: 'belotti.jpg', piede_forte: 'Destro', caratteristiche: 'Capitano carismatico del Corvo Team N29. Roccioso nell\'uno contro uno, senso della posizione difensiva impeccabile e visione lucida nell\'impostazione dell\'azione da dietro.' },
+    { id: 3, nome: 'Alberto', cognome: 'Ranieri', ruolo: 'Difensore', numero_maglia: 3, piede_forte: 'Destro', caratteristiche: 'Tempismo perfetto nelle diagonali difensive, marcatura asfissiante sull\'avversario diretto e grande spirito di sacrificio.' },
+    { id: 4, nome: 'Nicolò', cognome: 'Rota', ruolo: 'Difensore', numero_maglia: 4, foto_url: 'rota nicolo.jpg', piede_forte: 'Destro', caratteristiche: 'Difensore energico e tenace, grandissima grinta sui contrasti, rapido nelle chiusure laterali e spinta costante lungo la corsia difensiva.' },
+    { id: 5, nome: 'Pietro', cognome: 'Barcella', ruolo: 'Difensore', numero_maglia: 5, piede_forte: 'Destro', caratteristiche: 'Fisicità imponente, anticipo secco sul pivot rivale e personalità nel guidare le uscite difensive.' },
+    { id: 6, nome: 'Alessandro', cognome: 'Rota', ruolo: 'Centrocampista', numero_maglia: 7, piede_forte: 'Destro', caratteristiche: 'Dinamismo instancabile lungo tutta la fascia, abile nel dribbling stretto e tempi perfetti di inserimento a rete.' },
+    { id: 7, nome: 'Andrea', cognome: 'Pasinetti', ruolo: 'Attaccante', numero_maglia: 8, piede_forte: 'Destro', caratteristiche: 'Senso del gol letale, fa salire la squadra proteggendo palla di spalle e calcia con potenza da ogni posizione.' },
+    { id: 8, nome: 'Raoul', cognome: 'Pasinetti', ruolo: 'Centrocampista', numero_maglia: 11, piede_forte: 'Sinistro', caratteristiche: 'Piede mancino vellutato, visione periferica e conclusioni a giro velenose dalla media distanza.' },
+    { id: 9, nome: 'Andrea', cognome: 'Dossena', ruolo: 'Centrocampista', numero_maglia: 10, piede_forte: 'Destro', caratteristiche: 'Classe e fantasia, abile a dettare i ritmi della manovra e a servire assist millimetrici per i compagni.' }
   ],
   partite: [
     { id: 1, giornata: '1ª Giornata', data_ora: '2026-10-02 21:00:00', avversario: 'Cortenova All Stars', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Centro Sportivo San Rocco - Campo 1', note: 'Gara inaugurale del campionato.' },
@@ -512,6 +512,9 @@ function renderLineup() {
     bench.forEach(g => {
       const item = document.createElement('div');
       item.className = 'bench-item';
+      item.style.cursor = 'pointer';
+      item.title = `Clicca per aprire la scheda di ${g.nome} ${g.cognome}`;
+      item.onclick = () => openPlayerProfile(g.id);
       item.innerHTML = `
         <div class="bench-item-info">
           <span class="bench-num">#${g.numero_maglia}</span>
@@ -520,7 +523,7 @@ function renderLineup() {
             <div class="text-muted" style="font-size:0.7rem;">${g.ruolo}</div>
           </div>
         </div>
-        <span class="badge" style="background:#1e293b; color:#94a3b8; font-size:0.7rem;">Panchina</span>
+        <span class="badge" style="background:#1e293b; color:#facc15; font-size:0.7rem;">Scheda ➔</span>
       `;
       benchEl.appendChild(item);
     });
@@ -534,13 +537,16 @@ function renderPlayerMarker(elementId, player, coords, isGk, capId) {
   // Coordinate dinamiche per far muovere il marcatore sul campo in base al modulo
   el.style.left = coords.left;
   el.style.top = coords.top;
+  el.style.cursor = 'pointer';
+  el.title = `Clicca per aprire la scheda di ${player.nome} ${player.cognome}`;
+  el.onclick = () => openPlayerProfile(player.id);
 
   const isCap = player.id === capId;
   el.innerHTML = `
-    <div class="player-marker-shirt ${isGk ? 'gk-shirt' : ''}">
+    <div class="player-marker-shirt ${isGk ? 'gk-shirt' : ''}" style="${player.foto_url ? `background-image:url('${player.foto_url}'); background-size:cover; background-position:center; border-color:var(--primary-yellow);` : ''}">
       ${isCap ? '<span class="cap-badge">CAP</span>' : ''}
-      <span>#${player.numero_maglia}</span>
-      <span class="player-marker-role">${coords.label}</span>
+      <span style="${player.foto_url ? 'background:rgba(2,6,23,0.85); padding:1px 4px; border-radius:6px; font-size:0.75rem;' : ''}">#${player.numero_maglia}</span>
+      <span class="player-marker-role" style="${player.foto_url ? 'background:rgba(2,6,23,0.85); padding:0px 3px; border-radius:4px;' : ''}">${coords.label}</span>
     </div>
     <div class="player-marker-name">${player.nome} ${player.cognome}</div>
   `;
@@ -671,8 +677,10 @@ function handleSaveLineup(e) {
 }
 
 // =============================================================================
-// RENDERING ROSA GIOCATORI
+// RENDERING ROSA GIOCATORI & SCHEDA PROFILO DEDICATA
 // =============================================================================
+let currentInspectedPlayerId = 1;
+
 function renderPlayers() {
   const grid = document.getElementById('players-grid');
   if (!grid) return;
@@ -686,12 +694,34 @@ function renderPlayers() {
     const roleCls = `role-${g.ruolo.toLowerCase()}`;
     const card = document.createElement('div');
     card.className = 'player-card';
+    card.style.cursor = 'pointer';
+    card.title = `Clicca per aprire la scheda personale di ${g.nome} ${g.cognome}`;
+    card.onclick = () => openPlayerProfile(g.id);
+
+    const isCap = g.id === (state.formazione.capitanoId || 2);
 
     card.innerHTML = `
-      <span class="player-number">#${g.numero_maglia}</span>
-      <span class="player-role-badge ${roleCls}">${g.ruolo}</span>
-      <h4 class="player-name">${g.nome} ${g.cognome}</h4>
-      <p class="text-xs text-muted mt-2">CORVO TEAM N29 • Tesserato ufficiale</p>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          ${g.foto_url ? `
+            <div style="width:48px; height:48px; border-radius:14px; overflow:hidden; border:2px solid var(--primary-yellow); background:#020617; flex-shrink:0; box-shadow:0 4px 10px rgba(0,0,0,0.5);">
+              <img src="${g.foto_url}" alt="${g.nome}" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null; this.src='rota_nicolo.jpg';">
+            </div>
+          ` : `
+            <span class="player-number">#${g.numero_maglia}</span>
+          `}
+          <div>
+            ${g.foto_url ? `<span class="player-number" style="font-size:1.1rem; line-height:1; display:block;">#${g.numero_maglia}</span>` : ''}
+            <span class="player-role-badge ${roleCls}" style="${g.foto_url ? 'margin-top:2px; display:inline-block;' : ''}">${g.ruolo}</span>
+          </div>
+        </div>
+        ${isCap ? '<span class="badge" style="background:#facc15; color:#020617; font-weight:900; font-size:0.65rem;">👑 CAP</span>' : ''}
+      </div>
+      <h4 class="player-name" style="margin-top:8px;">${g.nome} ${g.cognome}</h4>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px; font-size:0.75rem; border-top:1px solid #1e293b; padding-top:8px;">
+        <span class="text-muted" style="font-size:0.7rem;">${g.foto_url ? '📷 Foto Ufficiale' : '📸 In attesa foto'}</span>
+        <span class="text-yellow" style="font-weight:bold; font-size:0.75rem;">Apri Scheda ➔</span>
+      </div>
     `;
 
     grid.appendChild(card);
@@ -699,6 +729,94 @@ function renderPlayers() {
 
   const pCount = document.getElementById('stat-count-players');
   if (pCount) pCount.textContent = state.giocatori.length;
+}
+
+// Apertura Scheda Profilo Giocatore
+function openPlayerProfile(id) {
+  const p = state.giocatori.find(g => g.id === id);
+  if (!p) return;
+
+  currentInspectedPlayerId = p.id;
+
+  // Nome e Cognome
+  const nameEl = document.getElementById('profile-player-name');
+  if (nameEl) nameEl.innerHTML = `${p.nome} <span class="text-yellow">${p.cognome}</span>`;
+
+  // Statistiche
+  const roleStat = document.getElementById('profile-stat-role');
+  if (roleStat) roleStat.textContent = p.ruolo;
+
+  const numStat = document.getElementById('profile-stat-num');
+  if (numStat) numStat.textContent = '#' + p.numero_maglia;
+
+  const footStat = document.getElementById('profile-stat-foot');
+  if (footStat) footStat.textContent = p.piede_forte || 'Destro';
+
+  const roleBadge = document.getElementById('profile-badge-role');
+  if (roleBadge) roleBadge.textContent = p.ruolo.toUpperCase();
+
+  const isCap = p.id === (state.formazione.capitanoId || 2);
+  const capBadge = document.getElementById('profile-badge-cap');
+  if (capBadge) capBadge.style.display = isCap ? 'inline-block' : 'none';
+
+  // Descrizione Tecnica
+  const descEl = document.getElementById('profile-player-desc');
+  if (descEl) {
+    let desc = p.caratteristiche;
+    if (!desc) {
+      if (p.ruolo === 'Portiere') desc = 'Reattivo tra i pali, riflessi fulminei nelle conclusioni ravvicinate e guida vocale costante della difesa durante i piazzati.';
+      else if (p.ruolo === 'Difensore') desc = 'Senso della posizione impeccabile, roccioso nell\'uno contro uno, contrasti puliti e ottima visione per impostare l\'azione dal basso.';
+      else if (p.ruolo === 'Centrocampista') desc = 'Dinamismo instancabile lungo tutta la fascia, abile nel dribbling stretto e tempi perfetti di inserimento a rete.';
+      else desc = 'Senso del gol letale, fa salire la squadra proteggendo palla di spalle e calcia con potenza da ogni posizione.';
+    }
+    descEl.textContent = desc;
+  }
+
+  // Foto o avatar numerato
+  const photoBox = document.getElementById('profile-avatar-box');
+  if (photoBox) {
+    if (p.foto_url) {
+      photoBox.innerHTML = `<img src="${p.foto_url}" alt="${p.nome} ${p.cognome}" class="profile-avatar-img">`;
+    } else {
+      photoBox.innerHTML = `
+        <span style="font-size:2.2rem; font-weight:900; color:var(--primary-yellow); font-family:monospace; line-height:1;">#${p.numero_maglia}</span>
+        <span style="font-size:0.55rem; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-top:4px;">Foto in arrivo</span>
+      `;
+    }
+  }
+
+  const photoInput = document.getElementById('profile-input-photo-url');
+  if (photoInput) photoInput.value = p.foto_url || '';
+
+  openModal('modal-player-profile');
+}
+
+// Salvataggio Foto Giocatore (Admin o quando Luca le carica)
+function savePlayerPhotoUrl() {
+  if (!currentInspectedPlayerId) return;
+  const input = document.getElementById('profile-input-photo-url');
+  const url = input ? input.value.trim() : '';
+
+  const idx = state.giocatori.findIndex(g => g.id === currentInspectedPlayerId);
+  if (idx !== -1) {
+    state.giocatori[idx].foto_url = url;
+    try {
+      localStorage.setItem('corvo_local_players', JSON.stringify(state.giocatori));
+    } catch (e) {}
+
+    // Sincronizza su Firebase Cloud se connesso
+    if (db) {
+      try {
+        db.collection('campionato').doc('corvoteam_data').set({
+          giocatori: state.giocatori
+        }, { merge: true });
+      } catch (e) {}
+    }
+
+    openPlayerProfile(currentInspectedPlayerId);
+    renderPlayers();
+    alert('Foto profilo aggiornata con successo!');
+  }
 }
 
 function filterSquad(role) {
@@ -917,6 +1035,8 @@ window.handleSaveMatchEdit = handleSaveMatchEdit;
 window.handleSaveResult = handleSaveResult;
 window.filterSquad = filterSquad;
 window.selectModulo = selectModulo;
+window.openPlayerProfile = openPlayerProfile;
+window.savePlayerPhotoUrl = savePlayerPhotoUrl;
 
 // Chiudi cliccando fuori dal contenuto
 window.addEventListener('click', (e) => {
