@@ -5,9 +5,104 @@
  * ==============================================================================
  */
 
+// DEFINIZIONE DEGLI SCHEMI TATTICI UFFICIALI DEL CALCIO A 5
+const SCHEMI_CALCETTO = {
+  '1-2-1': {
+    id: '1-2-1',
+    nome: '1-2-1 Rombo',
+    soprannome: 'Il Diamante',
+    descrizione: 'Lo schema classico del Futsal: perfetto equilibrio tra ultimo difensore, ampiezza dei laterali e scarico sul pivot.',
+    tag: 'BILANCIATO',
+    adattoA: 'Controllo gara, possesso palla e tagli in profondità del pivot.',
+    posizioni: {
+      gk: { left: '8%', top: '50%', label: 'POR' },
+      p1: { left: '26%', top: '50%', label: 'ULTIMO' },
+      p2: { left: '52%', top: '22%', label: 'LAT SX' },
+      p3: { left: '52%', top: '78%', label: 'LAT DX' },
+      p4: { left: '80%', top: '50%', label: 'PIVOT' },
+    }
+  },
+  '2-2': {
+    id: '2-2',
+    nome: '2-2 Quadrato',
+    soprannome: 'La Scatola (Box)',
+    descrizione: 'Due difensori bassi e due punte alte: genera pressing asfissiante a coppie e triangolazioni rapide sui binari.',
+    tag: 'PRESSING & POSSESSO',
+    adattoA: 'Bloccare avversari tecnici, pressing alto e raddoppi di marcatura.',
+    posizioni: {
+      gk: { left: '8%', top: '50%', label: 'POR' },
+      p1: { left: '30%', top: '28%', label: 'DIF SX' },
+      p2: { left: '30%', top: '72%', label: 'DIF DX' },
+      p3: { left: '74%', top: '28%', label: 'PUNTA SX' },
+      p4: { left: '74%', top: '72%', label: 'PUNTA DX' },
+    }
+  },
+  '1-1-2': {
+    id: '1-1-2',
+    nome: '1-1-2 La Y',
+    soprannome: 'Super Offensivo',
+    descrizione: 'Un solo difensore ultimo, un regista fulcro a centrocampo e due punte larghe pronte a tagliare in area.',
+    tag: 'TRAZIONE ANTERIORE',
+    adattoA: 'Recuperare partite in svantaggio, attaccare ad alto ritmo e assedio d\'area.',
+    posizioni: {
+      gk: { left: '8%', top: '50%', label: 'POR' },
+      p1: { left: '24%', top: '50%', label: 'ULTIMO' },
+      p2: { left: '48%', top: '50%', label: 'REGISTA' },
+      p3: { left: '76%', top: '24%', label: 'ALA SX' },
+      p4: { left: '76%', top: '76%', label: 'ALA DX' },
+    }
+  },
+  '3-1': {
+    id: '3-1',
+    nome: '3-1 Piramide',
+    soprannome: 'Muro Difensivo',
+    descrizione: 'Tre giocatori sulla linea arretrata a protezione della porta e un solo pivot boa isolato pronto a far salire la squadra.',
+    tag: 'DIFESA & RIPARTENZA',
+    adattoA: 'Difendere il vantaggio nei minuti finali o arginare avversari con attacco devastante.',
+    posizioni: {
+      gk: { left: '8%', top: '50%', label: 'POR' },
+      p1: { left: '30%', top: '22%', label: 'TERZ SX' },
+      p2: { left: '26%', top: '50%', label: 'CENTRALE' },
+      p3: { left: '30%', top: '78%', label: 'TERZ DX' },
+      p4: { left: '82%', top: '50%', label: 'BOA PIVOT' },
+    }
+  },
+  '1-3-0': {
+    id: '1-3-0',
+    nome: '1-3-0 Falso Nueve',
+    soprannome: 'Rotazione Totale',
+    descrizione: 'Nessun attaccante fisso. Tre centrocampisti universali mobili che scambiano posizione senza dare riferimenti.',
+    tag: 'ZERO RIFERIMENTI',
+    adattoA: 'Disorientare difensori fisici o quando mancano attaccanti di ruolo.',
+    posizioni: {
+      gk: { left: '8%', top: '50%', label: 'POR' },
+      p1: { left: '24%', top: '50%', label: 'ULTIMO' },
+      p2: { left: '56%', top: '22%', label: 'UNIV SX' },
+      p3: { left: '52%', top: '50%', label: 'UNIV CENT' },
+      p4: { left: '56%', top: '78%', label: 'UNIV DX' },
+    }
+  },
+  'power-play': {
+    id: 'power-play',
+    nome: 'Power Play 5v4',
+    soprannome: 'Portiere Volante',
+    descrizione: 'Il portiere avanza nella metà campo opposta creando costante superiorità numerica (5 contro 4).',
+    tag: 'ALL-IN FINALE',
+    adattoA: 'Ultimi 3 minuti per ribaltare o pareggiare la partita.',
+    posizioni: {
+      gk: { left: '36%', top: '50%', label: 'POR VOLANTE' },
+      p1: { left: '54%', top: '18%', label: 'LATO ALTO' },
+      p2: { left: '54%', top: '82%', label: 'LATO BASSO' },
+      p3: { left: '78%', top: '32%', label: 'PIVOT SX' },
+      p4: { left: '78%', top: '68%', label: 'PIVOT DX' },
+    }
+  }
+};
+
 // Stato dell'applicazione con i 9 atleti ufficiali e il calendario
 let state = {
   isAdmin: localStorage.getItem('corvo_local_admin') === 'true',
+  activeModulo: '1-2-1',
   giocatori: [
     { id: 1, nome: 'Stefano', cognome: 'Parigi', ruolo: 'Portiere', numero_maglia: 1 },
     { id: 2, nome: 'Luca', cognome: 'Belotti', ruolo: 'Difensore', numero_maglia: 2 },
@@ -30,11 +125,12 @@ let state = {
   ],
   formazione: {
     matchId: 1,
+    modulo: '1-2-1',
     gkId: 1,
-    defId: 2,
-    lat1Id: 6,
-    lat2Id: 8,
-    fwdId: 7,
+    p1Id: 2,
+    p2Id: 6,
+    p3Id: 8,
+    p4Id: 7,
     capitanoId: 2,
     ritrovo: 'Ore 20:30 agli spogliatoi (Maglia Ufficiale Gialla)',
     note: 'Partita inaugurale! Massima puntualità per il riscaldamento pre-partita.',
@@ -78,24 +174,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedPlayers) state.giocatori = JSON.parse(savedPlayers);
 
     const savedLineup = localStorage.getItem('corvo_local_lineup');
-    if (savedLineup) state.formazione = JSON.parse(savedLineup);
+    if (savedLineup) {
+      state.formazione = JSON.parse(savedLineup);
+      if (state.formazione.modulo) {
+        state.activeModulo = state.formazione.modulo;
+      }
+    }
   } catch (e) {}
 
   updateAdminUI();
   renderHeroMatch();
   renderMatches();
+  renderModulesBar();
   renderLineup();
   renderPlayers();
   populateScorerSelect();
-
-  // Listener esplicito per assicurare il click ovunque (desktop & mobile touch)
-  const btnToggle = document.getElementById('btn-login-toggle');
-  if (btnToggle) {
-    btnToggle.addEventListener('click', (e) => {
-      e.preventDefault();
-      toggleAdminLogin();
-    });
-  }
 
   // Sincronizzazione Realtime con Firebase Cloud
   setupFirebaseSync();
@@ -109,52 +202,47 @@ function setupFirebaseSync() {
   if (!db) return;
 
   // 1. Dati Partite & Giocatori
-  const docRef = db.collection('campionato').doc('corvoteam_data');
-  docRef.onSnapshot((doc) => {
-    if (doc.exists) {
-      const data = doc.data();
-      if (data && Array.isArray(data.partite) && data.partite.length > 0) {
-        state.partite = data.partite;
-        saveLocalMatchesOnly();
-        renderHeroMatch();
-        renderMatches();
+  try {
+    const docRef = db.collection('campionato').doc('corvoteam_data');
+    docRef.onSnapshot((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (data && Array.isArray(data.partite) && data.partite.length > 0) {
+          state.partite = data.partite;
+          saveLocalMatchesOnly();
+          renderHeroMatch();
+          renderMatches();
+        }
+        if (data && Array.isArray(data.giocatori) && data.giocatori.length > 0) {
+          state.giocatori = data.giocatori;
+          renderPlayers();
+        }
       }
-      if (data && Array.isArray(data.giocatori) && data.giocatori.length > 0) {
-        state.giocatori = data.giocatori;
-        renderPlayers();
-      }
-    } else {
-      docRef.set({
-        partite: state.partite,
-        giocatori: state.giocatori,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).catch(err => console.log('Init doc err:', err));
-    }
-  }, (err) => {
-    console.warn('Avviso Firebase partite:', err.message);
-  });
+    }, (err) => {
+      console.warn('Avviso Firebase partite:', err.message);
+    });
 
-  // 2. Dati Rosa Titolare & Formazione
-  const lineupRef = db.collection('campionato').doc('formazione_data');
-  lineupRef.onSnapshot((doc) => {
-    if (doc.exists) {
-      const data = doc.data();
-      if (data && data.gkId) {
-        state.formazione = data;
-        try {
-          localStorage.setItem('corvo_local_lineup', JSON.stringify(data));
-        } catch (e) {}
-        renderLineup();
+    // 2. Dati Rosa Titolare & Formazione
+    const lineupRef = db.collection('campionato').doc('formazione_data');
+    lineupRef.onSnapshot((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (data && data.gkId) {
+          state.formazione = data;
+          if (data.modulo) state.activeModulo = data.modulo;
+          try {
+            localStorage.setItem('corvo_local_lineup', JSON.stringify(data));
+          } catch (e) {}
+          renderModulesBar();
+          renderLineup();
+        }
       }
-    } else {
-      lineupRef.set({
-        ...state.formazione,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).catch(err => console.log('Init lineup err:', err));
-    }
-  }, (err) => {
-    console.warn('Avviso Firebase lineup:', err.message);
-  });
+    }, (err) => {
+      console.warn('Avviso Firebase lineup:', err.message);
+    });
+  } catch (err) {
+    console.warn('Errore setup Firebase:', err);
+  }
 }
 
 // Funzione di sincronizzazione con backend PHP locale se disponibile
@@ -214,38 +302,24 @@ function updateAdminUI() {
   }
 }
 
-function toggleAdminLogin() {
-  if (state.isAdmin) {
-    state.isAdmin = false;
-    localStorage.removeItem('corvo_local_admin');
-    updateAdminUI();
-    renderHeroMatch();
-    renderMatches();
-    renderLineup();
-    alert('Disconnesso: modalità sola consultazione attiva.');
-  } else {
-    document.getElementById('login-user').value = '';
-    document.getElementById('login-pass').value = '';
-    openModal('modal-login');
-  }
-}
-
 function handleLoginSubmit(e) {
-  e.preventDefault();
-  const user = document.getElementById('login-user').value.trim().toLowerCase();
-  const pass = document.getElementById('login-pass').value.trim();
+  if (e && e.preventDefault) e.preventDefault();
+  const userEl = document.getElementById('login-user');
+  const passEl = document.getElementById('login-pass');
+  const user = userEl ? userEl.value.trim().toLowerCase() : '';
+  const pass = passEl ? passEl.value.trim() : '';
   
   if ((user === 'lucabelotti771@gmail.com' || user === 'luca belotti') && pass === 'corvo2026') {
     state.isAdmin = true;
     localStorage.setItem('corvo_local_admin', 'true');
-    closeModal('modal-login');
+    closeAdminLoginModal();
     updateAdminUI();
     renderHeroMatch();
     renderMatches();
     renderLineup();
     alert('Accesso Amministratore autorizzato! Benvenuto Luca Belotti.');
   } else {
-    alert('Accesso negato. Credenziali riservate non valide.');
+    alert('Credenziali non valide. Accesso riservato esclusivamente all\'amministratore.');
   }
 }
 
@@ -256,26 +330,39 @@ function renderHeroMatch() {
   const next = state.partite.find(p => p.stato === 'programmata' || p.stato === 'da_definire') || state.partite[0];
   if (!next) return;
 
-  document.getElementById('hero-giornata').textContent = `${next.giornata} • Campionato 2026/2027`;
-  document.getElementById('hero-away-name').textContent = next.avversario;
-  document.getElementById('hero-away-abbr').textContent = next.avversario.substring(0, 2).toUpperCase();
-  document.getElementById('hero-venue').textContent = `📍 ${next.luogo || 'Centro Sportivo San Rocco'}`;
+  const elGiornata = document.getElementById('hero-giornata');
+  if (elGiornata) elGiornata.textContent = `${next.giornata} • Campionato 2026/2027`;
+  
+  const elAwayName = document.getElementById('hero-away-name');
+  if (elAwayName) elAwayName.textContent = next.avversario;
+  
+  const elAwayAbbr = document.getElementById('hero-away-abbr');
+  if (elAwayAbbr) elAwayAbbr.textContent = next.avversario.substring(0, 2).toUpperCase();
+  
+  const elVenue = document.getElementById('hero-venue');
+  if (elVenue) elVenue.textContent = `📍 ${next.luogo || 'Centro Sportivo San Rocco'}`;
 
   const isTbd = Boolean(next.da_definire);
   const statusEl = document.getElementById('hero-status');
+  const elDate = document.getElementById('hero-date');
   if (isTbd) {
-    document.getElementById('hero-date').textContent = '📅 Data in attesa di conferma';
-    statusEl.className = 'status-tbd';
-    statusEl.textContent = '⏳ Da definire';
+    if (elDate) elDate.textContent = '📅 Data in attesa di conferma';
+    if (statusEl) {
+      statusEl.className = 'status-tbd';
+      statusEl.textContent = '⏳ Da definire';
+    }
   } else {
-    document.getElementById('hero-date').textContent = `📅 ${next.data_ora ? next.data_ora.substring(0, 16) : 'Ven 02 Ottobre 21:00'}`;
-    statusEl.className = 'status-confirmed';
-    statusEl.textContent = 'Confermata';
+    if (elDate) elDate.textContent = `📅 ${next.data_ora ? next.data_ora.substring(0, 16) : 'Ven 02 Ottobre 21:00'}`;
+    if (statusEl) {
+      statusEl.className = 'status-confirmed';
+      statusEl.textContent = 'Confermata';
+    }
   }
 }
 
 function renderMatches() {
   const grid = document.getElementById('matches-grid');
+  if (!grid) return;
   grid.innerHTML = '';
 
   state.partite.forEach(p => {
@@ -332,102 +419,161 @@ function renderMatches() {
     grid.appendChild(card);
   });
 
-  document.getElementById('stat-count-matches').textContent = state.partite.length;
+  const countEl = document.getElementById('stat-count-matches');
+  if (countEl) countEl.textContent = state.partite.length;
 }
 
 // =============================================================================
-// RENDERING ROSA TITOLARE & FORMAZIONE (5v5)
+// SCHEMI TATTICI CALCIO A 5 & RENDERING ROSA TITOLARE
 // =============================================================================
+function renderModulesBar() {
+  const bar = document.getElementById('modules-selector-bar');
+  if (!bar) return;
+  bar.innerHTML = '';
+
+  Object.values(SCHEMI_CALCETTO).forEach(mod => {
+    const isAct = state.activeModulo === mod.id;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `module-btn ${isAct ? 'active' : ''}`;
+    btn.onclick = () => selectModulo(mod.id);
+    btn.innerHTML = `
+      <span class="module-btn-title">${mod.nome}</span>
+      <span class="module-btn-sub">${mod.soprannome}</span>
+    `;
+    bar.appendChild(btn);
+  });
+
+  // Aggiorna box descrittivo
+  const curr = SCHEMI_CALCETTO[state.activeModulo] || SCHEMI_CALCETTO['1-2-1'];
+  const nameEl = document.getElementById('module-info-name');
+  const descEl = document.getElementById('module-info-desc');
+  const tagEl = document.getElementById('module-info-tag');
+  const waterEl = document.getElementById('pitch-watermark');
+
+  if (nameEl) nameEl.textContent = `${curr.nome} (${curr.soprannome}):`;
+  if (descEl) descEl.textContent = `${curr.descrizione} 💡 ${curr.adattoA}`;
+  if (tagEl) tagEl.textContent = curr.tag;
+  if (waterEl) waterEl.textContent = curr.id;
+}
+
+function selectModulo(modId) {
+  state.activeModulo = modId;
+  state.formazione.modulo = modId;
+  renderModulesBar();
+  renderLineup();
+}
+
 function renderLineup() {
   const f = state.formazione;
+  const mod = SCHEMI_CALCETTO[state.activeModulo] || SCHEMI_CALCETTO['1-2-1'];
   const match = state.partite.find(p => p.id === f.matchId) || state.partite[0];
 
   // Info header
   if (match) {
-    document.getElementById('lineup-match-title').textContent = `${match.giornata}: CORVO TEAM vs ${match.avversario}`;
+    const mTitle = document.getElementById('lineup-match-title');
+    if (mTitle) mTitle.textContent = `${match.giornata}: CORVO TEAM vs ${match.avversario}`;
   }
-  document.getElementById('lineup-ritrovo').textContent = f.ritrovo || 'Ore 20:30 agli spogliatoi (Maglia Gialla)';
-  document.getElementById('lineup-note').textContent = `"${f.note || 'Massima concentrazione per la partita!'}"`;
+  const rEl = document.getElementById('lineup-ritrovo');
+  if (rEl) rEl.textContent = f.ritrovo || 'Ore 20:30 agli spogliatoi (Maglia Gialla)';
+
+  const nEl = document.getElementById('lineup-note');
+  if (nEl) nEl.textContent = `"${f.note || 'Massima concentrazione per la partita!'}"`;
 
   const cap = state.giocatori.find(g => g.id === f.capitanoId);
-  document.getElementById('lineup-capitano').textContent = cap ? `${cap.nome} ${cap.cognome} (#${cap.numero_maglia})` : 'Luca Belotti (#2)';
+  const capEl = document.getElementById('lineup-capitano');
+  if (capEl) capEl.textContent = cap ? `${cap.nome} ${cap.cognome} (#${cap.numero_maglia})` : 'Luca Belotti (#2)';
 
-  if (f.updatedAt) {
-    document.getElementById('lineup-updated').textContent = `Formazione aggiornata il ${f.updatedAt}`;
+  const uEl = document.getElementById('lineup-updated');
+  if (uEl && f.updatedAt) {
+    uEl.textContent = `Formazione aggiornata il ${f.updatedAt}`;
   }
 
   // Risoluzione dei 5 giocatori titolari
   const gk = state.giocatori.find(g => g.id === f.gkId) || state.giocatori[0];
-  const def = state.giocatori.find(g => g.id === f.defId) || state.giocatori[1];
-  const lat1 = state.giocatori.find(g => g.id === f.lat1Id) || state.giocatori[5];
-  const lat2 = state.giocatori.find(g => g.id === f.lat2Id) || state.giocatori[7];
-  const fwd = state.giocatori.find(g => g.id === f.fwdId) || state.giocatori[6];
+  const p1 = state.giocatori.find(g => g.id === (f.p1Id || f.defId)) || state.giocatori[1];
+  const p2 = state.giocatori.find(g => g.id === (f.p2Id || f.lat1Id)) || state.giocatori[5];
+  const p3 = state.giocatori.find(g => g.id === (f.p3Id || f.lat2Id)) || state.giocatori[7];
+  const p4 = state.giocatori.find(g => g.id === (f.p4Id || f.fwdId)) || state.giocatori[6];
 
-  renderPitchSlot('slot-gk', gk, 'POR', true, f.capitanoId);
-  renderPitchSlot('slot-def', def, 'DIF', false, f.capitanoId);
-  renderPitchSlot('slot-lat1', lat1, 'LAT SX', false, f.capitanoId);
-  renderPitchSlot('slot-lat2', lat2, 'LAT DX', false, f.capitanoId);
-  renderPitchSlot('slot-fwd', fwd, 'PIVOT', false, f.capitanoId);
+  renderPlayerMarker('marker-gk', gk, mod.posizioni.gk, true, f.capitanoId);
+  renderPlayerMarker('marker-p1', p1, mod.posizioni.p1, false, f.capitanoId);
+  renderPlayerMarker('marker-p2', p2, mod.posizioni.p2, false, f.capitanoId);
+  renderPlayerMarker('marker-p3', p3, mod.posizioni.p3, false, f.capitanoId);
+  renderPlayerMarker('marker-p4', p4, mod.posizioni.p4, false, f.capitanoId);
 
   // Panchina (i restanti 4 atleti)
-  const starters = new Set([gk?.id, def?.id, lat1?.id, lat2?.id, fwd?.id].filter(Boolean));
+  const starters = new Set([gk?.id, p1?.id, p2?.id, p3?.id, p4?.id].filter(Boolean));
   const bench = state.giocatori.filter(g => !starters.has(g.id));
 
   const benchEl = document.getElementById('lineup-bench-list');
-  benchEl.innerHTML = '';
-
-  bench.forEach(g => {
-    const item = document.createElement('div');
-    item.className = 'bench-item';
-    item.innerHTML = `
-      <div class="bench-item-info">
-        <span class="bench-num">#${g.numero_maglia}</span>
-        <div>
-          <strong style="color:#fff;">${g.nome} ${g.cognome}</strong>
-          <div class="text-muted" style="font-size:0.7rem;">${g.ruolo}</div>
+  if (benchEl) {
+    benchEl.innerHTML = '';
+    bench.forEach(g => {
+      const item = document.createElement('div');
+      item.className = 'bench-item';
+      item.innerHTML = `
+        <div class="bench-item-info">
+          <span class="bench-num">#${g.numero_maglia}</span>
+          <div>
+            <strong style="color:#fff;">${g.nome} ${g.cognome}</strong>
+            <div class="text-muted" style="font-size:0.7rem;">${g.ruolo}</div>
+          </div>
         </div>
-      </div>
-      <span class="badge" style="background:#1e293b; color:#94a3b8; font-size:0.7rem;">Panchina</span>
-    `;
-    benchEl.appendChild(item);
-  });
+        <span class="badge" style="background:#1e293b; color:#94a3b8; font-size:0.7rem;">Panchina</span>
+      `;
+      benchEl.appendChild(item);
+    });
+  }
 }
 
-function renderPitchSlot(elementId, player, roleLabel, isGk, capId) {
+function renderPlayerMarker(elementId, player, coords, isGk, capId) {
   const el = document.getElementById(elementId);
   if (!el || !player) return;
 
+  // Coordinate dinamiche per far muovere il marcatore sul campo in base al modulo
+  el.style.left = coords.left;
+  el.style.top = coords.top;
+
   const isCap = player.id === capId;
   el.innerHTML = `
-    <div class="player-marker">
-      <div class="player-marker-shirt ${isGk ? 'gk-shirt' : ''}">
-        ${isCap ? '<span class="cap-badge">CAP</span>' : ''}
-        <span>#${player.numero_maglia}</span>
-        <span class="player-marker-role">${roleLabel}</span>
-      </div>
-      <div class="player-marker-name">${player.nome} ${player.cognome}</div>
+    <div class="player-marker-shirt ${isGk ? 'gk-shirt' : ''}">
+      ${isCap ? '<span class="cap-badge">CAP</span>' : ''}
+      <span>#${player.numero_maglia}</span>
+      <span class="player-marker-role">${coords.label}</span>
     </div>
+    <div class="player-marker-name">${player.nome} ${player.cognome}</div>
   `;
 }
 
-// Modale Modifica Formazione Titolare (Admin)
+// Modale Modifica Formazione Titolare & Schema (Admin)
 function openEditLineupModal() {
   const f = state.formazione;
 
   // Match select
   const matchSelect = document.getElementById('lineup-select-match');
-  matchSelect.innerHTML = '';
-  state.partite.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p.id;
-    opt.textContent = `${p.giornata}: vs ${p.avversario} (${p.data_ora.split(' ')[0]})`;
-    if (p.id === f.matchId) opt.selected = true;
-    matchSelect.appendChild(opt);
-  });
+  if (matchSelect) {
+    matchSelect.innerHTML = '';
+    state.partite.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = `${p.giornata}: vs ${p.avversario} (${p.data_ora.split(' ')[0]})`;
+      if (p.id === f.matchId) opt.selected = true;
+      matchSelect.appendChild(opt);
+    });
+  }
+
+  // Modulo select
+  const modSelect = document.getElementById('lineup-select-modulo');
+  if (modSelect) {
+    modSelect.value = state.activeModulo || f.modulo || '1-2-1';
+    onModalModuloChange(modSelect.value);
+  }
 
   // Player selects helper
   const fillSelect = (selectId, selectedId) => {
     const s = document.getElementById(selectId);
+    if (!s) return;
     s.innerHTML = '';
     state.giocatori.forEach(g => {
       const opt = document.createElement('option');
@@ -439,39 +585,60 @@ function openEditLineupModal() {
   };
 
   fillSelect('lineup-select-gk', f.gkId);
-  fillSelect('lineup-select-def', f.defId);
-  fillSelect('lineup-select-lat1', f.lat1Id);
-  fillSelect('lineup-select-lat2', f.lat2Id);
-  fillSelect('lineup-select-fwd', f.fwdId);
+  fillSelect('lineup-select-p1', f.p1Id || f.defId);
+  fillSelect('lineup-select-p2', f.p2Id || f.lat1Id);
+  fillSelect('lineup-select-p3', f.p3Id || f.lat2Id);
+  fillSelect('lineup-select-p4', f.p4Id || f.fwdId);
   fillSelect('lineup-select-cap', f.capitanoId);
 
-  document.getElementById('lineup-input-ritrovo').value = f.ritrovo || '';
-  document.getElementById('lineup-input-note').value = f.note || '';
+  const ritr = document.getElementById('lineup-input-ritrovo');
+  if (ritr) ritr.value = f.ritrovo || '';
+  
+  const note = document.getElementById('lineup-input-note');
+  if (note) note.value = f.note || '';
 
   openModal('modal-lineup');
 }
 
+function onModalModuloChange(modId) {
+  const schema = SCHEMI_CALCETTO[modId] || SCHEMI_CALCETTO['1-2-1'];
+  const lGk = document.getElementById('label-gk');
+  const lP1 = document.getElementById('label-p1');
+  const lP2 = document.getElementById('label-p2');
+  const lP3 = document.getElementById('label-p3');
+  const lP4 = document.getElementById('label-p4');
+
+  if (lGk) lGk.textContent = `🧤 ${schema.posizioni.gk.label} (Portiere):`;
+  if (lP1) lP1.textContent = `🛡️ ${schema.posizioni.p1.label}:`;
+  if (lP2) lP2.textContent = `⚡ ${schema.posizioni.p2.label}:`;
+  if (lP3) lP3.textContent = `⚡ ${schema.posizioni.p3.label}:`;
+  if (lP4) lP4.textContent = `🎯 ${schema.posizioni.p4.label}:`;
+}
+
 function handleSaveLineup(e) {
-  e.preventDefault();
+  if (e && e.preventDefault) e.preventDefault();
   const matchId = parseInt(document.getElementById('lineup-select-match').value, 10);
+  const modulo = document.getElementById('lineup-select-modulo').value;
   const gkId = parseInt(document.getElementById('lineup-select-gk').value, 10);
-  const defId = parseInt(document.getElementById('lineup-select-def').value, 10);
-  const lat1Id = parseInt(document.getElementById('lineup-select-lat1').value, 10);
-  const lat2Id = parseInt(document.getElementById('lineup-select-lat2').value, 10);
-  const fwdId = parseInt(document.getElementById('lineup-select-fwd').value, 10);
+  const p1Id = parseInt(document.getElementById('lineup-select-p1').value, 10);
+  const p2Id = parseInt(document.getElementById('lineup-select-p2').value, 10);
+  const p3Id = parseInt(document.getElementById('lineup-select-p3').value, 10);
+  const p4Id = parseInt(document.getElementById('lineup-select-p4').value, 10);
   const capitanoId = parseInt(document.getElementById('lineup-select-cap').value, 10);
   const ritrovo = document.getElementById('lineup-input-ritrovo').value.trim();
   const note = document.getElementById('lineup-input-note').value.trim();
 
   const nowStr = new Date().toLocaleDateString('it-IT') + ' ore ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
 
+  state.activeModulo = modulo;
   state.formazione = {
     matchId,
+    modulo,
     gkId,
-    defId,
-    lat1Id,
-    lat2Id,
-    fwdId,
+    p1Id,
+    p2Id,
+    p3Id,
+    p4Id,
     capitanoId,
     ritrovo,
     note,
@@ -485,19 +652,22 @@ function handleSaveLineup(e) {
 
   // Sincronizza su Firebase Firestore Cloud
   if (db) {
-    db.collection('campionato').doc('formazione_data').set({
-      ...state.formazione,
-      updatedAtServer: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true }).then(() => {
-      console.log('Formazione sincronizzata con successo su Google Firebase Cloud!');
-    }).catch(err => {
-      console.error('Errore sincronizzazione formazione:', err);
-    });
+    try {
+      db.collection('campionato').doc('formazione_data').set({
+        ...state.formazione,
+        updatedAtLocal: nowStr
+      }, { merge: true }).then(() => {
+        console.log('Formazione sincronizzata con successo su Google Firebase Cloud!');
+      }).catch(err => {
+        console.warn('Avviso sincronizzazione cloud:', err.message);
+      });
+    } catch (e) {}
   }
 
   closeModal('modal-lineup');
+  renderModulesBar();
   renderLineup();
-  alert('Formazione Ufficiale salvata e visibile a tutti i compagni!');
+  alert('Formazione Ufficiale e schema ' + modulo + ' salvati con successo per tutta la squadra!');
 }
 
 // =============================================================================
@@ -505,6 +675,7 @@ function handleSaveLineup(e) {
 // =============================================================================
 function renderPlayers() {
   const grid = document.getElementById('players-grid');
+  if (!grid) return;
   grid.innerHTML = '';
 
   const filtered = state.selectedRoleFilter === 'Tutti'
@@ -526,7 +697,8 @@ function renderPlayers() {
     grid.appendChild(card);
   });
 
-  document.getElementById('stat-count-players').textContent = state.giocatori.length;
+  const pCount = document.getElementById('stat-count-players');
+  if (pCount) pCount.textContent = state.giocatori.length;
 }
 
 function filterSquad(role) {
@@ -564,7 +736,7 @@ function openEditMatchModal(id) {
 }
 
 function handleSaveMatchEdit(e) {
-  e.preventDefault();
+  if (e && e.preventDefault) e.preventDefault();
   const id = parseInt(document.getElementById('edit-match-id').value, 10);
   const data = document.getElementById('edit-match-data').value;
   const ora = document.getElementById('edit-match-ora').value;
@@ -642,6 +814,7 @@ function addScorerRow() {
 
 function renderScorersList() {
   const wrap = document.getElementById('scorers-list');
+  if (!wrap) return;
   wrap.innerHTML = '';
 
   state.currentScorers.forEach((s, idx) => {
@@ -664,7 +837,7 @@ function removeScorer(idx) {
 }
 
 function handleSaveResult(e) {
-  e.preventDefault();
+  if (e && e.preventDefault) e.preventDefault();
   const id = parseInt(document.getElementById('result-match-id').value, 10);
   const gf = parseInt(document.getElementById('result-gol-fatti').value, 10);
   const gs = parseInt(document.getElementById('result-gol-subiti').value, 10);
@@ -695,15 +868,17 @@ function saveLocalMatches() {
 
   // Sincronizza su Firebase Firestore Cloud
   if (db) {
-    db.collection('campionato').doc('corvoteam_data').set({
-      partite: state.partite,
-      giocatori: state.giocatori,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true }).then(() => {
-      console.log('Salvataggio su Google Firebase Cloud completato!');
-    }).catch(err => {
-      console.error('Errore durante salvataggio su Firebase Cloud:', err);
-    });
+    try {
+      db.collection('campionato').doc('corvoteam_data').set({
+        partite: state.partite,
+        giocatori: state.giocatori,
+        updatedAtLocal: new Date().toISOString()
+      }, { merge: true }).then(() => {
+        console.log('Salvataggio su Google Firebase Cloud completato!');
+      }).catch(err => {
+        console.warn('Avviso Firebase save:', err.message);
+      });
+    } catch (e) {}
   }
 }
 
@@ -711,40 +886,42 @@ function saveLocalMatches() {
 function openModal(id) {
   const m = document.getElementById(id);
   if (m) {
-    m.classList.add('show');
-    m.classList.add('active');
-    m.style.display = 'flex';
+    m.classList.add('show', 'active');
+    m.style.setProperty('display', 'flex', 'important');
+    m.style.setProperty('z-index', '999999', 'important');
   }
 }
 
 function closeModal(id) {
   const m = document.getElementById(id);
   if (m) {
-    m.classList.remove('show');
-    m.classList.remove('active');
-    m.style.display = 'none';
+    m.classList.remove('show', 'active');
+    m.style.setProperty('display', 'none', 'important');
   }
 }
 
-// Esporta tutte le funzioni globali su window per garantire massima compatibilità ovunque
+// Esporta tutte le funzioni globali su window per garantire massima affidabilità
 window.toggleAdminLogin = toggleAdminLogin;
+window.openAdminLoginModal = openAdminLoginModal;
+window.closeAdminLoginModal = closeAdminLoginModal;
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.openEditNextMatch = openEditNextMatch;
 window.openEditMatchModal = openEditMatchModal;
 window.openResultModal = openResultModal;
 window.openEditLineupModal = openEditLineupModal;
+window.onModalModuloChange = onModalModuloChange;
 window.handleLoginSubmit = handleLoginSubmit;
 window.handleSaveLineup = handleSaveLineup;
 window.handleSaveMatchEdit = handleSaveMatchEdit;
 window.handleSaveResult = handleSaveResult;
 window.filterSquad = filterSquad;
+window.selectModulo = selectModulo;
 
 // Chiudi cliccando fuori dal contenuto
 window.addEventListener('click', (e) => {
   if (e.target && e.target.classList && e.target.classList.contains('modal')) {
-    e.target.classList.remove('show');
-    e.target.classList.remove('active');
-    e.target.style.display = 'none';
+    e.target.classList.remove('show', 'active');
+    e.target.style.setProperty('display', 'none', 'important');
   }
 });
