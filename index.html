@@ -83,6 +83,7 @@
           <a href="#formazione" class="btn btn-yellow">Rosa Titolare (5v5)</a>
           <a href="#calendario" class="btn btn-outline">Consulta Calendario</a>
           <a href="#rosa" class="btn btn-outline">La Rosa</a>
+          <button type="button" class="btn btn-outline guest-only" onclick="toggleAdminLogin()">👑 Accedi come Admin</button>
           <button id="btn-hero-admin-edit" class="btn btn-blue admin-only" style="display:none;" onclick="openEditNextMatch()">Modifica Orario Gara</button>
           <button id="btn-hero-admin-result" class="btn btn-yellow admin-only" style="display:none;" onclick="openResultModal(1)">Inserisci Risultato</button>
         </div>
@@ -119,8 +120,9 @@
           <p class="section-sub">I 5 atleti che scendono in campo dal 1° minuto, la panchina e le convocazioni.</p>
         </div>
 
-        <div class="admin-only" style="display:none;">
-          <button class="btn btn-sm btn-yellow" onclick="openEditLineupModal()">⚽ Modifica Rosa Titolare</button>
+        <div class="lineup-actions">
+          <button class="btn btn-sm btn-yellow admin-only" style="display:none;" onclick="openEditLineupModal()">⚽ Modifica Rosa Titolare</button>
+          <button type="button" class="btn btn-sm btn-outline guest-only" onclick="toggleAdminLogin()">🔒 Accedi per Schierare i 5 Titolari</button>
         </div>
       </div>
 
