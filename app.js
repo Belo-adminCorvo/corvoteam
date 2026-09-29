@@ -115,13 +115,28 @@ let state = {
     { id: 9, nome: 'Andrea', cognome: 'Dossena', ruolo: 'Centrocampista', numero_maglia: 10, piede_forte: 'Destro', caratteristiche: 'Classe e fantasia, abile a dettare i ritmi della manovra e a servire assist millimetrici per i compagni.' }
   ],
   partite: [
-    { id: 1, giornata: '1ª Giornata', data_ora: '2026-10-02 21:00:00', avversario: 'Cortenova All Stars', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Centro Sportivo San Rocco - Campo 1', note: 'Gara inaugurale del campionato.' },
-    { id: 2, giornata: '2ª Giornata', data_ora: '2026-10-09 20:30:00', avversario: 'Virtus Calcetto Bergamo', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'PalaCalcetto Comunale - Campo Coperto', note: 'Seconda giornata di campionato.' },
-    { id: 3, giornata: '3ª Giornata', data_ora: '2026-10-16 21:00:00', avversario: 'Real Madrink F.C.', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Centro Sportivo San Rocco', note: 'Data e orario in attesa di definizione con gli avversari.' },
-    { id: 4, giornata: '4ª Giornata', data_ora: '2026-10-23 21:00:00', avversario: 'Sporting San Pellegrino', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Centro Sportivo Val Brembana', note: 'Da concordare con la segreteria.' },
-    { id: 5, giornata: '5ª Giornata', data_ora: '2026-10-30 20:45:00', avversario: 'Atletico Brianteo', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Centro Sportivo San Rocco', note: 'In attesa di assegnazione campo.' },
-    { id: 6, giornata: '6ª Giornata', data_ora: '2026-11-06 21:00:00', avversario: 'Deportivo La Carogna', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'PalaSport Intercomunale', note: 'Orario serale provvisorio.' },
-    { id: 7, giornata: '7ª Giornata', data_ora: '2026-11-13 21:00:00', avversario: 'Futsal Brembana', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Da definire', note: 'Ultima gara del girone di andata.' }
+    { id: 1, giornata: '1ª Giornata', data_ora: '2026-10-02 20:00:00', data_visualizzata: 'Ven 02 Ottobre 2026 - 20:00', avversario: 'The Ragnarok', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Albano S.A. - Palazzetto', note: '1ª Giornata (Trasferta) vs The Ragnarok al Palazzetto di Albano Sant\'Alessandro.' },
+    { id: 2, giornata: '2ª Giornata', data_ora: '2026-10-08 21:00:00', data_visualizzata: 'Gio 08 Ottobre 2026 - 21:00', avversario: 'Rapid Straße', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Albano S.A. - Palazzetto', note: '2ª Giornata (In Casa) vs Rapid Straße.' },
+    { id: 3, giornata: '3ª Giornata', data_ora: '2026-10-15 20:00:00', data_visualizzata: 'Settimana 15 Ottobre 2026', avversario: 'Turno di riposo', is_riposo: true, gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Turno di riposo', note: 'Turno di riposo per il Corvo Team.' },
+    { id: 4, giornata: '4ª Giornata', data_ora: '2026-10-22 21:00:00', data_visualizzata: 'Gio 22 Ottobre 2026 - 21:00', avversario: 'Ghisalba Calcio a 5', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Telgate Centro sportivo', note: '4ª Giornata (Trasferta) vs Ghisalba Calcio a 5.' },
+    { id: 5, giornata: '5ª Giornata', data_ora: '2026-10-30 21:30:00', data_visualizzata: 'Ven 30 Ottobre 2026 - 21:30', avversario: 'Atletico Tiburon', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Comun Nuovo Centro Sportivo', note: '5ª Giornata (Trasferta) vs Atletico Tiburon.' },
+    { id: 6, giornata: '6ª Giornata', data_ora: '2026-11-06 21:00:00', data_visualizzata: 'Ven 06 Novembre 2026 - 21:00', avversario: 'Crewraçao FC', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Albano S.A. - Palazzetto', note: '6ª Giornata (In Casa) vs Crewraçao FC.' },
+    { id: 7, giornata: '7ª Giornata', data_ora: '2026-11-13 21:45:00', data_visualizzata: 'Ven 13 Novembre 2026 - 21:45', avversario: 'G.S.D. Bulls', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Chignolo D\'Isola Palazzetto', note: '7ª Giornata (Trasferta) vs G.S.D. Bulls.' },
+    { id: 8, giornata: '8ª Giornata', data_ora: '2026-11-20 22:00:00', data_visualizzata: 'Ven 20 Novembre 2026 - 22:00', avversario: 'Riecos', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Albano S.A. - Palazzetto', note: '8ª Giornata (In Casa) vs Riecos.' },
+    { id: 9, giornata: '9ª Giornata', data_ora: '2026-11-25 20:00:00', data_visualizzata: 'Mer 25 Novembre 2026 - 20:00', avversario: 'Csdc', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Comun Nuovo Centro Sportivo', note: '9ª Giornata (Trasferta) vs Csdc.' },
+    { id: 10, giornata: '10ª Giornata', data_ora: '2026-12-03 21:00:00', data_visualizzata: 'Gio 03 Dicembre 2026 - 21:00', avversario: 'Fair Play', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Albano S.A. - Palazzetto', note: '10ª Giornata (In Casa) vs Fair Play.' },
+    { id: 11, giornata: '11ª Giornata', data_ora: '2026-12-08 21:00:00', data_visualizzata: 'Mar 08 Dicembre 2026 - 21:00', avversario: 'Montecura', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Seriate Centro sportivo', note: '11ª Giornata (Trasferta) vs Montecura. Chiusura girone d\'andata.' },
+    { id: 12, giornata: '12ª Giornata', data_ora: '2027-01-15 21:00:00', data_visualizzata: 'Gennaio 2027', avversario: 'The Ragnarok', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Albano S.A. - Palazzetto', note: 'Gennaio 2027 - Inizio girone di ritorno (In Casa).' },
+    { id: 13, giornata: '13ª Giornata', data_ora: '2027-01-22 21:00:00', data_visualizzata: 'Gennaio 2027', avversario: 'Rapid Straße', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Da definire', note: 'Gennaio 2027 - Trasferta vs Rapid Straße.' },
+    { id: 14, giornata: '14ª Giornata', data_ora: '2027-02-01 20:00:00', data_visualizzata: 'Febbraio 2027', avversario: 'Turno di riposo', is_riposo: true, gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Turno di riposo', note: 'Febbraio 2027 - Turno di riposo per il Corvo Team.' },
+    { id: 15, giornata: '15ª Giornata', data_ora: '2027-02-12 21:00:00', data_visualizzata: 'Febbraio 2027', avversario: 'Ghisalba Calcio a 5', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Albano S.A. - Palazzetto', note: 'Febbraio 2027 - In Casa vs Ghisalba Calcio a 5.' },
+    { id: 16, giornata: '16ª Giornata', data_ora: '2027-02-26 21:00:00', data_visualizzata: 'Febbraio 2027', avversario: 'Atletico Tiburon', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Albano S.A. - Palazzetto', note: 'Febbraio 2027 - In Casa vs Atletico Tiburon.' },
+    { id: 17, giornata: '17ª Giornata', data_ora: '2027-03-05 21:00:00', data_visualizzata: 'Marzo 2027', avversario: 'Crewraçao FC', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Da definire', note: 'Marzo 2027 - Trasferta vs Crewraçao FC.' },
+    { id: 18, giornata: '18ª Giornata', data_ora: '2027-03-12 21:00:00', data_visualizzata: 'Marzo 2027', avversario: 'G.S.D. Bulls', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Albano S.A. - Palazzetto', note: 'Marzo 2027 - In Casa vs G.S.D. Bulls.' },
+    { id: 19, giornata: '19ª Giornata', data_ora: '2027-03-19 21:00:00', data_visualizzata: 'Marzo 2027', avversario: 'Riecos', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Da definire', note: 'Marzo 2027 - Trasferta vs Riecos.' },
+    { id: 20, giornata: '20ª Giornata', data_ora: '2027-04-01 21:00:00', data_visualizzata: 'Gio 01 Aprile 2027 - 21:00', avversario: 'Csdc', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: false, luogo: 'Albano S.A. - Palazzetto', note: 'Gio 01 Aprile 2027 - In Casa vs Csdc.' },
+    { id: 21, giornata: '21ª Giornata', data_ora: '2027-04-16 21:00:00', data_visualizzata: 'Aprile 2027', avversario: 'Fair Play', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Seriate Centro sportivo', note: 'Aprile 2027 - Trasferta vs Fair Play.' },
+    { id: 22, giornata: '22ª Giornata', data_ora: '2027-04-23 21:00:00', data_visualizzata: 'Aprile 2027', avversario: 'Montecura', gol_fatti: null, gol_subiti: null, stato: 'programmata', da_definire: true, luogo: 'Albano S.A. - Palazzetto', note: 'Aprile 2027 - Ultima giornata di campionato (In Casa) vs Montecura.' }
   ],
   formazione: {
     matchId: 1,
@@ -132,13 +147,73 @@ let state = {
     p3Id: 8,
     p4Id: 7,
     capitanoId: 2,
-    ritrovo: 'Ore 20:30 agli spogliatoi (Maglia Ufficiale Gialla)',
-    note: 'Partita inaugurale! Massima puntualità per il riscaldamento pre-partita.',
+    ritrovo: 'Ore 19:30 agli spogliatoi (Palazzetto di Albano Sant\'Alessandro)',
+    note: 'Gara inaugurale del campionato vs The Ragnarok! Massima puntualità per il riscaldamento pre-partita.',
     updatedAt: ''
   },
   selectedRoleFilter: 'Tutti',
   currentScorers: []
 };
+
+// Costante con il calendario ufficiale completo per ripristino o sincronizzazione
+const CALENDARIO_UFFICIALE_2026_2027 = JSON.parse(JSON.stringify(state.partite));
+
+// Elenco ufficiale delle 11 squadre partecipanti al campionato Serie C Bergamo Tornei 2026/2027
+const TOURNAMENT_TEAMS = [
+  { name: 'Atletico Tiburon', logo: 'logos/atletico-tiburon.svg' },
+  { name: 'Corvo Team', logo: 'corvo-team-logo.svg' },
+  { name: 'Crewraçao FC', logo: 'logos/crewracao.svg' },
+  { name: 'Csdc', logo: 'logos/csdc.svg' },
+  { name: 'Fair Play', logo: 'logos/fair-play.svg' },
+  { name: 'G.S.D. Bulls', logo: 'logos/bulls.svg' },
+  { name: 'Ghisalba Calcio a 5', logo: 'logos/ghisalba.svg' },
+  { name: 'Montecura', logo: 'logos/montecura.svg' },
+  { name: 'Rapid Straße', logo: 'logos/rapid-strasse.svg' },
+  { name: 'Riecos', logo: 'logos/riecos.svg' },
+  { name: 'The Ragnarok', logo: 'logos/the-ragnarok.svg' },
+];
+
+function getTeamBadgeInfo(name) {
+  if (!name) return { name: 'Squadra', logo: 'corvo-team-logo.svg', isCorvo: false };
+  const lower = name.toLowerCase();
+  if (lower.includes('corvo')) {
+    return { name: 'Corvo Team', logo: 'corvo-team-logo.svg', isCorvo: true };
+  }
+  if (lower.includes('ragnarok')) {
+    return { name: 'The Ragnarok', logo: 'logos/the-ragnarok.svg', isCorvo: false };
+  }
+  if (lower.includes('rapid')) {
+    return { name: 'Rapid Straße', logo: 'logos/rapid-strasse.svg', isCorvo: false };
+  }
+  if (lower.includes('ghisalba')) {
+    return { name: 'Ghisalba Calcio a 5', logo: 'logos/ghisalba.svg', isCorvo: false };
+  }
+  if (lower.includes('tiburon') || lower.includes('atletico')) {
+    return { name: 'Atletico Tiburon', logo: 'logos/atletico-tiburon.svg', isCorvo: false };
+  }
+  if (lower.includes('crewra')) {
+    return { name: 'Crewraçao FC', logo: 'logos/crewracao.svg', isCorvo: false };
+  }
+  if (lower.includes('bulls')) {
+    return { name: 'G.S.D. Bulls', logo: 'logos/bulls.svg', isCorvo: false };
+  }
+  if (lower.includes('riecos')) {
+    return { name: 'Riecos', logo: 'logos/riecos.svg', isCorvo: false };
+  }
+  if (lower.includes('csdc')) {
+    return { name: 'Csdc', logo: 'logos/csdc.svg', isCorvo: false };
+  }
+  if (lower.includes('fair play') || lower.includes('fairplay')) {
+    return { name: 'Fair Play', logo: 'logos/fair-play.svg', isCorvo: false };
+  }
+  if (lower.includes('montecura')) {
+    return { name: 'Montecura', logo: 'logos/montecura.svg', isCorvo: false };
+  }
+  if (lower.includes('riposo')) {
+    return { name: 'Turno di riposo', logo: '', isRiposo: true, isCorvo: false };
+  }
+  return { name: name, logo: 'corvo-team-logo.svg', isCorvo: false };
+}
 
 // ==============================================================================
 // CONFIGURAZIONE FIREBASE CLOUD (Sincronizzazione Realtime su tutti i dispositivi)
@@ -153,14 +228,33 @@ const firebaseConfig = {
 };
 
 let db = null;
+let auth = null;
 try {
   if (typeof firebase !== 'undefined') {
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
     db = firebase.firestore();
-    console.log('Firebase Cloud Connesso con successo!');
+    if (typeof firebase.auth === 'function') {
+      auth = firebase.auth();
+      // Ascolta stato di autenticazione Firebase in tempo reale
+      auth.onAuthStateChanged((user) => {
+        if (user && user.email && user.email.toLowerCase() === 'lucabelotti771@gmail.com') {
+          state.isAdmin = true;
+          localStorage.setItem('corvo_local_admin', 'true');
+          console.log('Firebase Auth: Amministratore connesso:', user.email, 'UID:', user.uid);
+        } else if (!user) {
+          if (localStorage.getItem('corvo_local_admin') !== 'true') {
+            state.isAdmin = false;
+          }
+        }
+        updateAdminUI();
+      });
+    }
+    console.log('Firebase Cloud & Auth Connessi con successo!');
   }
 } catch (e) {
-  console.warn('Inizializzazione Firebase in fallback:', e);
+  console.warn('Inizializzazione Firebase:', e);
 }
 
 // Inizializzazione sicura all'avvio
@@ -170,9 +264,15 @@ function initApp() {
     const savedPartite = localStorage.getItem('corvo_local_matches');
     if (savedPartite) {
       const parsedMatches = JSON.parse(savedPartite);
-      if (Array.isArray(parsedMatches) && parsedMatches.length > 0) {
+      if (Array.isArray(parsedMatches) && parsedMatches.length >= 20) {
         state.partite = parsedMatches;
+      } else {
+        // Se la cache locale ha le vecchie partite di test (es. 7), aggiorna al calendario ufficiale da 22 partite
+        state.partite = CALENDARIO_UFFICIALE_2026_2027;
+        localStorage.setItem('corvo_local_matches', JSON.stringify(CALENDARIO_UFFICIALE_2026_2027));
       }
+    } else {
+      state.partite = CALENDARIO_UFFICIALE_2026_2027;
     }
 
     const savedPlayers = localStorage.getItem('corvo_local_players');
@@ -249,7 +349,7 @@ function setupFirebaseSync() {
     docRef.onSnapshot((doc) => {
       if (doc.exists) {
         const data = doc.data();
-        if (data && Array.isArray(data.partite) && data.partite.length > 0) {
+        if (data && Array.isArray(data.partite) && data.partite.length >= 20) {
           state.partite = data.partite;
           saveLocalMatchesOnly();
           renderHeroMatch();
@@ -377,35 +477,50 @@ function closeAdminLoginModal() {
 }
 
 function toggleAdminLogin() {
-  if (state.isAdmin || localStorage.getItem('corvo_local_admin') === 'true') {
-    if (confirm('Vuoi disconnetterti per tornare alla sola visualizzazione?')) {
-      // Comunica a Firebase di chiudere la sessione protetta
-      firebase.auth().signOut().then(() => {
-        localStorage.removeItem('corvo_local_admin');
-        state.isAdmin = false;
-        updateAdminUI();
-        renderHeroMatch();
-        renderMatches();
-        renderLineup();
-      }).catch((err) => {
-        console.warn("Errore durante il logout:", err);
-      });
+  if (state.isAdmin || localStorage.getItem('corvo_local_admin') === 'true' || (auth && auth.currentUser)) {
+    if (confirm('Sei attualmente connesso come Amministratore (Luca Belotti).\nVuoi disconnetterti per tornare alla sola visualizzazione?')) {
+      if (auth && auth.currentUser) {
+        auth.signOut().catch(err => console.warn('Errore signOut Firebase:', err));
+      }
+      localStorage.removeItem('corvo_local_admin');
+      state.isAdmin = false;
+      updateAdminUI();
+      renderHeroMatch();
+      renderMatches();
+      renderLineup();
+      alert('Disconnessione effettuata. Ora sei in modalità sola lettura.');
     }
   } else {
     openAdminLoginModal();
   }
 }
 
-function handleLoginSubmit(e) {
+async function handleLoginSubmit(e) {
   if (e && e.preventDefault) e.preventDefault();
   const userEl = document.getElementById('login-user');
   const passEl = document.getElementById('login-pass');
+  const btnSubmit = document.querySelector('#form-login button[type="submit"]');
   const user = userEl ? userEl.value.trim() : '';
   const pass = passEl ? passEl.value.trim() : '';
-  
-  // Contatta i server di Google in modo criptato e sicuro
-  firebase.auth().signInWithEmailAndPassword(user, pass)
-    .then((userCredential) => {
+
+  if (!user || !pass) {
+    alert('Inserisci sia l\'email che la password.');
+    return;
+  }
+
+  const originalBtnText = btnSubmit ? btnSubmit.textContent : 'Accedi';
+  if (btnSubmit) {
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Autenticazione Firebase in corso...';
+  }
+
+  // 1. Prova l'autenticazione reale con Firebase Auth (permette di superare le regole di sicurezza Firestore)
+  if (auth) {
+    try {
+      const userCredential = await auth.signInWithEmailAndPassword(user, pass);
+      const authUser = userCredential.user;
+      console.log('Firebase Auth: Login riuscito con successo!', authUser.email, 'UID:', authUser.uid);
+
       state.isAdmin = true;
       localStorage.setItem('corvo_local_admin', 'true');
       closeAdminLoginModal();
@@ -413,32 +528,86 @@ function handleLoginSubmit(e) {
       renderHeroMatch();
       renderMatches();
       renderLineup();
-      alert('Accesso Amministratore autorizzato con Firebase! Benvenuto Luca.');
-    })
-    .catch((error) => {
-      console.error("Errore login:", error.message);
-      alert('Credenziali non valide o non autorizzate.');
-    });
+      alert(`Accesso Amministratore confermato con Firebase Auth!\nBenvenuto Luca Belotti (${authUser.email}).\nOra hai tutti i permessi per modificare e salvare i dati direttamente nel database cloud.`);
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = originalBtnText;
+      }
+      return;
+    } catch (fbError) {
+      console.warn('Errore Firebase Auth:', fbError.code, fbError.message);
+      if (fbError.code === 'auth/wrong-password' || fbError.code === 'auth/invalid-credential') {
+        alert('Password non corretta per l\'account Firebase ' + user + '.\nVerifica la password che hai impostato nella console di Firebase.');
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = originalBtnText;
+        }
+        return;
+      } else if (fbError.code === 'auth/user-not-found') {
+        alert('Utente non trovato su Firebase. Assicurati di usare l\'email creata: lucabelotti771@gmail.com');
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = originalBtnText;
+        }
+        return;
+      } else if (fbError.code === 'auth/network-request-failed') {
+        console.warn('Rete offline per Firebase Auth, provo fallback offline.');
+      }
+    }
+  }
+
+  // 2. Fallback offline con credenziale predefinita
+  if ((user.toLowerCase() === 'lucabelotti771@gmail.com' || user.toLowerCase() === 'luca belotti') && pass === 'corvo2026') {
+    state.isAdmin = true;
+    localStorage.setItem('corvo_local_admin', 'true');
+    closeAdminLoginModal();
+    updateAdminUI();
+    renderHeroMatch();
+    renderMatches();
+    renderLineup();
+    alert('Accesso Amministratore locale confermato! Benvenuto Luca Belotti.\n(Nota: per sincronizzare su Firebase Firestore protetto da regole di sicurezza, usa la password del tuo account Firebase).');
+  } else {
+    alert('Credenziali non valide. Inserisci l\'account lucabelotti771@gmail.com e la password associata.');
+  }
+
+  if (btnSubmit) {
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = originalBtnText;
+  }
 }
 
 // =============================================================================
 // RENDERING HERO & CALENDARIO
 // =============================================================================
 function renderHeroMatch() {
-  const next = state.partite.find(p => p.stato === 'programmata' || p.stato === 'da_definire') || state.partite[0];
+  const next = state.partite.find(p => (p.stato === 'programmata' || p.stato === 'da_definire') && !p.is_riposo && p.avversario !== 'Turno di riposo') || state.partite[0];
   if (!next) return;
 
   const elGiornata = document.getElementById('hero-giornata');
-  if (elGiornata) elGiornata.textContent = `${next.giornata} • Campionato 2026/2027`;
-  
+  if (elGiornata) elGiornata.textContent = `${next.giornata} • Serie C Bergamo Tornei 2026/2027`;
+
+  const isCorvoCasa = next.id === 1 ? false : !Boolean(next.note && next.note.toLowerCase().includes('trasferta'));
+  const homeBadge = isCorvoCasa ? getTeamBadgeInfo('Corvo Team') : getTeamBadgeInfo(next.avversario);
+  const awayBadge = isCorvoCasa ? getTeamBadgeInfo(next.avversario) : getTeamBadgeInfo('Corvo Team');
+
+  // Home elements
+  const elHomeName = document.getElementById('hero-home-name');
+  if (elHomeName) elHomeName.textContent = homeBadge.name.toUpperCase();
+  const elHomeLogo = document.getElementById('hero-home-logo');
+  if (elHomeLogo && homeBadge.logo) elHomeLogo.src = homeBadge.logo;
+  const elHomeTag = document.getElementById('hero-home-tag');
+  if (elHomeTag) elHomeTag.textContent = 'CASA';
+
+  // Away elements
   const elAwayName = document.getElementById('hero-away-name');
-  if (elAwayName) elAwayName.textContent = next.avversario;
-  
-  const elAwayAbbr = document.getElementById('hero-away-abbr');
-  if (elAwayAbbr) elAwayAbbr.textContent = next.avversario.substring(0, 2).toUpperCase();
-  
+  if (elAwayName) elAwayName.textContent = awayBadge.name.toUpperCase();
+  const elAwayLogo = document.getElementById('hero-away-logo');
+  if (elAwayLogo && awayBadge.logo) elAwayLogo.src = awayBadge.logo;
+  const elAwayTag = document.getElementById('hero-away-tag');
+  if (elAwayTag) elAwayTag.textContent = 'OSPITE';
+
   const elVenue = document.getElementById('hero-venue');
-  if (elVenue) elVenue.textContent = `📍 ${next.luogo || 'Centro Sportivo San Rocco'}`;
+  if (elVenue) elVenue.textContent = `📍 ${next.luogo || 'Albano S.A. - Palazzetto'}`;
 
   const isTbd = Boolean(next.da_definire);
   const statusEl = document.getElementById('hero-status');
@@ -450,7 +619,7 @@ function renderHeroMatch() {
       statusEl.textContent = '⏳ Da definire';
     }
   } else {
-    if (elDate) elDate.textContent = `📅 ${next.data_ora ? next.data_ora.substring(0, 16) : 'Ven 02 Ottobre 21:00'}`;
+    if (elDate) elDate.textContent = `📅 ${next.data_visualizzata || (next.data_ora ? next.data_ora.substring(0, 16) : 'Ven 02 Ottobre 20:00')}`;
     if (statusEl) {
       statusEl.className = 'status-confirmed';
       statusEl.textContent = 'Confermata';
@@ -466,59 +635,146 @@ function renderMatches() {
   state.partite.forEach(p => {
     const isTbd = Boolean(p.da_definire);
     const isPlayed = p.stato === 'giocata' && p.gol_fatti !== null;
+    const isRiposo = p.avversario === 'Turno di riposo' || p.is_riposo;
 
     const card = document.createElement('div');
-    card.className = `match-card ${isTbd ? 'is-tbd' : ''} ${isPlayed ? 'is-played' : ''}`;
+    card.className = `match-card ${isTbd ? 'is-tbd' : ''} ${isPlayed ? 'is-played' : ''} ${isRiposo ? 'is-riposo' : ''}`;
 
     let statusHtml = '';
     if (isPlayed) {
       statusHtml = '<span class="status-confirmed">Giocata</span>';
+    } else if (isRiposo) {
+      statusHtml = '<span class="status-tbd" style="background:rgba(100,116,139,0.2); color:#94a3b8; border-color:rgba(100,116,139,0.4);">🌴 Riposo</span>';
     } else if (isTbd) {
       statusHtml = '<span class="status-tbd">⏳ Da definire</span>';
     } else {
       statusHtml = '<span class="status-confirmed">Confermata</span>';
     }
 
-    card.innerHTML = `
-      <div>
-        <div class="match-card-top">
-          <span class="match-giornata">${p.giornata}</span>
-          ${statusHtml}
-        </div>
-
-        <div class="match-teams">
-          <div class="team-line">
-            <span>CORVO TEAM</span>
-            <span class="score">${isPlayed ? p.gol_fatti : '-'}</span>
+    if (isRiposo) {
+      card.innerHTML = `
+        <div>
+          <div class="match-card-top">
+            <span class="match-giornata">${p.giornata}</span>
+            ${statusHtml}
           </div>
-          <div class="team-line">
-            <span>${p.avversario}</span>
-            <span class="score">${isPlayed ? p.gol_subiti : '-'}</span>
+          <div class="match-teams" style="text-align:center; padding:16px 12px; background:rgba(15,23,42,0.6);">
+            <span style="font-size:1.5rem; display:block; margin-bottom:4px;">🌴</span>
+            <strong style="color:#f8fafc; font-size:0.95rem; text-transform:uppercase;">Turno di Riposo</strong>
+            <span style="color:#facc15; font-size:0.75rem; display:block; margin-top:2px;">Nessuna gara in programma per il Corvo Team</span>
+          </div>
+          <div class="match-details">
+            <span>📅 ${p.data_visualizzata || p.giornata}</span>
+            <span>📍 -</span>
+            ${p.note ? `<p class="text-xs text-muted" style="margin-top:4px;">“${p.note}”</p>` : ''}
+          </div>
+        </div>
+      `;
+    } else {
+      const isCorvoCasa = p.id === 1 ? false : !Boolean(p.note && p.note.toLowerCase().includes('trasferta'));
+      const homeBadge = isCorvoCasa ? getTeamBadgeInfo('Corvo Team') : getTeamBadgeInfo(p.avversario);
+      const awayBadge = isCorvoCasa ? getTeamBadgeInfo(p.avversario) : getTeamBadgeInfo('Corvo Team');
+
+      let golCasa = '-';
+      let golOspite = '-';
+      if (isPlayed) {
+        golCasa = isCorvoCasa ? p.gol_fatti : p.gol_subiti;
+        golOspite = isCorvoCasa ? p.gol_subiti : p.gol_fatti;
+      }
+
+      card.innerHTML = `
+        <div>
+          <div class="match-card-top">
+            <span class="match-giornata">${p.giornata}</span>
+            ${statusHtml}
+          </div>
+
+          <div class="match-teams">
+            <!-- Squadra Casa -->
+            <div class="team-line ${homeBadge.isCorvo ? 'is-corvo' : ''}">
+              <div class="team-line-left">
+                <img src="${homeBadge.logo}" alt="${homeBadge.name}" class="team-mini-logo">
+                <span class="team-name-clamp">${homeBadge.name}</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="team-badge-tag tag-home">CASA</span>
+                <span class="score">${golCasa}</span>
+              </div>
+            </div>
+
+            <!-- Squadra Ospite -->
+            <div class="team-line ${awayBadge.isCorvo ? 'is-corvo' : ''}">
+              <div class="team-line-left">
+                <img src="${awayBadge.logo}" alt="${awayBadge.name}" class="team-mini-logo">
+                <span class="team-name-clamp">${awayBadge.name}</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="team-badge-tag tag-away">OSPITE</span>
+                <span class="score">${golOspite}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="match-details">
+            <span>📅 ${isTbd ? 'Data da concordare' : (p.data_visualizzata || (p.data_ora ? p.data_ora.substring(0, 16) : 'Orario da definire'))}</span>
+            <span>📍 ${p.luogo || 'Albano S.A. - Palazzetto'}</span>
+            ${p.note ? `<p class="text-xs text-muted" style="margin-top:4px;">“${p.note}”</p>` : ''}
           </div>
         </div>
 
-        <div class="match-details">
-          <span>📅 ${isTbd ? 'Data da concordare' : (p.data_ora ? p.data_ora.substring(0, 16) : 'Orario da definire')}</span>
-          <span>📍 ${p.luogo || 'Centro Sportivo San Rocco'}</span>
-          ${p.note ? `<p class="text-xs text-muted" style="margin-top:4px;">“${p.note}”</p>` : ''}
+        <div class="match-actions">
+          ${state.isAdmin ? `
+            <button class="btn btn-sm btn-outline" onclick="openEditMatchModal(${p.id})">✏️ Modifica Orario</button>
+            <button class="btn btn-sm btn-yellow" onclick="openResultModal(${p.id})">🏆 Risultato</button>
+          ` : `
+            <span class="text-xs text-muted">Sola visualizzazione</span>
+          `}
         </div>
-      </div>
-
-      <div class="match-actions">
-        ${state.isAdmin ? `
-          <button class="btn btn-sm btn-outline" onclick="openEditMatchModal(${p.id})">✏️ Modifica Orario</button>
-          <button class="btn btn-sm btn-yellow" onclick="openResultModal(${p.id})">🏆 Risultato</button>
-        ` : `
-          <span class="text-xs text-muted">Sola visualizzazione</span>
-        `}
-      </div>
-    `;
+      `;
+    }
 
     grid.appendChild(card);
   });
 
   const countEl = document.getElementById('stat-count-matches');
   if (countEl) countEl.textContent = state.partite.length;
+}
+
+// Sincronizzazione automatica dell'intero calendario 2026/2027 su Google Firebase Cloud
+async function syncOfficialCalendarToFirebase() {
+  if (!state.isAdmin) {
+    alert('Accesso riservato all\'amministratore (Luca Belotti).\nAccedi prima con il tuo account Firebase lucabelotti771@gmail.com.');
+    return;
+  }
+  if (!confirm('Vuoi caricare e sincronizzare l\'intero Calendario Ufficiale 2026/2027 (22 partite con loghi e sedi) su Google Firebase Cloud?')) {
+    return;
+  }
+  state.partite = CALENDARIO_UFFICIALE_2026_2027;
+  saveLocalMatchesOnly();
+  renderHeroMatch();
+  renderMatches();
+  renderLineup();
+
+  if (db) {
+    try {
+      await db.collection('campionato').doc('corvoteam_data').set({
+        partite: state.partite,
+        giocatori: state.giocatori,
+        updatedAt: new Date().toISOString(),
+        updatedBy: 'Luca Belotti'
+      }, { merge: true });
+      alert('✅ Calendario Ufficiale 2026/2027 (22 partite con loghi) salvato con successo su Firebase Cloud!\nOra tutti i tuoi atleti e tifosi vedranno il calendario ufficiale aggiornato.');
+    } catch (err) {
+      console.error('Errore sincronizzazione Firebase:', err);
+      if (err.code === 'permission-denied') {
+        alert('⚠️ Permesso negato da Firebase.\nAssicurati di aver effettuato l\'accesso con l\'account Firebase lucabelotti771@gmail.com.');
+      } else {
+        alert('Errore durante il salvataggio su Firebase: ' + err.message);
+      }
+    }
+  } else {
+    alert('Calendario aggiornato in locale. (Firebase non connesso)');
+  }
 }
 
 // =============================================================================
@@ -764,6 +1020,9 @@ function handleSaveLineup(e) {
         console.log('Formazione sincronizzata con successo su Google Firebase Cloud!');
       }).catch(err => {
         console.warn('Avviso sincronizzazione cloud:', err.message);
+        if (err.code === 'permission-denied') {
+          alert('⚠️ Attenzione: Il salvataggio locale è avvenuto, ma Firebase Cloud ha rifiutato la scrittura.\nMotivo: Permesso Negato dalle regole di sicurezza.\nEffettua l\'accesso con il tuo account Admin: lucabelotti771@gmail.com');
+        }
       });
     } catch (e) {}
   }
@@ -1139,6 +1398,9 @@ function saveLocalMatches() {
         console.log('Salvataggio su Google Firebase Cloud completato!');
       }).catch(err => {
         console.warn('Avviso Firebase save:', err.message);
+        if (err.code === 'permission-denied') {
+          alert('⚠️ Attenzione: Il salvataggio locale è avvenuto, ma Firebase Cloud ha rifiutato la scrittura.\nMotivo: Permesso Negato dalle regole di sicurezza.\nEffettua l\'accesso con il tuo account Admin: lucabelotti771@gmail.com');
+        }
       });
     } catch (e) {}
   }
