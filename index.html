@@ -9,10 +9,73 @@
   <meta name="apple-mobile-web-app-title" content="CORVO TEAM N29">
   <title>CORVO TEAM N29 - Portale Ufficiale &amp; Calendario</title>
   <link rel="icon" type="image/svg+xml" href="corvo-team-logo.svg">
-  <link rel="stylesheet" href="style.css?v=20260929_mobile_v3">
+  <link rel="stylesheet" href="style.css?v=20260929_v4">
 
-  <!-- Stili Mobile Reattivi Immediati (Garantiscono il layout perfetto su smartphone anche se la cache del browser trattiene il vecchio CSS) -->
+  <!-- Stili Critici Immediati (Risolvono routing navbar e proporzioni classifica anche con cache browser attiva) -->
   <style id="mobile-responsive-overrides">
+    /* ROUTING MULTI-PAGINA GARANTITO */
+    .app-page {
+      display: none !important;
+    }
+    .app-page.active {
+      display: block !important;
+    }
+
+    /* DIMENSIONI PROPORZIONATE DELLA CLASSIFICA GENERALE */
+    #page-classifica .section {
+      padding: 24px 0 !important;
+    }
+    #page-classifica .container {
+      max-width: 920px !important;
+      margin: 0 auto !important;
+    }
+    .standings-container {
+      max-width: 900px !important;
+      margin: 0 auto !important;
+      background: #070e20 !important;
+      border: 1px solid rgba(250, 204, 21, 0.3) !important;
+      border-radius: 16px !important;
+      overflow: hidden !important;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+    }
+    .standings-table-wrap {
+      width: 100% !important;
+      overflow-x: auto !important;
+    }
+    .standings-table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      text-align: center !important;
+      font-size: 0.82rem !important;
+    }
+    .standings-table th {
+      background: #030712 !important;
+      color: #94a3b8 !important;
+      font-weight: 800 !important;
+      text-transform: uppercase !important;
+      font-size: 0.72rem !important;
+      letter-spacing: 0.5px !important;
+      padding: 10px 6px !important;
+      border-bottom: 1px solid #1e293b !important;
+    }
+    .standings-table td {
+      padding: 8px 6px !important;
+      font-size: 0.82rem !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+      color: #cbd5e1 !important;
+    }
+    .standings-team-logo {
+      width: 24px !important;
+      height: 24px !important;
+      object-fit: contain !important;
+      border-radius: 5px !important;
+    }
+    .pt-pill {
+      font-size: 0.92rem !important;
+      font-weight: 900 !important;
+      color: #facc15 !important;
+    }
+
     html, body {
       max-width: 100vw !important;
       overflow-x: hidden !important;
