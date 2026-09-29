@@ -643,111 +643,255 @@
 
       <!-- Quick Nav Links Desktop & Tablet -->
       <nav class="nav-links">
-        <a href="#formazione" class="nav-link">Rosa Titolare &amp; Moduli</a>
-        <a href="#calendario" class="nav-link">Calendario</a>
-        <a href="#rosa" class="nav-link">La Rosa</a>
+        <a href="javascript:void(0)" onclick="navigateTo('home')" class="nav-link active" data-page="home">🏠 Home</a>
+        <a href="javascript:void(0)" onclick="navigateTo('classifica')" class="nav-link" data-page="classifica">🏆 Classifica Serie C</a>
+        <a href="javascript:void(0)" onclick="navigateTo('calendario')" class="nav-link" data-page="calendario">📅 Calendario (22 Gare)</a>
+        <a href="javascript:void(0)" onclick="navigateTo('formazione')" class="nav-link" data-page="formazione">⚽ Titolari &amp; Moduli</a>
+        <a href="javascript:void(0)" onclick="navigateTo('rosa')" class="nav-link" data-page="rosa">👥 La Rosa &amp; Marcatori</a>
       </nav>
 
       <div class="nav-actions">
         <span id="role-badge" class="badge badge-guest">👤 Visitatore</span>
-        <button id="btn-login-toggle" type="button" class="btn btn-yellow" onclick="toggleAdminLogin()">Accedi come Admin</button>
+        <button id="btn-login-toggle" type="button" class="btn btn-yellow" onclick="toggleAdminLogin()">👑 Admin Luca Belotti</button>
       </div>
     </div>
 
     <!-- Mobile Secondary Tab Bar per Smartphone & Tablet -->
     <div class="mobile-nav-bar">
       <div class="container mobile-nav-container">
-        <a href="#formazione" class="mobile-nav-tab active">
-          <span>⚽</span>
-          <span>Titolari &amp; Moduli</span>
+        <a href="javascript:void(0)" onclick="navigateTo('home')" class="mobile-nav-tab active" data-page="home">
+          <span>🏠</span>
+          <span>Home</span>
         </a>
-        <a href="#calendario" class="mobile-nav-tab">
+        <a href="javascript:void(0)" onclick="navigateTo('classifica')" class="mobile-nav-tab" data-page="classifica">
+          <span>🏆</span>
+          <span>Classifica</span>
+        </a>
+        <a href="javascript:void(0)" onclick="navigateTo('calendario')" class="mobile-nav-tab" data-page="calendario">
           <span>📅</span>
-          <span>Calendario</span>
+          <span>Gare</span>
         </a>
-        <a href="#rosa" class="mobile-nav-tab">
+        <a href="javascript:void(0)" onclick="navigateTo('formazione')" class="mobile-nav-tab" data-page="formazione">
+          <span>⚽</span>
+          <span>Titolari</span>
+        </a>
+        <a href="javascript:void(0)" onclick="navigateTo('rosa')" class="mobile-nav-tab" data-page="rosa">
           <span>👥</span>
-          <span>La Rosa (9)</span>
+          <span>Rosa</span>
         </a>
       </div>
     </div>
   </header>
 
   <!-- =========================================================================
-       HERO: TABELLONE PROSSIMO MATCH & STEMMA
+       CORPO PRINCIPALE DELL'APP A PAGINE MULTIPLE (NAVBAR VIEW SWITCHING)
        ========================================================================= -->
-  <section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-content">
-        <div class="pill-match">
-          <span class="pulse-dot"></span>
-          <span id="hero-giornata">1ª Giornata • Campionato 2026/2027</span>
-        </div>
+  <main id="app-main-content">
 
-        <h2 class="hero-title">PROSSIMA <span class="text-yellow">PARTITA</span></h2>
-        
-        <!-- Tabellone Digitale -->
-        <div class="scoreboard-box">
-          <div class="teams-matchup">
-            <div class="team-col team-home" id="hero-home-col">
-              <div class="logo-box-sm">
-                <img id="hero-home-logo" src="logos/the-ragnarok.svg" alt="The Ragnarok">
-              </div>
-              <span class="team-name" id="hero-home-name">THE RAGNAROK</span>
-              <span class="team-tag" id="hero-home-tag">CASA</span>
+    <!-- =======================================================================
+         PAGINA 1: HOME (Prossima Gara Ufficiale & Navigazione Rapida)
+         ======================================================================= -->
+    <div id="page-home" class="app-page active">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-content">
+            <div class="pill-match">
+              <span class="pulse-dot"></span>
+              <span id="hero-giornata">1ª Giornata • Campionato 2026/2027</span>
             </div>
 
-            <div class="vs-col">VS</div>
+            <h2 class="hero-title">PROSSIMA <span class="text-yellow">PARTITA</span></h2>
+            
+            <!-- Tabellone Digitale -->
+            <div class="scoreboard-box">
+              <div class="teams-matchup">
+                <div class="team-col team-home" id="hero-home-col">
+                  <div class="logo-box-sm">
+                    <img id="hero-home-logo" src="logos/the-ragnarok.svg" alt="The Ragnarok">
+                  </div>
+                  <span class="team-name" id="hero-home-name">THE RAGNAROK</span>
+                  <span class="team-tag" id="hero-home-tag">CASA</span>
+                </div>
 
-            <div class="team-col team-away" id="hero-away-col">
-              <div class="logo-box-sm">
-                <img id="hero-away-logo" src="corvo-team-logo.svg" alt="Corvo Team">
+                <div class="vs-col">VS</div>
+
+                <div class="team-col team-away" id="hero-away-col">
+                  <div class="logo-box-sm">
+                    <img id="hero-away-logo" src="corvo-team-logo.svg" alt="Corvo Team">
+                  </div>
+                  <span class="team-name" id="hero-away-name">CORVO TEAM</span>
+                  <span class="team-tag" id="hero-away-tag">OSPITE</span>
+                </div>
               </div>
-              <span class="team-name" id="hero-away-name">CORVO TEAM</span>
-              <span class="team-tag" id="hero-away-tag">OSPITE</span>
+
+              <div class="match-info-strip">
+                <span id="hero-date">📅 Ven 02 Ottobre 2026 • 20:00</span>
+                <span id="hero-venue">📍 Albano S.A. - Palazzetto</span>
+                <span id="hero-status" class="status-confirmed">Confermata</span>
+              </div>
+            </div>
+
+            <div class="hero-buttons">
+              <button type="button" class="btn btn-yellow" onclick="navigateTo('classifica')">🏆 Classifica Serie C</button>
+              <button type="button" class="btn btn-outline" onclick="navigateTo('calendario')">📅 Calendario 22 Gare</button>
+              <button type="button" class="btn btn-outline" onclick="navigateTo('formazione')">⚽ Rosa Titolare (5v5)</button>
+              <button type="button" class="btn btn-outline guest-only" onclick="toggleAdminLogin()">👑 Login Admin</button>
+              <button id="btn-hero-admin-edit" class="btn btn-blue admin-only" style="display:none;" onclick="openEditNextMatch()">Modifica Orario Gara</button>
+              <button id="btn-hero-admin-result" class="btn btn-yellow admin-only" style="display:none;" onclick="openResultModal(1)">Inserisci Risultato</button>
             </div>
           </div>
 
-          <div class="match-info-strip">
-            <span id="hero-date">📅 Ven 02 Ottobre 2026 • 20:00</span>
-            <span id="hero-venue">📍 Albano S.A. - Palazzetto</span>
-            <span id="hero-status" class="status-confirmed">Confermata</span>
+          <!-- Card Stemma Ufficiale -->
+          <div class="hero-badge-card">
+            <div class="badge-card-inner">
+              <span class="card-tag">STEMMA UFFICIALE N29</span>
+              <div class="stemma-wrap">
+                <img src="corvo-team-logo.svg" alt="Stemma Corvo Team N29" class="large-crest">
+              </div>
+              <h3>CORVO TEAM <span class="text-yellow">N29</span></h3>
+              <p class="colors-desc">COLORI SOCIALI: BLU &amp; GIALLO</p>
+              <div class="badge-stats-row">
+                <span>Atleti: <strong id="stat-count-players">9</strong></span>
+                <span>•</span>
+                <span>Partite da giocare: <strong id="stat-count-matches">22</strong></span>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="hero-buttons">
-          <a href="#formazione" class="btn btn-yellow">Rosa Titolare &amp; Schemi (5v5)</a>
-          <a href="#calendario" class="btn btn-outline">Consulta Calendario</a>
-          <a href="#rosa" class="btn btn-outline">La Rosa Ufficiale</a>
-          <button type="button" class="btn btn-outline guest-only" onclick="toggleAdminLogin()">👑 Accedi come Admin</button>
-          <button id="btn-hero-admin-edit" class="btn btn-blue admin-only" style="display:none;" onclick="openEditNextMatch()">Modifica Orario Gara</button>
-          <button id="btn-hero-admin-result" class="btn btn-yellow admin-only" style="display:none;" onclick="openResultModal(1)">Inserisci Risultato</button>
-        </div>
-      </div>
+      <!-- Sezione Card Rapide -->
+      <section class="section" style="padding-top:0;">
+        <div class="container">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+            <div class="match-card" style="cursor:pointer;" onclick="navigateTo('classifica')">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                <div style="width:40px; height:40px; border-radius:10px; background:rgba(250,204,21,0.15); display:flex; align-items:center; justify-content:center; font-size:1.3rem;">
+                  🏆
+                </div>
+                <div>
+                  <h4 style="margin:0; font-size:0.95rem; color:#fff;">Classifica Serie C</h4>
+                  <span style="font-size:0.7rem; color:#94a3b8;">11 Squadre • ASI Bergamo Tornei</span>
+                </div>
+              </div>
+              <p style="font-size:0.78rem; color:#cbd5e1; margin-bottom:10px;">Consulta la classifica generale aggiornata automaticamente dal sito ufficiale bergamotornei.com.</p>
+              <span style="color:#facc15; font-size:0.75rem; font-weight:bold;">Apri Classifica &rarr;</span>
+            </div>
 
-      <!-- Card Stemma Ufficiale -->
-      <div class="hero-badge-card">
-        <div class="badge-card-inner">
-          <span class="card-tag">STEMMA UFFICIALE N29</span>
-          <div class="stemma-wrap">
-            <img src="corvo-team-logo.svg" alt="Stemma Corvo Team N29" class="large-crest">
-          </div>
-          <h3>CORVO TEAM <span class="text-yellow">N29</span></h3>
-          <p class="colors-desc">COLORI SOCIALI: BLU &amp; GIALLO</p>
-          <div class="badge-stats-row">
-            <span>Atleti: <strong id="stat-count-players">9</strong></span>
-            <span>•</span>
-            <span>Partite da giocare: <strong id="stat-count-matches">7</strong></span>
+            <div class="match-card" style="cursor:pointer;" onclick="navigateTo('calendario')">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                <div style="width:40px; height:40px; border-radius:10px; background:rgba(59,130,246,0.15); display:flex; align-items:center; justify-content:center; font-size:1.3rem;">
+                  📅
+                </div>
+                <div>
+                  <h4 style="margin:0; font-size:0.95rem; color:#fff;">Calendario Gare</h4>
+                  <span style="font-size:0.75rem; color:#94a3b8;">22 Partite • Andata &amp; Ritorno</span>
+                </div>
+              </div>
+              <p style="font-size:0.78rem; color:#cbd5e1; margin-bottom:10px;">Tutte le date, orari serali e palazzetti delle sfide del Corvo Team contro le 10 avversarie.</p>
+              <span style="color:#60a5fa; font-size:0.75rem; font-weight:bold;">Vedi Calendario &rarr;</span>
+            </div>
+
+            <div class="match-card" style="cursor:pointer;" onclick="navigateTo('formazione')">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                <div style="width:40px; height:40px; border-radius:10px; background:rgba(16,185,129,0.15); display:flex; align-items:center; justify-content:center; font-size:1.3rem;">
+                  ⚽
+                </div>
+                <div>
+                  <h4 style="margin:0; font-size:0.95rem; color:#fff;">Lavagna Tattica 5v5</h4>
+                  <span style="font-size:0.75rem; color:#94a3b8;">5 Titolari • 6 Moduli Futsal</span>
+                </div>
+              </div>
+              <p style="font-size:0.78rem; color:#cbd5e1; margin-bottom:10px;">Schiera la formazione sul campo, cambia lo schema (1-2-1 Rombo, 2-2, 3-1) e imposta il ritrovo.</p>
+              <span style="color:#34d399; font-size:0.75rem; font-weight:bold;">Apri Lavagna &rarr;</span>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
-  </section>
+
+    <!-- =======================================================================
+         PAGINA 2: CLASSIFICA GENERALE SERIE C (Bergamo Tornei Calcio a 5)
+         ======================================================================= -->
+    <div id="page-classifica" class="app-page">
+      <section class="section">
+        <div class="container">
+          <div class="section-header" style="flex-direction:column; align-items:flex-start; gap:8px;">
+            <div>
+              <span class="section-tag">SERIE C • CAMPIONATO NAZIONALE ASI BERGAMO TORNEI</span>
+              <h2 class="section-title">Classifica <span class="text-yellow">Generale 2026/2027</span></h2>
+              <p class="section-sub">
+                Girone Unico a 11 squadre. La classifica delle altre squadre si aggiorna in automatico da <strong>bergamotornei.com</strong>, mentre per il Corvo Team i risultati e i marcatori sono registrati dall'Admin Luca Belotti.
+              </p>
+            </div>
+
+            <div style="display:flex; flex-wrap:wrap; gap:10px; width:100%; justify-content:space-between; align-items:center;">
+              <div style="display:flex; gap:8px; align-items:center;">
+                <button type="button" class="btn btn-sm btn-yellow" onclick="syncStandingsFromBergamoTornei(true)">
+                  🔄 Aggiorna da Bergamo Tornei
+                </button>
+                <a href="https://www.bergamotornei.com/it/t-teamtable/155/campionato-nazionale-asi-bergamo-tornei-calcio-a-5/" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" style="display:inline-flex; align-items:center; gap:5px;">
+                  🌐 Pagina Ufficiale Bergamo Tornei &nearr;
+                </a>
+              </div>
+              <span id="standings-sync-status" style="font-size:0.75rem; color:#94a3b8; font-family:monospace;">
+                Sincronizzazione automatica attiva
+              </span>
+            </div>
+          </div>
+
+          <!-- Tabella Classifica Completa -->
+          <div class="standings-container">
+            <div class="standings-table-wrap">
+              <table class="standings-table">
+                <thead>
+                  <tr>
+                    <th style="width:45px;">#</th>
+                    <th style="text-align:left; min-width:180px;">Squadra</th>
+                    <th style="width:50px; color:#facc15;">PT</th>
+                    <th style="width:40px;" title="Partite Giocate">G</th>
+                    <th style="width:40px;" title="Vinte">V</th>
+                    <th style="width:40px;" title="Nulle / Pareggiate">N</th>
+                    <th style="width:40px;" title="Perse">P</th>
+                    <th style="width:45px;" title="Gol Fatti">GF</th>
+                    <th style="width:45px;" title="Gol Subiti">GS</th>
+                    <th style="width:45px;" title="Differenza Reti">DR</th>
+                    <th style="width:45px;" title="Punti Fair Play">FP</th>
+                  </tr>
+                </thead>
+                <tbody id="standings-tbody">
+                  <!-- Generato dinamicamente in app.js -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Footer con Legenda e Note Regolamento -->
+            <div style="padding:12px 16px; background:#050b1a; border-top:1px solid #1e293b; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; font-size:0.75rem; color:#94a3b8;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <span style="display:flex; align-items:center; gap:5px;">
+                  <span style="width:10px; height:10px; border-radius:50%; background:#10b981; display:inline-block;"></span>
+                  <span>1ª - 4ª: <strong>Play-Off Promozione</strong></span>
+                </span>
+                <span style="display:flex; align-items:center; gap:5px;">
+                  <span style="width:10px; height:10px; border-radius:50%; background:#f59e0b; display:inline-block;"></span>
+                  <span>5ª - 8ª: <strong>Coppa Bergamo</strong></span>
+                </span>
+              </div>
+              <div>
+                <span>Regolamento ASI: Vittoria 3 Pt • Pareggio 1 Pt • Sconfitta 0 Pt</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
 
   <!-- =========================================================================
-       SEZIONE: ROSA TITOLARE & SCHEMI TATTICI CALCIO A 5 (5v5)
+       PAGINA 4: ROSA TITOLARE & SCHEMI TATTICI CALCIO A 5 (5v5)
        ========================================================================= -->
-  <section id="formazione" class="section">
+  <div id="page-formazione" class="app-page">
+    <section id="formazione" class="section">
     <div class="container">
       <div class="section-header">
         <div>
@@ -889,10 +1033,12 @@
       </div>
     </div>
   </section>
+  </div>
 
   <!-- =========================================================================
-       SEZIONE: CALENDARIO DELLE PARTITE
+       PAGINA 3: CALENDARIO DELLE PARTITE (Tutte le 22 Gare - Senza scheda 11 squadre)
        ========================================================================= -->
+  <div id="page-calendario" class="app-page">
   <section id="calendario" class="section section-dark">
     <div class="container">
       <div class="section-header">
@@ -908,60 +1054,13 @@
         </div>
       </div>
 
-      <!-- Showcase Ufficiale: Le 11 Squadre del Campionato Serie C -->
-      <div class="tournament-strip">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <strong style="color:#facc15; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:6px;">
-            <span>🛡️</span> Squadre Ufficiali Campionato Serie C (11 Squadre)
-          </strong>
-          <span style="font-size:0.7rem; color:#94a3b8; font-family:monospace;">Bergamo Tornei 2026/2027</span>
-        </div>
-        <div class="tournament-grid">
-          <div class="tournament-team-card">
-            <img src="logos/atletico-tiburon.svg" alt="Atletico Tiburon" class="tournament-team-logo">
-            <span class="tournament-team-name">Atletico Tiburon</span>
-          </div>
-          <div class="tournament-team-card is-corvo">
-            <img src="corvo-team-logo.svg" alt="Corvo Team" class="tournament-team-logo">
-            <span class="tournament-team-name">Corvo Team</span>
-          </div>
-          <div class="tournament-team-card">
-            <img src="logos/crewracao.svg" alt="Crewraçao FC" class="tournament-team-logo">
-            <span class="tournament-team-name">Crewraçao FC</span>
-          </div>
-          <div class="tournament-team-card">
-            <img src="logos/csdc.svg" alt="Csdc" class="tournament-team-logo">
-            <span class="tournament-team-name">Csdc</span>
-          </div>
-          <div class="tournament-team-card">
-            <img src="logos/fair-play.svg" alt="Fair Play" class="tournament-team-logo">
-            <span class="tournament-team-name">Fair Play</span>
-          </div>
-          <div class="tournament-team-card">
-            <img src="logos/bulls.svg" alt="G.S.D. Bulls" class="tournament-team-logo">
-            <span class="tournament-team-name">G.S.D. Bulls</span>
-          </div>
-          <div class="tournament-team-card">
-            <img src="logos/ghisalba.svg" alt="Ghisalba Calcio a 5" class="tournament-team-logo">
-            <span class="tournament-team-name">Ghisalba Calcio a 5</span>
-          </div>
-          <div class="tournament-team-card">
-            <img src="logos/montecura.svg" alt="Montecura" class="tournament-team-logo">
-            <span class="tournament-team-name">Montecura</span>
-          </div>
-          <div class="tournament-team-card">
-            <img src="logos/rapid-strasse.svg" alt="Rapid Straße" class="tournament-team-logo">
-            <span class="tournament-team-name">Rapid Straße</span>
-          </div>
-          <div class="tournament-team-card">
-            <img src="logos/riecos.svg" alt="Riecos" class="tournament-team-logo">
-            <span class="tournament-team-name">Riecos</span>
-          </div>
-          <div class="tournament-team-card">
-            <img src="logos/the-ragnarok.svg" alt="The Ragnarok" class="tournament-team-logo">
-            <span class="tournament-team-name">The Ragnarok</span>
-          </div>
-        </div>
+      <!-- Filtri Calendario -->
+      <div class="role-filters" style="margin-bottom:18px;">
+        <button class="filter-btn active" onclick="filterMatches('tutte')">Tutte le 22 Gare</button>
+        <button class="filter-btn" onclick="filterMatches('da_giocare')">Da Giocare</button>
+        <button class="filter-btn" onclick="filterMatches('giocate')">Gare Concluse</button>
+        <button class="filter-btn" onclick="filterMatches('casa')">In Casa</button>
+        <button class="filter-btn" onclick="filterMatches('trasferta')">In Trasferta</button>
       </div>
 
       <!-- Griglia Partite -->
@@ -970,39 +1069,74 @@
       </div>
     </div>
   </section>
+  </div>
 
   <!-- =========================================================================
-       SEZIONE: LA ROSA DEI GIOCATORI
+       PAGINA 5: LA ROSA DEI GIOCATORI & CLASSIFICA MARCATORI
        ========================================================================= -->
-  <section id="rosa" class="section">
-    <div class="container">
-      <div class="section-header">
-        <div>
-          <span class="section-tag">I PROTAGONISTI</span>
-          <h2 class="section-title">La Rosa <span class="text-yellow">Ufficiale</span></h2>
-          <p class="section-sub">Clicca su qualsiasi atleta per aprire la sua <strong>scheda profilo dedicata</strong> con foto e caratteristiche.</p>
+  <div id="page-rosa" class="app-page">
+    <section id="rosa" class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <span class="section-tag">I PROTAGONISTI</span>
+            <h2 class="section-title">La Rosa <span class="text-yellow">Ufficiale</span> &amp; Marcatori</h2>
+            <p class="section-sub">Clicca su qualsiasi atleta per aprire la sua <strong>scheda profilo dedicata</strong> con foto e caratteristiche.</p>
+          </div>
+
+          <div class="admin-only" style="display:none;">
+            <button class="btn btn-sm btn-yellow" onclick="openAddPlayerModal()">+ Tessera Atleta</button>
+          </div>
         </div>
 
-        <div class="admin-only" style="display:none;">
-          <button class="btn btn-sm btn-yellow" onclick="openAddPlayerModal()">+ Tessera Atleta</button>
+        <!-- Filtri Ruolo -->
+        <div class="role-filters" id="role-filter-bar">
+          <button class="filter-btn active" onclick="filterSquad('Tutti')">Tutti (9)</button>
+          <button class="filter-btn" onclick="filterSquad('Portiere')">Portieri</button>
+          <button class="filter-btn" onclick="filterSquad('Difensore')">Difesa</button>
+          <button class="filter-btn" onclick="filterSquad('Centrocampista')">Centrocampo</button>
+          <button class="filter-btn" onclick="filterSquad('Attaccante')">Attacco</button>
         </div>
-      </div>
 
-      <!-- Filtri Ruolo -->
-      <div class="role-filters" id="role-filter-bar">
-        <button class="filter-btn active" onclick="filterSquad('Tutti')">Tutti (9)</button>
-        <button class="filter-btn" onclick="filterSquad('Portiere')">Portieri</button>
-        <button class="filter-btn" onclick="filterSquad('Difensore')">Difesa</button>
-        <button class="filter-btn" onclick="filterSquad('Centrocampista')">Centrocampo</button>
-        <button class="filter-btn" onclick="filterSquad('Attaccante')">Attacco</button>
-      </div>
+        <!-- Griglia Giocatori -->
+        <div id="players-grid" class="players-grid">
+          <!-- Caricato dinamicamente da app.js -->
+        </div>
 
-      <!-- Griglia Giocatori -->
-      <div id="players-grid" class="players-grid">
-        <!-- Caricato dinamicamente da app.js -->
+        <!-- Classifica Marcatori Squadra Corvo Team -->
+        <div style="margin-top:36px;">
+          <div class="section-header" style="margin-bottom:14px;">
+            <div>
+              <span class="section-tag">BOMBER CORVO TEAM</span>
+              <h3 style="font-size:1.2rem; font-weight:900; color:#fff;">Classifica <span class="text-yellow">Marcatori Squadra</span></h3>
+              <p class="text-muted text-xs">I gol vengono registrati direttamente dall'Amministratore Luca Belotti al termine di ogni gara.</p>
+            </div>
+          </div>
+
+          <div class="standings-container">
+            <div class="standings-table-wrap">
+              <table class="standings-table">
+                <thead>
+                  <tr>
+                    <th style="width:50px;">#</th>
+                    <th style="text-align:left;">Atleta</th>
+                    <th style="width:120px;">Ruolo</th>
+                    <th style="width:90px;">Presenze</th>
+                    <th style="width:90px; color:#facc15; font-size:0.9rem;">GOL</th>
+                  </tr>
+                </thead>
+                <tbody id="scorers-tbody">
+                  <!-- Generato dinamicamente in app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
+  </main>
 
   <!-- =========================================================================
        MODALE: SCHEDA PROFILO DEDICATA DEL GIOCATORE (Con Foto e Statistiche)
@@ -1089,33 +1223,111 @@
   </div>
 
   <!-- =========================================================================
-       MODALE: LOGIN AMMINISTRATORE (Zero suggerimenti o autofill)
+       MODALE: LOGIN AMMINISTRATORE (Firebase Authentication Reale)
        ========================================================================= -->
   <div id="modal-login" class="modal">
-    <div class="modal-content modal-sm">
+    <div class="modal-content modal-md">
       <button type="button" class="close-btn" onclick="closeAdminLoginModal()">&times;</button>
       <div class="modal-header text-center">
         <div class="logo-box-sm mx-auto mb-2">
           <img src="corvo-team-logo.svg" alt="Corvo Team">
         </div>
-        <h3>Login <span class="text-yellow">Amministratore</span></h3>
-        <p class="text-muted text-xs">Inserisci le tue credenziali per gestire calendario e formazione.</p>
+        <h3>Autenticazione <span class="text-yellow">Firebase Cloud</span></h3>
+        <p class="text-muted text-xs">Gestisci l'accesso amministratore per <strong>lucabelotti771@gmail.com</strong></p>
       </div>
 
-      <form id="form-login" onsubmit="handleLoginSubmit(event)">
-        <div class="form-group">
-          <label>Email Amministratore (Firebase):</label>
-          <input type="email" id="login-user" value="lucabelotti771@gmail.com" required class="form-control" autocomplete="username">
-        </div>
-        <div class="form-group">
-          <label>Password:</label>
-          <input type="password" id="login-pass" placeholder="Password account Firebase" required class="form-control" autocomplete="current-password">
-        </div>
-        <div style="background:rgba(250,204,21,0.1); border:1px solid rgba(250,204,21,0.3); border-radius:8px; padding:8px 10px; font-size:0.75rem; color:#cbd5e1; margin-bottom:12px;">
-          🔒 Connesso a <strong>Firebase Authentication</strong> per l'account <strong>lucabelotti771@gmail.com</strong>.
-        </div>
-        <button type="submit" class="btn btn-yellow btn-block mt-1">Accedi con Firebase</button>
-      </form>
+      <!-- Tab Selettore Autenticazione -->
+      <div style="display:flex; gap:4px; margin-bottom:14px; border-bottom:1px solid #334155; padding-bottom:6px; overflow-x:auto;">
+        <button type="button" id="auth-btn-login" onclick="switchAuthTab('login')" class="btn btn-xs active" style="border:1px solid #facc15; color:#facc15; font-size:0.75rem;">🔑 Accedi</button>
+        <button type="button" id="auth-btn-register" onclick="switchAuthTab('register')" class="btn btn-xs" style="border:1px solid #334155; color:#94a3b8; font-size:0.75rem;">➕ Crea Password</button>
+        <button type="button" id="auth-btn-reset" onclick="switchAuthTab('reset')" class="btn btn-xs" style="border:1px solid #334155; color:#94a3b8; font-size:0.75rem;">📧 Reimposta</button>
+        <button type="button" id="auth-btn-config" onclick="switchAuthTab('config')" class="btn btn-xs" style="border:1px solid #334155; color:#94a3b8; font-size:0.75rem;">⚙️ Progetto Firebase</button>
+      </div>
+
+      <!-- BOX 1: ACCEDI CON FIREBASE -->
+      <div id="auth-box-login">
+        <form id="form-login" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <label>Email Amministratore (Firebase):</label>
+            <input type="email" id="login-user" value="lucabelotti771@gmail.com" required class="form-control" autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label>Password Firebase:</label>
+            <input type="password" id="login-pass" placeholder="La tua password dell'account Firebase" required class="form-control" autocomplete="current-password">
+          </div>
+          <div style="background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.25); border-radius:8px; padding:8px 10px; font-size:0.75rem; color:#cbd5e1; margin-bottom:12px;">
+            🔒 Verifica le credenziali direttamente sui server <strong>Google Firebase Authentication</strong>.
+          </div>
+          <button type="submit" id="btn-submit-login" class="btn btn-yellow btn-block mt-1">Accedi con Firebase</button>
+          
+          <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.75rem;">
+            <a href="javascript:void(0)" onclick="switchAuthTab('reset')" style="color:#94a3b8; text-decoration:underline;">Password dimenticata?</a>
+            <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color:#facc15; text-decoration:underline;">Registra o imposta password</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- BOX 2: CREA O REGISTRA PASSWORD SU FIREBASE -->
+      <div id="auth-box-register" style="display:none;">
+        <form id="form-register" onsubmit="handleRegisterSubmit(event)">
+          <div style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); border-radius:8px; padding:8px 10px; font-size:0.75rem; color:#bfdbfe; margin-bottom:10px;">
+            ℹ️ Usa questo modulo se desideri <strong>registrare o impostare una nuova password</strong> per il tuo account su Firebase.
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="reg-user" value="lucabelotti771@gmail.com" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Nuova Password Firebase (minimo 6 caratteri):</label>
+            <input type="password" id="reg-pass" placeholder="Scegli la tua password" minlength="6" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Conferma Nuova Password:</label>
+            <input type="password" id="reg-pass-confirm" placeholder="Ripeti la password" minlength="6" required class="form-control">
+          </div>
+          <button type="submit" id="btn-submit-reg" class="btn btn-yellow btn-block mt-1">Salva e Registra su Firebase</button>
+          <button type="button" class="btn btn-outline btn-block mt-2" onclick="switchAuthTab('login')">Torna al Login</button>
+        </form>
+      </div>
+
+      <!-- BOX 3: REIMPOSTA PASSWORD VIA EMAIL -->
+      <div id="auth-box-reset" style="display:none;">
+        <form id="form-reset" onsubmit="handleResetPasswordSubmit(event)">
+          <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:8px 10px; font-size:0.75rem; color:#a7f3d0; margin-bottom:10px;">
+            📧 Firebase invierà un link sicuro ufficiale di Google alla tua casella di posta per consentirti di inserire una nuova password.
+          </div>
+          <div class="form-group">
+            <label>Invia link di modifica a:</label>
+            <input type="email" id="reset-email" value="lucabelotti771@gmail.com" required class="form-control">
+          </div>
+          <button type="submit" id="btn-submit-reset" class="btn btn-yellow btn-block mt-1">Invia Email di Reimpostazione</button>
+          <button type="button" class="btn btn-outline btn-block mt-2" onclick="switchAuthTab('login')">Torna al Login</button>
+        </form>
+      </div>
+
+      <!-- BOX 4: CONFIGURAZIONE PROGETTO FIREBASE -->
+      <div id="auth-box-config" style="display:none;">
+        <form id="form-config" onsubmit="handleSaveCustomFirebaseConfig(event)">
+          <div style="background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.3); border-radius:8px; padding:8px 10px; font-size:0.75rem; color:#cbd5e1; margin-bottom:10px;">
+            ⚙️ Se hai creato un progetto su <strong>console.firebase.google.com</strong>, puoi incollare qui la tua configurazione per sincronizzare l'app con il tuo database cloud.
+          </div>
+          <div class="form-group">
+            <label>API Key di Firebase (apiKey):</label>
+            <input type="text" id="cfg-api-key" placeholder="AIzaSy..." class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Project ID:</label>
+            <input type="text" id="cfg-proj-id" placeholder="corvo-team" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Oppure incolla l'intero snippet firebaseConfig:</label>
+            <textarea id="cfg-json-paste" placeholder='const firebaseConfig = { apiKey: "...", projectId: "..." };' rows="3" class="form-control" style="font-family:monospace; font-size:0.72rem;"></textarea>
+          </div>
+          <button type="submit" class="btn btn-yellow btn-block mt-1">Salva Configurazione Firebase</button>
+          <button type="button" class="btn btn-outline btn-block mt-2" onclick="switchAuthTab('login')">Annulla</button>
+        </form>
+      </div>
+
     </div>
   </div>
 
