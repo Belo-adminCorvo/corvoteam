@@ -9,7 +9,433 @@
   <meta name="apple-mobile-web-app-title" content="CORVO TEAM N29">
   <title>CORVO TEAM N29 - Portale Ufficiale &amp; Calendario</title>
   <link rel="icon" type="image/svg+xml" href="corvo-team-logo.svg">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260929_mobile_v3">
+
+  <!-- Stili Mobile Reattivi Immediati (Garantiscono il layout perfetto su smartphone anche se la cache del browser trattiene il vecchio CSS) -->
+  <style id="mobile-responsive-overrides">
+    html, body {
+      max-width: 100vw !important;
+      overflow-x: hidden !important;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .navbar {
+        padding: 6px 0 !important;
+      }
+
+      .nav-container {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+      }
+
+      .brand {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+      }
+
+      .logo-box {
+        width: 38px !important;
+        height: 44px !important;
+        border-radius: 8px !important;
+        padding: 2px !important;
+      }
+
+      .brand-text h1 {
+        font-size: 1rem !important;
+        line-height: 1.1 !important;
+        white-space: nowrap !important;
+      }
+
+      .brand-text .subtitle {
+        display: none !important;
+      }
+
+      .nav-links {
+        display: none !important;
+      }
+
+      .nav-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+      }
+
+      #role-badge {
+        font-size: 0.65rem !important;
+        padding: 3px 6px !important;
+        white-space: nowrap !important;
+      }
+
+      #btn-login-toggle {
+        padding: 5px 10px !important;
+        font-size: 0.7rem !important;
+        border-radius: 8px !important;
+        white-space: nowrap !important;
+      }
+
+      .mobile-nav-bar {
+        display: block !important;
+        padding: 6px 0 !important;
+        background: #050814 !important;
+      }
+
+      .mobile-nav-container {
+        display: flex !important;
+        gap: 6px !important;
+        padding: 0 10px !important;
+      }
+
+      .mobile-nav-tab {
+        flex: 1 !important;
+        font-size: 0.72rem !important;
+        padding: 6px 4px !important;
+        border-radius: 8px !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+      }
+
+      .hero {
+        padding: 16px 0 24px !important;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+
+      .hero-title {
+        font-size: 1.5rem !important;
+        margin-bottom: 10px !important;
+      }
+
+      .scoreboard-box {
+        padding: 12px 10px !important;
+        border-radius: 14px !important;
+        margin-bottom: 12px !important;
+      }
+
+      .team-name {
+        font-size: 0.85rem !important;
+        word-break: break-word !important;
+      }
+
+      .vs-col {
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+      }
+
+      .match-info-strip {
+        font-size: 0.7rem !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+      }
+
+      .hero-buttons {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+      }
+
+      .hero-buttons .btn:first-child {
+        grid-column: 1 / -1 !important;
+      }
+
+      .hero-badge-card {
+        margin-top: 4px !important;
+      }
+
+      .badge-card-inner {
+        padding: 14px !important;
+        border-radius: 16px !important;
+      }
+
+      .stemma-wrap {
+        width: 75px !important;
+        height: 85px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .badge-card-inner h3 {
+        font-size: 1.05rem !important;
+      }
+
+      .colors-desc {
+        font-size: 0.68rem !important;
+      }
+
+      .badge-stats-row {
+        margin-top: 10px !important;
+        padding-top: 8px !important;
+        font-size: 0.7rem !important;
+      }
+
+      .section {
+        padding: 28px 0 !important;
+      }
+
+      .section-title {
+        font-size: 1.4rem !important;
+      }
+
+      .modules-bar {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 5px !important;
+      }
+
+      .module-btn {
+        padding: 5px 3px !important;
+        border-radius: 8px !important;
+        text-align: center !important;
+      }
+
+      .module-btn-title {
+        font-size: 0.7rem !important;
+      }
+
+      .module-btn-sub {
+        font-size: 0.55rem !important;
+      }
+
+      .module-info-box {
+        padding: 8px 10px !important;
+        font-size: 0.7rem !important;
+        border-radius: 10px !important;
+      }
+
+      .lineup-info-strip {
+        grid-template-columns: 1fr !important;
+        padding: 10px 12px !important;
+        gap: 6px !important;
+        border-radius: 12px !important;
+      }
+
+      .lineup-layout {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+
+      .pitch-container {
+        padding: 6px !important;
+        border-radius: 14px !important;
+        border-width: 2px !important;
+      }
+
+      .pitch-field {
+        width: 100% !important;
+        aspect-ratio: 16 / 10 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        border-radius: 10px !important;
+      }
+
+      .pitch-circle-center {
+        width: 60px !important;
+        height: 60px !important;
+      }
+
+      .pitch-area-left, .pitch-area-right {
+        width: 36px !important;
+        height: 90px !important;
+      }
+
+      .pitch-watermark {
+        font-size: 1.8rem !important;
+      }
+
+      .player-marker-shirt {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.75rem !important;
+        border-width: 2px !important;
+      }
+
+      .player-marker-role {
+        font-size: 0.44rem !important;
+        letter-spacing: -0.5px !important;
+      }
+
+      .player-marker-name {
+        font-size: 0.58rem !important;
+        padding: 1px 4px !important;
+        margin-top: 1px !important;
+        max-width: 66px !important;
+        border-radius: 6px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+      }
+
+      .cap-badge {
+        font-size: 0.44rem !important;
+        padding: 0 2px !important;
+        top: -5px !important;
+      }
+
+      .matches-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+      }
+
+      .match-card {
+        padding: 12px !important;
+        border-radius: 12px !important;
+      }
+
+      .players-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+      }
+
+      .player-card {
+        padding: 12px !important;
+        border-radius: 12px !important;
+      }
+
+      .modal {
+        padding: 8px !important;
+      }
+
+      .modal-content {
+        max-width: 100% !important;
+        width: 96% !important;
+        padding: 16px 12px !important;
+        border-radius: 14px !important;
+        max-height: 92vh !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .modules-bar {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+
+    /* Stili Loghi Ufficiali e Schede Partite */
+    .team-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 6px;
+      border-radius: 8px;
+    }
+    .team-line-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+    .team-mini-logo {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px;
+      flex-shrink: 0;
+    }
+    .team-name-clamp {
+      font-weight: 800;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .team-line.is-corvo .team-name-clamp {
+      color: #facc15;
+    }
+    .team-line.is-corvo .team-mini-logo {
+      background: rgba(250, 204, 21, 0.15);
+      border: 1px solid rgba(250, 204, 21, 0.4);
+    }
+    .team-badge-tag {
+      font-size: 0.6rem;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+    .tag-home {
+      background: rgba(30, 58, 138, 0.5);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .tag-away {
+      background: rgba(51, 65, 85, 0.5);
+      color: #cbd5e1;
+      border: 1px solid rgba(100, 116, 139, 0.3);
+    }
+    .tournament-strip {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 20px;
+    }
+    .tournament-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 8px;
+    }
+    .tournament-team-card {
+      background: rgba(2, 6, 23, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 8px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+    .tournament-team-card:hover {
+      border-color: rgba(250, 204, 21, 0.3);
+      transform: translateY(-2px);
+    }
+    .tournament-team-card.is-corvo {
+      background: rgba(250, 204, 21, 0.08);
+      border-color: rgba(250, 204, 21, 0.4);
+    }
+    .tournament-team-logo {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 3px;
+    }
+    .tournament-team-name {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    .tournament-team-card.is-corvo .tournament-team-name {
+      color: #facc15;
+      font-weight: 800;
+    }
+  </style>
 
   <!-- Script Immediato Inline: Garantisce che Moduli, Scheda Giocatore e Login Amministratore funzionino SEMPRE al 100% -->
   <script>
@@ -263,26 +689,28 @@
         <!-- Tabellone Digitale -->
         <div class="scoreboard-box">
           <div class="teams-matchup">
-            <div class="team-col team-home">
+            <div class="team-col team-home" id="hero-home-col">
               <div class="logo-box-sm">
-                <img src="corvo-team-logo.svg" alt="Corvo Team">
+                <img id="hero-home-logo" src="logos/the-ragnarok.svg" alt="The Ragnarok">
               </div>
-              <span class="team-name">CORVO TEAM</span>
-              <span class="team-tag">CASA</span>
+              <span class="team-name" id="hero-home-name">THE RAGNAROK</span>
+              <span class="team-tag" id="hero-home-tag">CASA</span>
             </div>
 
             <div class="vs-col">VS</div>
 
-            <div class="team-col team-away">
-              <div class="away-badge" id="hero-away-abbr">CA</div>
-              <span class="team-name" id="hero-away-name">Cortenova All Stars</span>
-              <span class="team-tag">OSPITE</span>
+            <div class="team-col team-away" id="hero-away-col">
+              <div class="logo-box-sm">
+                <img id="hero-away-logo" src="corvo-team-logo.svg" alt="Corvo Team">
+              </div>
+              <span class="team-name" id="hero-away-name">CORVO TEAM</span>
+              <span class="team-tag" id="hero-away-tag">OSPITE</span>
             </div>
           </div>
 
           <div class="match-info-strip">
-            <span id="hero-date">📅 Ven 02 Ottobre 2026 • 21:00</span>
-            <span id="hero-venue">📍 Centro Sportivo San Rocco</span>
+            <span id="hero-date">📅 Ven 02 Ottobre 2026 • 20:00</span>
+            <span id="hero-venue">📍 Albano S.A. - Palazzetto</span>
             <span id="hero-status" class="status-confirmed">Confermata</span>
           </div>
         </div>
@@ -375,11 +803,11 @@
       <div class="lineup-info-strip">
         <div class="lineup-info-item">
           <span class="text-muted text-xs">PARTITA CONVOCATA:</span>
-          <strong id="lineup-match-title" class="text-yellow">1ª Giornata vs Cortenova All Stars</strong>
+          <strong id="lineup-match-title" class="text-yellow">1ª Giornata: The Ragnarok vs Corvo Team</strong>
         </div>
         <div class="lineup-info-item">
           <span class="text-muted text-xs">RITROVO &amp; MAGLIE:</span>
-          <span id="lineup-ritrovo" class="text-white font-bold">Ore 20:30 agli spogliatoi (Maglia Gialla)</span>
+          <span id="lineup-ritrovo" class="text-white font-bold">Ore 19:30 agli spogliatoi (Palazzetto di Albano Sant'Alessandro)</span>
         </div>
         <div class="lineup-info-item">
           <span class="text-muted text-xs">CAPITANO DESIGNATO:</span>
@@ -469,13 +897,70 @@
     <div class="container">
       <div class="section-header">
         <div>
-          <span class="section-tag">CALENDARIO UFFICIALE</span>
-          <h2 class="section-title">Partite in <span class="text-yellow">Programma</span></h2>
-          <p class="section-sub">Tutte le gare del girone d'andata: date, orari, campi e gare da definire.</p>
+          <span class="section-tag">CALENDARIO UFFICIALE 2026/2027</span>
+          <h2 class="section-title">Calendario <span class="text-yellow">Gare Ufficiali</span></h2>
+          <p class="section-sub">Tutte le 22 gare ufficiali del campionato (Andata &amp; Ritorno) con date, orari, palazzetti e loghi ufficiali • Serie C Bergamo Tornei.</p>
         </div>
 
-        <div class="admin-toolbar admin-only" style="display:none;">
-          <button class="btn btn-sm btn-yellow" onclick="openAddMatchModal()">+ Nuova Partita</button>
+        <div class="admin-toolbar admin-only" style="display:none; gap:8px;">
+          <button class="btn btn-sm btn-yellow" onclick="syncOfficialCalendarToFirebase()" title="Salva tutte le 22 partite con loghi su Firebase Cloud">🔄 Sincronizza Calendario su Firebase</button>
+          <button class="btn btn-sm btn-outline" onclick="openAddMatchModal()">+ Nuova Partita</button>
+        </div>
+      </div>
+
+      <!-- Showcase Ufficiale: Le 11 Squadre del Campionato Serie C -->
+      <div class="tournament-strip">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <strong style="color:#facc15; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:6px;">
+            <span>🛡️</span> Squadre Ufficiali Campionato Serie C (11 Squadre)
+          </strong>
+          <span style="font-size:0.7rem; color:#94a3b8; font-family:monospace;">Bergamo Tornei 2026/2027</span>
+        </div>
+        <div class="tournament-grid">
+          <div class="tournament-team-card">
+            <img src="logos/atletico-tiburon.svg" alt="Atletico Tiburon" class="tournament-team-logo">
+            <span class="tournament-team-name">Atletico Tiburon</span>
+          </div>
+          <div class="tournament-team-card is-corvo">
+            <img src="corvo-team-logo.svg" alt="Corvo Team" class="tournament-team-logo">
+            <span class="tournament-team-name">Corvo Team</span>
+          </div>
+          <div class="tournament-team-card">
+            <img src="logos/crewracao.svg" alt="Crewraçao FC" class="tournament-team-logo">
+            <span class="tournament-team-name">Crewraçao FC</span>
+          </div>
+          <div class="tournament-team-card">
+            <img src="logos/csdc.svg" alt="Csdc" class="tournament-team-logo">
+            <span class="tournament-team-name">Csdc</span>
+          </div>
+          <div class="tournament-team-card">
+            <img src="logos/fair-play.svg" alt="Fair Play" class="tournament-team-logo">
+            <span class="tournament-team-name">Fair Play</span>
+          </div>
+          <div class="tournament-team-card">
+            <img src="logos/bulls.svg" alt="G.S.D. Bulls" class="tournament-team-logo">
+            <span class="tournament-team-name">G.S.D. Bulls</span>
+          </div>
+          <div class="tournament-team-card">
+            <img src="logos/ghisalba.svg" alt="Ghisalba Calcio a 5" class="tournament-team-logo">
+            <span class="tournament-team-name">Ghisalba Calcio a 5</span>
+          </div>
+          <div class="tournament-team-card">
+            <img src="logos/montecura.svg" alt="Montecura" class="tournament-team-logo">
+            <span class="tournament-team-name">Montecura</span>
+          </div>
+          <div class="tournament-team-card">
+            <img src="logos/rapid-strasse.svg" alt="Rapid Straße" class="tournament-team-logo">
+            <span class="tournament-team-name">Rapid Straße</span>
+          </div>
+          <div class="tournament-team-card">
+            <img src="logos/riecos.svg" alt="Riecos" class="tournament-team-logo">
+            <span class="tournament-team-name">Riecos</span>
+          </div>
+          <div class="tournament-team-card">
+            <img src="logos/the-ragnarok.svg" alt="The Ragnarok" class="tournament-team-logo">
+            <span class="tournament-team-name">The Ragnarok</span>
+          </div>
         </div>
       </div>
 
@@ -619,14 +1104,17 @@
 
       <form id="form-login" onsubmit="handleLoginSubmit(event)">
         <div class="form-group">
-          <label>Email o Nome Utente:</label>
-          <input type="text" id="login-user" placeholder="Inserisci la tua email" required class="form-control">
+          <label>Email Amministratore (Firebase):</label>
+          <input type="email" id="login-user" value="lucabelotti771@gmail.com" required class="form-control" autocomplete="username">
         </div>
         <div class="form-group">
           <label>Password:</label>
-          <input type="password" id="login-pass" placeholder="••••••••" required class="form-control">
+          <input type="password" id="login-pass" placeholder="Password account Firebase" required class="form-control" autocomplete="current-password">
         </div>
-        <button type="submit" class="btn btn-yellow btn-block mt-3">Accedi come Amministratore</button>
+        <div style="background:rgba(250,204,21,0.1); border:1px solid rgba(250,204,21,0.3); border-radius:8px; padding:8px 10px; font-size:0.75rem; color:#cbd5e1; margin-bottom:12px;">
+          🔒 Connesso a <strong>Firebase Authentication</strong> per l'account <strong>lucabelotti771@gmail.com</strong>.
+        </div>
+        <button type="submit" class="btn btn-yellow btn-block mt-1">Accedi con Firebase</button>
       </form>
     </div>
   </div>
@@ -828,15 +1316,10 @@
     </div>
   </footer>
 
-  <!-- Google Firebase Cloud SDK (CDN) per sincronizzazione globale real-time -->
-    <!-- Google Firebase Cloud SDK (CDN) per sincronizzazione globale real-time -->
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
-    <!-- QUESTA RIGA SOTTO RISOLVE IL TUO ERRORE ROSSO: -->
-    <script src="https://gstatic.com"></script>
-
-    <!-- Il file JavaScript principale del tuo sito (il tuo app.js) -->
-    <script src="app.js"></script>
+  <!-- Google Firebase Cloud SDK (CDN) per sincronizzazione globale real-time e autenticazione Admin -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="app.js?v=20260929_v3"></script>
 </body>
-
 </html>
