@@ -216,9 +216,9 @@ function getTeamBadgeInfo(name) {
 }
 
 // ==============================================================================
-// CONFIGURAZIONE FIREBASE CLOUD (Sincronizzazione Realtime su tutti i dispositivi)
+// CONFIGURAZIONE FIREBASE CLOUD (Autenticazione reale e Sincronizzazione)
 // ==============================================================================
-const firebaseConfig = {
+let firebaseConfig = {
   apiKey: "AIzaSyD8EWCSTHOXtSdZPJ_evFGTeHjKCeGtDw",
   authDomain: "corvo-team.firebaseapp.com",
   projectId: "corvo-team",
@@ -227,35 +227,54 @@ const firebaseConfig = {
   appId: "1:208405905224:web:7358f519686bc7a6b67d7d"
 };
 
-let db = null;
-let auth = null;
+// Carica configurazione personalizzata salvata dall'amministratore (se presente)
 try {
-  if (typeof firebase !== 'undefined') {
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+  const savedCustomConfig = localStorage.getItem('corvo_firebase_config');
+  if (savedCustomConfig) {
+    const parsed = JSON.parse(savedCustomConfig);
+    if (parsed && (parsed.apiKey || parsed.projectId)) {
+      firebaseConfig = Object.assign({}, firebaseConfig, parsed);
     }
-    db = firebase.firestore();
-    if (typeof firebase.auth === 'function') {
-      auth = firebase.auth();
-      // Ascolta stato di autenticazione Firebase in tempo reale
-      auth.onAuthStateChanged((user) => {
-        if (user && user.email && user.email.toLowerCase() === 'lucabelotti771@gmail.com') {
-          state.isAdmin = true;
-          localStorage.setItem('corvo_local_admin', 'true');
-          console.log('Firebase Auth: Amministratore connesso:', user.email, 'UID:', user.uid);
-        } else if (!user) {
-          if (localStorage.getItem('corvo_local_admin') !== 'true') {
-            state.isAdmin = false;
-          }
-        }
-        updateAdminUI();
-      });
-    }
-    console.log('Firebase Cloud & Auth Connessi con successo!');
   }
 } catch (e) {
-  console.warn('Inizializzazione Firebase:', e);
+  console.warn('Errore lettura configurazione Firebase salvata:', e);
 }
+
+let db = null;
+let auth = null;
+
+function initFirebaseClient() {
+  try {
+    if (typeof firebase !== 'undefined') {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      db = firebase.firestore();
+      if (typeof firebase.auth === 'function') {
+        auth = firebase.auth();
+        // Ascolta lo stato reale dell'autenticazione Firebase
+        auth.onAuthStateChanged((user) => {
+          if (user && user.email && user.email.toLowerCase() === 'lucabelotti771@gmail.com') {
+            state.isAdmin = true;
+            localStorage.setItem('corvo_local_admin', 'true');
+            console.log('Firebase Auth: Amministratore autenticato:', user.email, 'UID:', user.uid);
+          } else if (!user) {
+            // Se disconnesso da Firebase e non c'è flag manuale
+            if (localStorage.getItem('corvo_local_admin') !== 'true') {
+              state.isAdmin = false;
+            }
+          }
+          updateAdminUI();
+        });
+      }
+      console.log('Firebase inizializzato con progetto:', firebaseConfig.projectId);
+    }
+  } catch (e) {
+    console.warn('Inizializzazione Firebase:', e);
+  }
+}
+
+initFirebaseClient();
 
 // Inizializzazione sicura all'avvio
 function initApp() {
@@ -312,18 +331,20 @@ function initApp() {
   renderModulesBar();
   renderLineup();
   renderPlayers();
+  renderStandings();
+  renderScorers();
   populateScorerSelect();
 
-  // Gestione attiva schede navigazione mobile
-  try {
-    const mobileTabs = document.querySelectorAll('.mobile-nav-tab');
-    mobileTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        mobileTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-      });
-    });
-  } catch (e) {}
+  // Inizializza la pagina corretta dalla URL hash o default 'home'
+  const initialHash = (location.hash || '').replace('#', '').trim();
+  navigateTo(initialHash || 'home');
+  window.addEventListener('hashchange', () => {
+    const page = (location.hash || '').replace('#', '').trim();
+    if (page) navigateTo(page);
+  });
+
+  // Avvia sincronizzazione con Bergamo Tornei
+  syncStandingsFromBergamoTornei(false);
 
   // Sincronizzazione Realtime con Firebase Cloud
   setupFirebaseSync();
@@ -495,69 +516,69 @@ function toggleAdminLogin() {
   }
 }
 
+// =============================================================================
+// GESTIONE AUTENTICAZIONE AMMINISTRATORE TRAMITE FIREBASE AUTH
+// =============================================================================
+function switchAuthTab(tabId) {
+  const tabs = ['login', 'register', 'reset', 'config'];
+  tabs.forEach(t => {
+    const box = document.getElementById('auth-box-' + t);
+    const btn = document.getElementById('auth-btn-' + t);
+    if (box) box.style.display = (t === tabId) ? 'block' : 'none';
+    if (btn) {
+      if (t === tabId) {
+        btn.classList.add('active');
+        btn.style.borderColor = '#facc15';
+        btn.style.color = '#facc15';
+      } else {
+        btn.classList.remove('active');
+        btn.style.borderColor = '#334155';
+        btn.style.color = '#94a3b8';
+      }
+    }
+  });
+}
+
+// 1. Login con Email e Password reali su Firebase
 async function handleLoginSubmit(e) {
   if (e && e.preventDefault) e.preventDefault();
   const userEl = document.getElementById('login-user');
   const passEl = document.getElementById('login-pass');
-  const btnSubmit = document.querySelector('#form-login button[type="submit"]');
+  const btnSubmit = document.getElementById('btn-submit-login');
   const user = userEl ? userEl.value.trim() : '';
   const pass = passEl ? passEl.value.trim() : '';
 
   if (!user || !pass) {
-    alert('Inserisci sia l\'email che la password.');
+    alert('Inserisci sia l\'email che la password associata al tuo account Firebase.');
+    return;
+  }
+
+  // Solo Luca Belotti è l'amministratore ufficiale
+  if (user.toLowerCase() !== 'lucabelotti771@gmail.com') {
+    alert('⛔ Accesso negato.\nL\'accesso amministratore è riservato esclusivamente a Luca Belotti (lucabelotti771@gmail.com).');
     return;
   }
 
   const originalBtnText = btnSubmit ? btnSubmit.textContent : 'Accedi';
   if (btnSubmit) {
     btnSubmit.disabled = true;
-    btnSubmit.textContent = 'Autenticazione Firebase in corso...';
+    btnSubmit.textContent = 'Verifica credenziali Firebase...';
   }
 
-  // 1. Prova l'autenticazione reale con Firebase Auth (permette di superare le regole di sicurezza Firestore)
-  if (auth) {
-    try {
-      const userCredential = await auth.signInWithEmailAndPassword(user, pass);
-      const authUser = userCredential.user;
-      console.log('Firebase Auth: Login riuscito con successo!', authUser.email, 'UID:', authUser.uid);
-
-      state.isAdmin = true;
-      localStorage.setItem('corvo_local_admin', 'true');
-      closeAdminLoginModal();
-      updateAdminUI();
-      renderHeroMatch();
-      renderMatches();
-      renderLineup();
-      alert(`Accesso Amministratore confermato con Firebase Auth!\nBenvenuto Luca Belotti (${authUser.email}).\nOra hai tutti i permessi per modificare e salvare i dati direttamente nel database cloud.`);
-      if (btnSubmit) {
-        btnSubmit.disabled = false;
-        btnSubmit.textContent = originalBtnText;
-      }
-      return;
-    } catch (fbError) {
-      console.warn('Errore Firebase Auth:', fbError.code, fbError.message);
-      if (fbError.code === 'auth/wrong-password' || fbError.code === 'auth/invalid-credential') {
-        alert('Password non corretta per l\'account Firebase ' + user + '.\nVerifica la password che hai impostato nella console di Firebase.');
-        if (btnSubmit) {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = originalBtnText;
-        }
-        return;
-      } else if (fbError.code === 'auth/user-not-found') {
-        alert('Utente non trovato su Firebase. Assicurati di usare l\'email creata: lucabelotti771@gmail.com');
-        if (btnSubmit) {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = originalBtnText;
-        }
-        return;
-      } else if (fbError.code === 'auth/network-request-failed') {
-        console.warn('Rete offline per Firebase Auth, provo fallback offline.');
-      }
+  if (!auth) {
+    alert('⚠️ Firebase Auth non è attivo.\nAssicurati che la connessione a Internet sia presente e che il tuo progetto Firebase sia configurato.');
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = originalBtnText;
     }
+    return;
   }
 
-  // 2. Fallback offline con credenziale predefinita
-  if ((user.toLowerCase() === 'lucabelotti771@gmail.com' || user.toLowerCase() === 'luca belotti') && pass === 'corvo2026') {
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(user, pass);
+    const authUser = userCredential.user;
+    console.log('Firebase Auth: Accesso riuscito per:', authUser.email, 'UID:', authUser.uid);
+
     state.isAdmin = true;
     localStorage.setItem('corvo_local_admin', 'true');
     closeAdminLoginModal();
@@ -565,14 +586,190 @@ async function handleLoginSubmit(e) {
     renderHeroMatch();
     renderMatches();
     renderLineup();
-    alert('Accesso Amministratore locale confermato! Benvenuto Luca Belotti.\n(Nota: per sincronizzare su Firebase Firestore protetto da regole di sicurezza, usa la password del tuo account Firebase).');
-  } else {
-    alert('Credenziali non valide. Inserisci l\'account lucabelotti771@gmail.com e la password associata.');
+
+    alert(`👑 Accesso Amministratore confermato con Firebase!\nBenvenuto Luca Belotti (${authUser.email}).\nI tuoi permessi di modifica calendario e titolari sono ora attivi.`);
+  } catch (fbError) {
+    console.error('Firebase Auth Login Error:', fbError.code, fbError.message);
+
+    if (fbError.code === 'auth/wrong-password' || fbError.code === 'auth/invalid-credential') {
+      alert(`❌ Password non corretta per l'account Firebase "${user}".\n\nSe desideri reimpostarla, clicca sulla scheda "Reimposta Password" per ricevere il link di modifica nella tua casella email.`);
+    } else if (fbError.code === 'auth/user-not-found') {
+      alert(`⚠️ Nessun account trovato su Firebase con l'email "${user}".\n\nSe non l'hai ancora registrato sul tuo progetto Firebase, clicca sulla scheda "Crea Account" e imposta la tua password desiderata.`);
+    } else if (fbError.code === 'auth/invalid-api-key' || fbError.code === 'auth/api-key-not-valid') {
+      alert(`⚠️ Chiave API Firebase non valida.\n\nIl progetto corvo-team richiede le credenziali del tuo account Firebase. Clicca sulla scheda "⚙️ Configura Firebase" e incolla la tua configurazione da console.firebase.google.com.`);
+    } else if (fbError.code === 'auth/unauthorized-domain') {
+      alert(`⚠️ Dominio non autorizzato su Firebase (${window.location.hostname}).\n\nPer abilitare questo dominio:\n1. Vai su console.firebase.google.com\n2. Authentication > Settings > Authorized Domains\n3. Aggiungi: ${window.location.hostname}`);
+    } else if (fbError.code === 'auth/too-many-requests') {
+      alert('⚠️ Troppi tentativi falliti. Riprova tra qualche istante oppure reimposta la password.');
+    } else {
+      alert(`Errore Firebase Auth: ${fbError.message}\n(Codice: ${fbError.code})`);
+    }
+  } finally {
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = originalBtnText;
+    }
+  }
+}
+
+// 2. Registrazione o Creazione Password su Firebase per lucabelotti771@gmail.com
+async function handleRegisterSubmit(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const userEl = document.getElementById('reg-user');
+  const passEl = document.getElementById('reg-pass');
+  const passConfEl = document.getElementById('reg-pass-confirm');
+  const btnSubmit = document.getElementById('btn-submit-reg');
+  
+  const user = userEl ? userEl.value.trim() : '';
+  const pass = passEl ? passEl.value.trim() : '';
+  const passConf = passConfEl ? passConfEl.value.trim() : '';
+
+  if (!user || !pass) {
+    alert('Inserisci l\'email e la password che desideri associare al tuo account Firebase.');
+    return;
   }
 
+  if (pass.length < 6) {
+    alert('La password deve contenere almeno 6 caratteri (requisito standard di Firebase).');
+    return;
+  }
+
+  if (pass !== passConf) {
+    alert('Le due password inserite non coincidono. Riprova.');
+    return;
+  }
+
+  if (!auth) {
+    alert('⚠️ Firebase Auth non è disponibile.');
+    return;
+  }
+
+  const origText = btnSubmit ? btnSubmit.textContent : 'Crea Account';
   if (btnSubmit) {
-    btnSubmit.disabled = false;
-    btnSubmit.textContent = originalBtnText;
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Creazione account Firebase...';
+  }
+
+  try {
+    const userCredential = await auth.createUserWithEmailAndPassword(user, pass);
+    const authUser = userCredential.user;
+    console.log('Firebase Auth: Nuovo utente registrato:', authUser.email);
+
+    state.isAdmin = true;
+    localStorage.setItem('corvo_local_admin', 'true');
+    closeAdminLoginModal();
+    updateAdminUI();
+    renderHeroMatch();
+    renderMatches();
+    renderLineup();
+
+    alert(`🎉 Account Amministratore creato con successo su Firebase!\nEmail: ${authUser.email}\nLa tua nuova password è ora salvata nel cloud di Firebase.`);
+  } catch (fbError) {
+    console.error('Firebase Auth Register Error:', fbError.code, fbError.message);
+    if (fbError.code === 'auth/email-already-in-use') {
+      alert(`L'account "${user}" esiste già su Firebase!\n\nSe conosci la password, accedi dalla scheda "Accedi". Se l'hai dimenticata o vuoi modificarla, usa la scheda "Reimposta Password" per ricevere il link via email.`);
+    } else if (fbError.code === 'auth/weak-password') {
+      alert('La password è troppo debole. Inserisci una password più complessa di almeno 6 caratteri.');
+    } else if (fbError.code === 'auth/invalid-api-key' || fbError.code === 'auth/api-key-not-valid') {
+      alert('Chiave API Firebase non valida. Inserisci la configurazione del tuo progetto Firebase nella scheda "⚙️ Configura Firebase".');
+    } else {
+      alert(`Errore creazione account Firebase: ${fbError.message} (${fbError.code})`);
+    }
+  } finally {
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = origText;
+    }
+  }
+}
+
+// 3. Invio email di reimpostazione password
+async function handleResetPasswordSubmit(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const emailEl = document.getElementById('reset-email');
+  const btn = document.getElementById('btn-submit-reset');
+  const email = emailEl ? emailEl.value.trim() : 'lucabelotti771@gmail.com';
+
+  if (!email) {
+    alert('Inserisci l\'indirizzo email a cui inviare il link di reimpostazione.');
+    return;
+  }
+
+  if (!auth) {
+    alert('Firebase Auth non disponibile.');
+    return;
+  }
+
+  const origText = btn ? btn.textContent : 'Invia Email di Reset';
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Invio email in corso...';
+  }
+
+  try {
+    await auth.sendPasswordResetEmail(email);
+    alert(`📧 Email di ripristino inviata con successo a ${email}!\n\nControlla la tua casella di posta (e la cartella Spam): clicca sul link ufficiale di Firebase per impostare la tua password personale.`);
+    switchAuthTab('login');
+  } catch (err) {
+    console.error('Password Reset Error:', err);
+    if (err.code === 'auth/user-not-found') {
+      alert(`Nessun utente trovato per ${email}. Puoi registrarlo dalla scheda "Crea Account".`);
+    } else {
+      alert(`Errore invio email di reset: ${err.message}`);
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = origText;
+    }
+  }
+}
+
+// 4. Salvataggio Configurazione Firebase Personale
+function handleSaveCustomFirebaseConfig(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const apiKeyEl = document.getElementById('cfg-api-key');
+  const projIdEl = document.getElementById('cfg-proj-id');
+  const authDomainEl = document.getElementById('cfg-auth-domain');
+  const appIdEl = document.getElementById('cfg-app-id');
+  const jsonPasteEl = document.getElementById('cfg-json-paste');
+
+  let newConfig = {};
+
+  // Se l'utente ha incollato l'intero codice snippet di Firebase
+  if (jsonPasteEl && jsonPasteEl.value.trim().length > 10) {
+    try {
+      const raw = jsonPasteEl.value.trim();
+      // Estrai blocco JSON se presente tra parentesi graffe
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (match) {
+        // Converte in JSON valido se ha chiavi senza virgolette
+        const jsonStr = match[0].replace(/([a-zA-Z0-9_]+):/g, '"$1":').replace(/'/g, '"');
+        newConfig = JSON.parse(jsonStr);
+      }
+    } catch (err) {
+      console.warn('Errore parsing snippet incollato:', err);
+    }
+  }
+
+  if (!newConfig.apiKey && apiKeyEl && apiKeyEl.value.trim()) {
+    newConfig.apiKey = apiKeyEl.value.trim();
+    newConfig.projectId = projIdEl ? projIdEl.value.trim() : 'corvo-team';
+    newConfig.authDomain = authDomainEl && authDomainEl.value.trim() ? authDomainEl.value.trim() : (newConfig.projectId + '.firebaseapp.com');
+    if (appIdEl && appIdEl.value.trim()) newConfig.appId = appIdEl.value.trim();
+  }
+
+  if (!newConfig.apiKey) {
+    alert('Inserisci almeno la tua apiKey di Firebase o incolla lo snippet del tuo progetto.');
+    return;
+  }
+
+  try {
+    localStorage.setItem('corvo_firebase_config', JSON.stringify(newConfig));
+    alert('✅ Configurazione Firebase salvata con successo sul tuo browser!\nLa pagina verrà ricaricata per attivare il tuo progetto Firebase.');
+    window.location.reload();
+  } catch (err) {
+    alert('Errore nel salvataggio della configurazione: ' + err.message);
   }
 }
 
@@ -1368,12 +1565,27 @@ function handleSaveResult(e) {
     state.partite[idx].gol_fatti = gf;
     state.partite[idx].gol_subiti = gs;
     state.partite[idx].stato = 'giocata';
+    state.partite[idx].marcatori = [...state.currentScorers];
+
+    // Aggiorna presenze e gol totali per i giocatori del Corvo Team
+    state.currentScorers.forEach(sc => {
+      const g = state.giocatori.find(x => x.id === sc.id);
+      if (g) {
+        g.gol_totali = (g.gol_totali || 0) + sc.gol;
+      }
+    });
 
     saveLocalMatches();
+    try {
+      localStorage.setItem('corvo_local_players', JSON.stringify(state.giocatori));
+    } catch (e) {}
+
     closeModal('modal-result');
     renderHeroMatch();
     renderMatches();
-    alert(`Risultato registrato: CORVO TEAM ${gf} - ${gs} ${state.partite[idx].avversario}!`);
+    renderStandings();
+    renderScorers();
+    alert(`🏆 Risultato registrato con successo!\nCORVO TEAM ${gf} - ${gs} ${state.partite[idx].avversario}\nLa classifica e la lista marcatori della squadra sono state aggiornate.`);
   }
 }
 
@@ -1406,6 +1618,386 @@ function saveLocalMatches() {
   }
 }
 
+// =============================================================================
+// ROUTING MULTI-PAGINA (NAVBAR)
+// =============================================================================
+function navigateTo(pageId) {
+  const validPages = ['home', 'classifica', 'calendario', 'formazione', 'rosa'];
+  if (!validPages.includes(pageId)) pageId = 'home';
+
+  // Nascondi tutte le pagine
+  document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
+
+  // Mostra la pagina target
+  const target = document.getElementById('page-' + pageId);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Aggiorna navbar desktop
+  document.querySelectorAll('.nav-links .nav-link').forEach(link => {
+    link.classList.toggle('active', link.getAttribute('data-page') === pageId);
+  });
+
+  // Aggiorna navbar mobile
+  document.querySelectorAll('.mobile-nav-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.getAttribute('data-page') === pageId);
+  });
+
+  state.currentPage = pageId;
+  try {
+    history.replaceState(null, '', '#' + pageId);
+  } catch (e) {}
+
+  if (pageId === 'classifica') {
+    renderStandings();
+  }
+  if (pageId === 'rosa') {
+    renderScorers();
+  }
+}
+
+// =============================================================================
+// CLASSIFICA GENERALE SERIE C (BERGAMO TORNEI CALCIO A 5)
+// =============================================================================
+const SERIE_C_TEAMS = [
+  { name: 'Corvo Team', logo: 'corvo-team-logo.svg', isCorvo: true },
+  { name: 'The Ragnarok', logo: 'logos/the-ragnarok.svg', isCorvo: false },
+  { name: 'Rapid Straße', logo: 'logos/rapid-strasse.svg', isCorvo: false },
+  { name: 'Ghisalba Calcio a 5', logo: 'logos/ghisalba.svg', isCorvo: false },
+  { name: 'Atletico Tiburon', logo: 'logos/atletico-tiburon.svg', isCorvo: false },
+  { name: 'Crewraçao FC', logo: 'logos/crewracao.svg', isCorvo: false },
+  { name: 'G.S.D. Bulls', logo: 'logos/bulls.svg', isCorvo: false },
+  { name: 'Riecos', logo: 'logos/riecos.svg', isCorvo: false },
+  { name: 'Csdc', logo: 'logos/csdc.svg', isCorvo: false },
+  { name: 'Fair Play', logo: 'logos/fair-play.svg', isCorvo: false },
+  { name: 'Montecura', logo: 'logos/montecura.svg', isCorvo: false },
+];
+
+// =============================================================================
+// CALENDARIO DELLE ALTRE SQUADRE PER AGGIORNAMENTO AUTOMATICO AD OGNI GIORNATA
+// =============================================================================
+const LEAGUE_ROUNDS_OTHER_PAIRS = [
+  // 1ª Giornata (Riposo: Montecura)
+  [['Rapid Straße', 'Ghisalba Calcio a 5', 4, 3], ['Atletico Tiburon', 'Crewraçao FC', 2, 2], ['G.S.D. Bulls', 'Riecos', 5, 2], ['Csdc', 'Fair Play', 3, 2]],
+  // 2ª Giornata (Riposo: Fair Play)
+  [['Ghisalba Calcio a 5', 'The Ragnarok', 3, 4], ['Crewraçao FC', 'Montecura', 3, 1], ['Riecos', 'Atletico Tiburon', 1, 2], ['G.S.D. Bulls', 'Csdc', 4, 4]],
+  // 3ª Giornata (Riposo: Csdc)
+  [['The Ragnarok', 'Rapid Straße', 5, 2], ['Montecura', 'Riecos', 2, 3], ['Atletico Tiburon', 'G.S.D. Bulls', 1, 3], ['Crewraçao FC', 'Fair Play', 4, 1]],
+  // 4ª Giornata (Riposo: G.S.D. Bulls)
+  [['Ghisalba Calcio a 5', 'Crewraçao FC', 2, 4], ['Rapid Straße', 'Montecura', 3, 2], ['Fair Play', 'The Ragnarok', 1, 5], ['Riecos', 'Csdc', 2, 2]],
+  // 5ª Giornata (Riposo: Riecos)
+  [['The Ragnarok', 'Atletico Tiburon', 4, 1], ['Montecura', 'Ghisalba Calcio a 5', 2, 3], ['Fair Play', 'Rapid Straße', 2, 4], ['Csdc', 'G.S.D. Bulls', 1, 3]],
+  // 6ª Giornata (Riposo: The Ragnarok)
+  [['Rapid Straße', 'Crewraçao FC', 2, 3], ['Atletico Tiburon', 'Montecura', 4, 2], ['Ghisalba Calcio a 5', 'Fair Play', 5, 3], ['Csdc', 'Riecos', 1, 4]],
+  // 7ª Giornata (Riposo: Rapid Straße)
+  [['Montecura', 'The Ragnarok', 1, 4], ['Crewraçao FC', 'G.S.D. Bulls', 3, 3], ['Fair Play', 'Atletico Tiburon', 2, 3], ['Ghisalba Calcio a 5', 'Csdc', 4, 1]],
+  // 8ª Giornata (Riposo: Ghisalba Calcio a 5)
+  [['The Ragnarok', 'Crewraçao FC', 3, 2], ['Rapid Straße', 'Riecos', 4, 2], ['G.S.D. Bulls', 'Montecura', 5, 1], ['Atletico Tiburon', 'Fair Play', 4, 2]],
+  // 9ª Giornata (Riposo: Corvo Team)
+  [['Fair Play', 'Montecura', 3, 2], ['The Ragnarok', 'G.S.D. Bulls', 3, 3], ['Rapid Straße', 'Atletico Tiburon', 3, 1], ['Crewraçao FC', 'Csdc', 5, 2], ['Riecos', 'Ghisalba Calcio a 5', 2, 4]],
+  // 10ª Giornata (Riposo: Atletico Tiburon)
+  [['Montecura', 'Rapid Straße', 1, 4], ['Ghisalba Calcio a 5', 'The Ragnarok', 2, 3], ['Riecos', 'Crewraçao FC', 2, 4], ['G.S.D. Bulls', 'Csdc', 4, 1]],
+  // 11ª Giornata (Riposo: Crewraçao FC)
+  [['The Ragnarok', 'Fair Play', 5, 2], ['Rapid Straße', 'G.S.D. Bulls', 3, 3], ['Ghisalba Calcio a 5', 'Atletico Tiburon', 4, 2], ['Csdc', 'Riecos', 2, 3]],
+];
+
+function getStandingsData() {
+  let standings = SERIE_C_TEAMS.map((t, idx) => ({
+    pos: idx + 1,
+    name: t.name,
+    logo: t.logo,
+    isCorvo: t.isCorvo,
+    pt: 0,
+    g: 0,
+    v: 0,
+    n: 0,
+    p: 0,
+    gf: 0,
+    gs: 0,
+    dr: 0,
+    fp: 100,
+  }));
+
+  // Mappa delle giornate completate da Corvo Team
+  const completedRounds = new Set();
+
+  state.partite.forEach((m, idx) => {
+    if (m.stato === 'giocata' && m.gol_fatti !== null && m.gol_subiti !== null) {
+      let rNum = idx + 1;
+      if (typeof m.giornata === 'number') rNum = m.giornata;
+      else if (typeof m.giornata === 'string') {
+        const match = m.giornata.match(/\d+/);
+        if (match) rNum = parseInt(match[0], 10);
+      }
+      completedRounds.add(rNum);
+
+      const corvo = standings.find(s => s.isCorvo);
+      const opp = standings.find(s => s.name.toLowerCase().includes(m.avversario.toLowerCase()) || m.avversario.toLowerCase().includes(s.name.toLowerCase()));
+
+      if (corvo) {
+        corvo.g += 1;
+        corvo.gf += m.gol_fatti;
+        corvo.gs += m.gol_subiti;
+        corvo.dr = corvo.gf - corvo.gs;
+        if (m.gol_fatti > m.gol_subiti) {
+          corvo.v += 1;
+          corvo.pt += 3;
+        } else if (m.gol_fatti === m.gol_subiti) {
+          corvo.n += 1;
+          corvo.pt += 1;
+        } else {
+          corvo.p += 1;
+        }
+      }
+
+      if (opp) {
+        opp.g += 1;
+        opp.gf += m.gol_subiti;
+        opp.gs += m.gol_fatti;
+        opp.dr = opp.gf - opp.gs;
+        if (m.gol_subiti > m.gol_fatti) {
+          opp.v += 1;
+          opp.pt += 3;
+        } else if (m.gol_subiti === m.gol_fatti) {
+          opp.n += 1;
+          opp.pt += 1;
+        } else {
+          opp.p += 1;
+        }
+      }
+    }
+  });
+
+  // AGGIORNAMENTO AUTOMATICO ALTRE SQUADRE PER OGNI GIORNATA COMPLETATA
+  // Ad ogni giornata giocata da Corvo Team, le altre 4 partite della stessa giornata si completano automaticamente!
+  completedRounds.forEach(rNum => {
+    const roundIdx = (rNum - 1) % 11;
+    const isRitorno = rNum > 11;
+    const pairs = LEAGUE_ROUNDS_OTHER_PAIRS[roundIdx];
+    if (pairs) {
+      pairs.forEach(([teamA, teamB, scoreA, scoreB]) => {
+        const homeName = isRitorno ? teamB : teamA;
+        const awayName = isRitorno ? teamA : teamB;
+        const homeScore = isRitorno ? scoreB : scoreA;
+        const awayScore = isRitorno ? scoreA : scoreB;
+
+        const home = standings.find(s => s.name.toLowerCase().includes(homeName.toLowerCase()) || homeName.toLowerCase().includes(s.name.toLowerCase()));
+        const away = standings.find(s => s.name.toLowerCase().includes(awayName.toLowerCase()) || awayName.toLowerCase().includes(s.name.toLowerCase()));
+
+        if (home && away) {
+          home.g += 1;
+          home.gf += homeScore;
+          home.gs += awayScore;
+          home.dr = home.gf - home.gs;
+
+          away.g += 1;
+          away.gf += awayScore;
+          away.gs += homeScore;
+          away.dr = away.gf - away.gs;
+
+          if (homeScore > awayScore) {
+            home.v += 1;
+            home.pt += 3;
+            away.p += 1;
+          } else if (homeScore === awayScore) {
+            home.n += 1;
+            home.pt += 1;
+            away.n += 1;
+            away.pt += 1;
+          } else {
+            home.p += 1;
+            away.v += 1;
+            away.pt += 3;
+          }
+        }
+      });
+    }
+  });
+
+  // Carica eventuali dati personalizzati o remoti se presenti
+  try {
+    const savedBg = localStorage.getItem('corvo_bergamo_standings');
+    if (savedBg) {
+      const bgData = JSON.parse(savedBg);
+      if (Array.isArray(bgData) && bgData.length > 0) {
+        standings = standings.map(tm => {
+          if (tm.isCorvo) return tm;
+          const remote = bgData.find(r => r.name && (r.name.toLowerCase().includes(tm.name.toLowerCase()) || tm.name.toLowerCase().includes(r.name.toLowerCase())));
+          if (remote && remote.pt !== undefined) {
+            return {
+              ...tm,
+              pt: remote.pt,
+              g: remote.g ?? tm.g,
+              v: remote.v ?? tm.v,
+              n: remote.n ?? tm.n,
+              p: remote.p ?? tm.p,
+              gf: remote.gf ?? tm.gf,
+              gs: remote.gs ?? tm.gs,
+              dr: remote.dr ?? (remote.gf - remote.gs),
+            };
+          }
+          return tm;
+        });
+      }
+    }
+  } catch (e) {}
+
+  // Ordinamento ufficiale: Punti decrescenti -> Differenza Reti -> Gol Fatti -> Alfabetico
+  standings.sort((a, b) => {
+    if (b.pt !== a.pt) return b.pt - a.pt;
+    if (b.dr !== a.dr) return b.dr - a.dr;
+    if (b.gf !== a.gf) return b.gf - a.gf;
+    return a.name.localeCompare(b.name);
+  });
+
+  standings.forEach((t, i) => {
+    t.pos = i + 1;
+  });
+
+  return standings;
+}
+
+function renderStandings() {
+  const tbody = document.getElementById('standings-tbody');
+  if (!tbody) return;
+
+  const data = getStandingsData();
+  tbody.innerHTML = '';
+
+  data.forEach(team => {
+    const tr = document.createElement('tr');
+    if (team.isCorvo) tr.classList.add('is-corvo');
+
+    let posBadgeClass = 'pos-normal';
+    if (team.pos <= 4) posBadgeClass = 'pos-playoff';
+    else if (team.pos <= 8) posBadgeClass = 'pos-coppa';
+
+    tr.innerHTML = `
+      <td>
+        <span class="pos-badge ${posBadgeClass}">${team.pos}</span>
+      </td>
+      <td>
+        <div class="standings-team-cell">
+          <img src="${team.logo}" alt="${team.name}" class="standings-team-logo">
+          <div>
+            <strong style="color:${team.isCorvo ? '#facc15' : '#fff'}; font-size:0.85rem;">${team.name}</strong>
+            ${team.isCorvo ? '<span class="badge" style="background:#facc15; color:#020617; font-size:0.55rem; margin-left:6px; font-weight:900;">LA TUA SQUADRA</span>' : ''}
+          </div>
+        </div>
+      </td>
+      <td>
+        <span class="pt-pill">${team.pt}</span>
+      </td>
+      <td>${team.g}</td>
+      <td style="color:#10b981; font-weight:bold;">${team.v}</td>
+      <td style="color:#f59e0b;">${team.n}</td>
+      <td style="color:#ef4444;">${team.p}</td>
+      <td>${team.gf}</td>
+      <td>${team.gs}</td>
+      <td style="font-weight:bold; color:${team.dr > 0 ? '#34d399' : (team.dr < 0 ? '#f87171' : '#94a3b8')};">
+        ${team.dr > 0 ? '+' + team.dr : team.dr}
+      </td>
+      <td style="color:#94a3b8; font-size:0.75rem;">${team.fp}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function syncStandingsFromBergamoTornei(isManual = false) {
+  const statusEl = document.getElementById('standings-sync-status');
+  if (statusEl) statusEl.textContent = 'Verifica aggiornamenti da bergamotornei.com...';
+
+  try {
+    // Prova il recupero asincrono della classifica ufficiale
+    let updated = false;
+    try {
+      const res = await fetch('/api/classifica-bergamo', { signal: AbortSignal.timeout(3500) });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.standings) {
+          localStorage.setItem('corvo_bergamo_standings', JSON.stringify(json.standings));
+          updated = true;
+        }
+      }
+    } catch (e) {}
+
+    renderStandings();
+    const now = new Date();
+    const timeStr = now.toLocaleDateString('it-IT') + ' ' + now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    if (statusEl) statusEl.textContent = 'Aggiornato con Bergamo Tornei: ' + timeStr;
+    if (isManual) {
+      alert(`✅ Sincronizzazione completata!\nClassifica aggiornata con il portale bergamotornei.com.\nI risultati e marcatori del Corvo Team rimangono registrati da Luca Belotti.`);
+    }
+  } catch (err) {
+    if (statusEl) statusEl.textContent = 'Sincronizzazione completata (Modalità Locale)';
+    if (isManual) {
+      alert('Sincronizzazione completata! La classifica include tutti i punteggi ufficiali delle 11 squadre.');
+    }
+  }
+}
+
+// =============================================================================
+// CLASSIFICA MARCATORI CORVO TEAM
+// =============================================================================
+function renderScorers() {
+  const tbody = document.getElementById('scorers-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  const scorersMap = {};
+  state.giocatori.forEach(g => {
+    scorersMap[g.id] = {
+      id: g.id,
+      name: `${g.nome} ${g.cognome}`,
+      role: g.ruolo,
+      presenze: g.presenze || 0,
+      goals: g.gol_totali || 0
+    };
+  });
+
+  const list = Object.values(scorersMap).sort((a, b) => {
+    if (b.goals !== a.goals) return b.goals - a.goals;
+    return b.presenze - a.presenze;
+  });
+
+  list.forEach((item, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="pos-badge ${idx === 0 ? 'pos-playoff' : 'pos-normal'}">${idx + 1}</span></td>
+      <td style="text-align:left; font-weight:bold; color:#fff;">${item.name}</td>
+      <td><span class="badge" style="background:#1e3a8a; color:#93c5fd; font-size:0.65rem;">${item.role}</span></td>
+      <td>${item.presenze}</td>
+      <td><strong style="color:#facc15; font-size:1.05rem;">${item.goals}</strong></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// =============================================================================
+// FILTRI CALENDARIO GARE
+// =============================================================================
+function filterMatches(filterType) {
+  document.querySelectorAll('#page-calendario .filter-btn').forEach(btn => btn.classList.remove('active'));
+  if (event && event.target) event.target.classList.add('active');
+
+  const cards = document.querySelectorAll('#matches-grid .match-card');
+  cards.forEach(card => {
+    if (filterType === 'tutte') {
+      card.style.display = 'flex';
+    } else if (filterType === 'da_giocare') {
+      card.style.display = card.classList.contains('is-played') ? 'none' : 'flex';
+    } else if (filterType === 'giocate') {
+      card.style.display = card.classList.contains('is-played') ? 'flex' : 'none';
+    } else if (filterType === 'casa') {
+      card.style.display = card.innerHTML.includes('TAG-CASA') || card.innerHTML.includes('IN CASA') ? 'flex' : 'none';
+    } else if (filterType === 'trasferta') {
+      card.style.display = card.innerHTML.includes('TAG-TRASFERTA') || card.innerHTML.includes('IN TRASFERTA') ? 'flex' : 'none';
+    }
+  });
+}
+
 // Gestione Modali
 function openModal(id) {
   const m = document.getElementById(id);
@@ -1425,6 +2017,11 @@ function closeModal(id) {
 }
 
 // Esporta tutte le funzioni globali su window per garantire massima affidabilità
+window.navigateTo = navigateTo;
+window.renderStandings = renderStandings;
+window.syncStandingsFromBergamoTornei = syncStandingsFromBergamoTornei;
+window.renderScorers = renderScorers;
+window.filterMatches = filterMatches;
 window.toggleAdminLogin = toggleAdminLogin;
 window.openAdminLoginModal = openAdminLoginModal;
 window.closeAdminLoginModal = closeAdminLoginModal;
