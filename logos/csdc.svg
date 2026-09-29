@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <path d="M100 15 L160 30 L160 120 C160 160 100 185 100 185 C100 185 40 160 40 120 L40 30 Z" fill="#fefce8" stroke="#ca8a04" stroke-width="4"/>
+  <text x="100" y="55" fill="#0f172a" font-family="Impact, Arial Black, sans-serif" font-size="22" font-weight="bold" text-anchor="middle" letter-spacing="2">C.S.D.C.</text>
+  <g transform="translate(100, 105)">
+    <rect x="-45" y="-30" width="28" height="44" rx="3" fill="#ffffff" stroke="#b45309" stroke-width="1.5" transform="rotate(-18)"/>
+    <circle cx="-32" cy="-10" r="6" fill="#eab308" transform="rotate(-18)"/>
+    <rect x="-15" y="-34" width="30" height="48" rx="3" fill="#ffffff" stroke="#1e293b" stroke-width="1.5"/>
+    <polygon points="0,-20 8,-8 2,-8 4,0 -4,0 -2,-8 -8,-8" fill="#1e293b"/>
+    <rect x="17" y="-30" width="28" height="44" rx="3" fill="#ffffff" stroke="#15803d" stroke-width="1.5" transform="rotate(18)"/>
+    <rect x="28" y="-18" width="6" height="20" fill="#15803d" transform="rotate(18)"/>
+  </g>
+  <text x="100" y="162" fill="#0f172a" font-family="Impact, Arial Black, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" letter-spacing="1">2024</text>
+</svg>

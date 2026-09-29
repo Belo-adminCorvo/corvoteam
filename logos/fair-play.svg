@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <path id="fairBottom" d="M 162 110 A 65 65 0 0 1 38 110" fill="none"/>
+  </defs>
+  <circle cx="100" cy="100" r="86" fill="#ffffff" stroke="#0f172a" stroke-width="4"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#cbd5e1" stroke-width="1.5"/>
+  <circle cx="100" cy="82" r="42" fill="#0f172a" stroke="#f59e0b" stroke-width="3"/>
+  <g transform="translate(100, 82) scale(0.85)">
+    <path d="M-20 -10 C-10 -25 10 -25 20 -10 C25 5 15 20 0 25 C-15 20 -25 5 -20 -10 Z" fill="#f59e0b"/>
+    <circle cx="-8" cy="-5" r="3" fill="#0f172a"/>
+    <circle cx="8" cy="-5" r="3" fill="#0f172a"/>
+    <path d="M-8 8 C-4 14 4 14 8 8" stroke="#0f172a" stroke-width="2.5" fill="none"/>
+  </g>
+  <text font-family="Impact, Arial Black, sans-serif" font-size="15" font-weight="bold" fill="#0f172a" text-anchor="middle" letter-spacing="2">
+    <textPath href="#fairBottom" startOffset="50%">FAIR PLAY</textPath>
+  </text>
+</svg>

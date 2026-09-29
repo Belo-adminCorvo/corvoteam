@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 560" width="100%" height="100%">
+  <defs>
+    <!-- Background Shield Gradient: Pure White with crisp modern edge -->
+    <linearGradient id="shieldBgWhite" x1="250" y1="20" x2="250" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#ffffff" />
+      <stop offset="70%" stopColor="#ffffff" />
+      <stop offset="100%" stopColor="#f8fafc" />
+    </linearGradient>
+
+    <!-- Outer Gold Border Gradient -->
+    <linearGradient id="goldBorder" x1="50" y1="20" x2="450" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#fef08a" />
+      <stop offset="25%" stopColor="#facc15" />
+      <stop offset="70%" stopColor="#eab308" />
+      <stop offset="100%" stopColor="#ca8a04" />
+    </linearGradient>
+
+    <!-- Ring Gold Gradient -->
+    <linearGradient id="ringGold" x1="130" y1="90" x2="370" y2="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#fef08a" />
+      <stop offset="50%" stopColor="#facc15" />
+      <stop offset="100%" stopColor="#d97706" />
+    </linearGradient>
+
+    <!-- Crow Feathers Gold Highlight -->
+    <linearGradient id="featherGold" x1="100" y1="150" x2="380" y2="280" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#fef08a" />
+      <stop offset="60%" stopColor="#facc15" />
+      <stop offset="100%" stopColor="#ca8a04" />
+    </linearGradient>
+
+    <!-- Beak Gradient -->
+    <linearGradient id="beakGold" x1="300" y1="130" x2="380" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#ffffff" />
+      <stop offset="30%" stopColor="#fde047" />
+      <stop offset="70%" stopColor="#eab308" />
+      <stop offset="100%" stopColor="#b45309" />
+    </linearGradient>
+
+    <!-- Drop Shadow Filter -->
+    <filter id="badgeShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- 0. SFONDO BIANCO PURO RICHIESTO PER MASSIMO CONTRASTO E VISIBILITA' -->
+  <rect width="500" height="560" rx="36" fill="#ffffff" stroke="#facc15" stroke-width="4" />
+
+  <g transform="translate(0, 0)">
+    <!-- 1. Outer Gold Shield Edge -->
+    <path d="M250 25 C320 25, 395 43, 415 70 C420 185, 422 285, 395 375 C365 450, 305 505, 250 540 C195 505, 135 450, 105 375 C78 285, 80 185, 85 70 C105 43, 180 25, 250 25 Z"
+          fill="url(#goldBorder)" />
+
+    <!-- 2. Dark Navy Gap Border per stacco netto -->
+    <path d="M250 37 C315 37, 385 53, 403 77 C408 185, 410 277, 385 363 C358 433, 302 487, 250 521 C198 487, 142 433, 115 363 C90 277, 92 185, 97 77 C115 53, 185 37, 250 37 Z"
+          fill="#0a192f" />
+
+    <!-- 3. Inner Gold Border -->
+    <path d="M250 43 C312 43, 380 59, 396 81 C401 183, 403 273, 380 355 C354 423, 300 477, 250 509 C200 477, 146 423, 120 355 C97 273, 99 183, 104 81 C120 59, 188 43, 250 43 Z"
+          fill="url(#goldBorder)" />
+
+    <!-- 4. SFONDO BIANCO INTERNO DELLO STEMMA (Richiesto: "fai sfondo bianco nello stemma almeno si vede") -->
+    <path d="M250 53 C308 53, 372 68, 386 89 C391 181, 393 267, 372 345 C347 410, 296 461, 250 493 C204 461, 153 410, 128 345 C107 267, 109 181, 114 89 C128 68, 192 53, 250 53 Z"
+          fill="url(#shieldBgWhite)" />
+
+    <!-- 5. Central Golden Halo Ring -->
+    <circle cx="250" cy="210" r="115" fill="none" stroke="url(#ringGold)" stroke-width="12" />
+    <circle cx="250" cy="210" r="102" fill="none" stroke="#ca8a04" stroke-width="2" />
+    <circle cx="250" cy="210" r="98" fill="#f8fafc" opacity="0.9" />
+
+    <!-- 6. Crow / Raven Stylized Art (Nero su Sfondo Bianco = Massima Leggibilità & Impatto) -->
+    <!-- Gold Under-Wing Accent Curves -->
+    <path d="M165 245 C190 235, 240 240, 260 265 C235 265, 200 275, 175 290 C190 275, 215 270, 235 267 C195 277, 160 305, 145 325 C160 300, 205 280, 245 277 C210 290, 175 320, 155 347 C180 315, 220 295, 270 285 C220 305, 185 345, 170 370 C195 335, 250 303, 305 290 Z"
+          fill="url(#featherGold)" />
+
+    <!-- Black Feather Layers: Intenso nero corvino che risalta perfettamente sul bianco -->
+    <path d="M190 235 C220 205, 260 215, 290 235 C250 240, 220 255, 195 275 C225 250, 260 240, 295 240 C255 255, 220 285, 190 310 C220 280, 270 257, 310 253 C270 275, 230 310, 205 340 C240 300, 290 273, 335 265 C290 290, 250 330, 225 360 C265 315, 315 285, 360 273 C310 295, 265 345, 245 375 C280 325, 335 293, 375 277 C325 305, 275 355, 255 390 C295 340, 345 305, 380 287 C340 315, 290 370, 270 400 C305 355, 350 320, 385 297 C330 335, 280 400, 265 420 C295 380, 345 340, 380 313 C315 365, 270 430, 250 445 Z"
+          fill="#0a0f1d" />
+
+    <!-- Crow Head, Crown & Neck -->
+    <path d="M235 130 C260 120, 300 125, 330 150 C350 165, 380 173, 415 183 C385 191, 360 201, 345 213 C335 207, 315 210, 305 217 C320 215, 332 220, 340 230 C310 230, 285 240, 270 255 C290 250, 310 255, 320 265 C290 267, 265 280, 250 300 C240 265, 220 230, 205 200 C200 175, 210 145, 235 130 Z"
+          fill="#060913" />
+
+    <!-- Golden Feather Highlights on Neck & Collar -->
+    <path d="M245 135 C270 130, 305 137, 330 157 C310 157, 290 153, 270 157 C295 163, 320 173, 338 187 C318 187, 298 185, 280 193 C305 200, 325 213, 335 227 C312 223, 290 225, 272 237 C295 243, 312 255, 320 267 C295 265, 270 275, 255 290 C248 260, 230 230, 218 203 C215 180, 222 153, 245 135 Z"
+          fill="#1e293b" />
+
+    <!-- Neck Gold Feather Streaks -->
+    <path d="M260 140 C280 145, 298 157, 310 173 C295 170, 280 170, 268 177 C285 183, 300 195, 308 210 C292 207, 278 210, 265 220 C280 227, 292 240, 298 255 C282 253, 268 260, 258 273 C248 250, 235 225, 225 203 Z"
+          fill="url(#featherGold)" opacity="0.9" />
+
+    <!-- Sharp Beak Profile (Pointing Right) -->
+    <path d="M328 153 C352 165, 385 173, 420 183 C388 193, 362 203, 342 215 C345 203, 345 190, 338 177 C335 167, 332 160, 328 153 Z"
+          fill="url(#beakGold)" />
+    <!-- Beak Mouth Line -->
+    <path d="M336 177 C362 183, 390 187, 415 183" stroke="#1c1917" stroke-width="3" fill="none" />
+
+    <!-- Piercing Yellow Eye with Pupil -->
+    <ellipse cx="308" cy="163" rx="8" ry="6" fill="#facc15" transform="rotate(-10 308 163)" />
+    <ellipse cx="308" cy="163" rx="4" ry="4" fill="#000000" />
+    <circle cx="306" cy="161" r="1.5" fill="#ffffff" />
+    <!-- Brow ridge -->
+    <path d="M296 155 C306 153, 318 155, 324 161" stroke="#ca8a04" stroke-width="2.5" fill="none" />
+
+    <!-- 7. TYPOGRAPHY SECTION (Ad alto contrasto su sfondo bianco) -->
+    <!-- "CORVO" Big Bold Navy Font con bordo oro -->
+    <g>
+      <text x="250" y="398"
+            font-family="system-ui, -apple-system, 'Impact', 'Arial Black', sans-serif"
+            font-size="64"
+            font-weight="900"
+            font-style="italic"
+            letter-spacing="4"
+            fill="#0a192f"
+            stroke="#ca8a04"
+            stroke-width="1.2"
+            text-anchor="middle">
+        CORVO
+      </text>
+    </g>
+
+    <!-- "— TEAM —" with Golden Horizontal Bars -->
+    <line x1="140" y1="427" x2="195" y2="427" stroke="url(#goldBorder)" stroke-width="4" stroke-linecap="round" />
+    <text x="250" y="435"
+          font-family="system-ui, -apple-system, 'Impact', 'Arial Black', sans-serif"
+          font-size="28"
+          font-weight="900"
+          letter-spacing="6"
+          fill="#d97706"
+          text-anchor="middle">
+      TEAM
+    </text>
+    <line x1="305" y1="427" x2="360" y2="427" stroke="url(#goldBorder)" stroke-width="4" stroke-linecap="round" />
+
+    <!-- "— N29 —" with Golden Dashes -->
+    <line x1="165" y1="467" x2="200" y2="467" stroke="url(#goldBorder)" stroke-width="3.5" stroke-linecap="round" />
+    <text x="250" y="475"
+          font-family="system-ui, -apple-system, 'Impact', 'Arial Black', sans-serif"
+          font-size="24"
+          font-weight="900"
+          font-style="italic"
+          letter-spacing="4"
+          fill="#0a192f"
+          text-anchor="middle">
+      N29
+    </text>
+    <line x1="300" y1="467" x2="335" y2="467" stroke="url(#goldBorder)" stroke-width="3.5" stroke-linecap="round" />
+
+    <!-- 8. Golden Star at Bottom Apex (★) -->
+    <g transform="translate(250, 497) scale(0.9)">
+      <polygon points="0,-14 4.2,-4.2 14.5,-2.8 7,5 9,14.5 0,9.5 -9,14.5 -7,5 -14.5,-2.8 -4.2,-4.2"
+               fill="url(#goldBorder)" />
+    </g>
+  </g>
+</svg>

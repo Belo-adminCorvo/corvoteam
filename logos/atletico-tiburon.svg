@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <path id="tiburonTop" d="M 32 100 A 68 68 0 0 1 168 100" fill="none"/>
+    <path id="tiburonBottom" d="M 168 100 A 68 68 0 0 1 32 100" fill="none"/>
+  </defs>
+  <circle cx="100" cy="100" r="88" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="3"/>
+  <circle cx="100" cy="100" r="68" fill="#ffffff" stroke="#1d4ed8" stroke-width="3"/>
+  <text font-family="Arial Black, Impact, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="2">
+    <textPath href="#tiburonTop" startOffset="50%">ATLETICO</textPath>
+  </text>
+  <text font-family="Arial Black, Impact, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="2">
+    <textPath href="#tiburonBottom" startOffset="50%">TIBURÓN</textPath>
+  </text>
+  <polygon points="24,100 26,104 31,104 27,107 29,112 24,109 19,112 21,107 17,104 22,104" fill="#ffffff"/>
+  <polygon points="176,100 178,104 183,104 179,107 181,112 176,109 171,112 173,107 169,104 174,104" fill="#ffffff"/>
+  <g transform="translate(100, 100) scale(0.68)">
+    <path d="M-65 0 C-65 -40 -20 -60 40 -40 C60 -30 80 -10 70 10 C60 25 45 40 20 45 C-10 50 -40 35 -65 0 Z" fill="#475569" stroke="#1e293b" stroke-width="3"/>
+    <path d="M-10 -45 C-5 -75 25 -70 15 -40 Z" fill="#334155" stroke="#1e293b" stroke-width="2"/>
+    <path d="M-65 0 C-40 20 0 35 35 30 C15 38 -20 38 -55 15 Z" fill="#ffffff"/>
+    <circle cx="-25" cy="-15" r="5" fill="#dc2626"/>
+    <circle cx="-25" cy="-15" r="2" fill="#000000"/>
+    <path d="M-65 0 L-45 5 L-55 10 L-35 15 L-50 20" fill="#ffffff" stroke="#0f172a" stroke-width="1.5"/>
+    <path d="M-5 -10 C-3 -2 -3 8 -5 15" stroke="#1e293b" stroke-width="2" fill="none"/>
+    <path d="M5 -8 C7 -1 7 7 5 13" stroke="#1e293b" stroke-width="2" fill="none"/>
+  </g>
+</svg>

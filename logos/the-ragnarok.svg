@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ragShield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="ragGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+  <path d="M100 15 L165 40 L165 110 C165 155 100 185 100 185 C100 185 35 155 35 110 L35 40 Z" fill="url(#ragShield)" stroke="url(#ragGold)" stroke-width="4"/>
+  <path d="M100 25 L155 46 L155 108 C155 145 100 172 100 172 C100 172 45 145 45 108 L45 46 Z" fill="none" stroke="#94a3b8" stroke-width="1.5" opacity="0.6"/>
+  <g transform="translate(100, 92) scale(0.9)">
+    <path d="M-28 -10 C-50 -25 -65 -60 -45 -70 C-38 -74 -30 -50 -20 -30 Z" fill="url(#ragGold)" stroke="#78350f" stroke-width="2"/>
+    <path d="M28 -10 C50 -25 65 -60 45 -70 C38 -74 30 -50 20 -30 Z" fill="url(#ragGold)" stroke="#78350f" stroke-width="2"/>
+    <path d="M-36 10 C-36 -35 36 -35 36 10 C36 28 20 38 0 38 C-20 38 -36 28 -36 10 Z" fill="#94a3b8" stroke="#cbd5e1" stroke-width="3"/>
+    <path d="M-24 5 C-12 0 0 5 0 5 C0 5 12 0 24 5 L20 18 C10 14 0 16 0 16 C0 16 -10 14 -20 18 Z" fill="#0f172a" stroke="url(#ragGold)" stroke-width="1.5"/>
+    <path d="M-4 5 L4 5 L3 28 L0 32 L-3 28 Z" fill="url(#ragGold)"/>
+    <path d="M-32 25 L-20 48 L-10 40 L0 52 L10 40 L20 48 L32 25" fill="none" stroke="url(#ragGold)" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+  <rect x="35" y="145" width="130" height="24" rx="4" fill="#020617" stroke="url(#ragGold)" stroke-width="2"/>
+  <text x="100" y="162" fill="#facc15" font-family="Impact, Arial Black, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" letter-spacing="1.5">RAGNAROK</text>
+</svg>
